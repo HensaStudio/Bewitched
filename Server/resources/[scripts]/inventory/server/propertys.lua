@@ -8,7 +8,7 @@ AddEventHandler("inventory:PropertysRobbery",function(Name)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 		TriggerClientEvent("dynamic:Close",source)
-		vRPC.playAnim(source,false,{"missheistfbi3b_ig7","lift_fibagent_loop"},false)
+		vRPC.PlayAnim(source,false,{"missheistfbi3b_ig7","lift_fibagent_loop"},false)
 
 		if vRP.HasService(Passport,"Policia") or vRP.Task(source,10,10000) then
 			if not Property[Name] then
@@ -17,7 +17,7 @@ AddEventHandler("inventory:PropertysRobbery",function(Name)
 					Property[Name] = Consult[1]["Interior"]
 				else
 					local Informations = exports["propertys"]:Informations()
-					Property[Name] = Informations[math.random(#Informations)]
+					Property[Name] = Informations
 				end
 			end
 
@@ -34,15 +34,15 @@ AddEventHandler("inventory:PropertysRobbery",function(Name)
 		else
 			TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
-			exports["vrp"]:CallPolice({
-				["Source"] = source,
-				["Passport"] = Passport,
-				["Permission"] = "Policia",
-				["Name"] = "Roubo a Propriedade",
-				["Wanted"] = 300,
-				["Code"] = 31,
-				["Color"] = 44
-			})
+			-- exports["vrp"]:CallPolice({
+				-- ["Source"] = source,
+				-- ["Passport"] = Passport,
+				-- ["Permission"] = "Policia",
+				-- ["Name"] = "Roubo a Propriedade",
+				-- ["Wanted"] = 300,
+				-- ["Code"] = 31,
+				-- ["Color"] = 44
+			-- })
 		end
 
 		Active[Passport] = nil

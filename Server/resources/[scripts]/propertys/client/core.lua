@@ -39,7 +39,7 @@ CreateThread(function()
 							if Consult then
 								if Consult == "Nothing" then
 									if not Propertys[Name]["Galpão"] then
-										exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","propertys:Robbery",Name,false,true)
+										exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","inventory:PropertysRobbery",Name,false,true)
 									end
 
 									for Line,v in pairs(Informations) do
@@ -89,7 +89,7 @@ CreateThread(function()
 									end
 								end
 							elseif not Propertys[Name]["Galpão"] and Name ~= "Hotel" then
-								exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","propertys:Robbery",Name,false,true)
+								exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","inventory:PropertysRobbery",Name,false,true)
 								exports["dynamic"]:Open()
 							end
 						end

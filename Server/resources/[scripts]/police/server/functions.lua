@@ -100,7 +100,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("placa",function(source,Message)
 	local Passport = vRP.Passport(source)
-	if Passport and exports["chat"]:Open(source) and vRP.HasService(Passport,"Policia") and Message[1] then
+	if Passport and vRP.HasService(Passport,"Policia") and Message[1] then
 		PlateVehicle(source,Message[1])
 	end
 end)

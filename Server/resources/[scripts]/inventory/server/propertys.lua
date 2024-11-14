@@ -34,15 +34,15 @@ AddEventHandler("inventory:PropertysRobbery",function(Name)
 		else
 			TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
-			-- exports["vrp"]:CallPolice({
-				-- ["Source"] = source,
-				-- ["Passport"] = Passport,
-				-- ["Permission"] = "Policia",
-				-- ["Name"] = "Roubo a Propriedade",
-				-- ["Wanted"] = 300,
-				-- ["Code"] = 31,
-				-- ["Color"] = 44
-			-- })
+			exports["vrp"]:CallPolice({
+				["Source"] = source,
+				["Passport"] = Passport,
+				["Permission"] = "Policia",
+				["Name"] = "Roubo a Propriedade",
+				["Wanted"] = 300,
+				["Code"] = 31,
+				["Color"] = 44
+			})
 		end
 
 		Active[Passport] = nil

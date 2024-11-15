@@ -358,10 +358,6 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					local OtherPassport = Keyboard[1]
 					local OtherSource = vRP.Source(Keyboard[1])
 
-					if Permission == "Admin" and vRP.HasPermission(Passport,Permission) >= 2 then
-						return false
-					end
-
 					if tonumber(Level) then
 						if vRP.GroupType(Permission) then
 							if not vRP.GetUserType(OtherPassport, "Work") then

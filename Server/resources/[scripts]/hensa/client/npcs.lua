@@ -80,6 +80,42 @@ local List = {
 		["Model"] =  "s_f_y_airhostess_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
 		["Collision"] = true
+	},{ -- Bank Sul
+		["Distance"] = 30,
+		["Coords"] = vec4(149.45,-1042.08,29.37,345.83),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Bank Sul
+		["Distance"] = 30,
+		["Coords"] = vec4(313.75,-280.41,54.16,343.0),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Bank Sul
+		["Distance"] = 30,
+		["Coords"] = vec4(-351.37,-51.33,49.03,343.0),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Bank Middle
+		["Distance"] = 30,
+		["Coords"] = vec4(-2961.17,482.91,15.69,87.88),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Bank Norte
+		["Distance"] = 30,
+		["Coords"] = vec4(1174.92,2708.21,38.08,181.42),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Bank Sul
+		["Distance"] = 30,
+		["Coords"] = vec4(-1211.92,-331.91,37.78,22.68),
+		["Model"] =  "s_f_y_airhostess_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team", "single_team_loop_boss" },
+		["Collision"] = true
 	},{ -- PawnShop
 		["Distance"] = 15,
 		["Coords"] = vec4(174.88,-1323.7,29.35,331.66),

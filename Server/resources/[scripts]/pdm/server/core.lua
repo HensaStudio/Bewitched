@@ -37,12 +37,15 @@ function Hensa.Buy(Name)
 		if Vehicle[1] then
 			TriggerClientEvent("Notify",source,"Aviso","Já possui um <b>"..VehicleName(Name).."</b>.","amarelo",5000)
 		else
-			-- if VehicleStock(Name) and vRP.Scalar("vehicles/Count",{ Vehicle = Name }) >= VehicleStock(Name) then
-				-- TriggerClientEvent("Notify",source,"Aviso","Estoque insuficiente.","amarelo",5000)
-				-- Active[Passport] = nil
+			local Result = vRP.Query("vehicles/Count",{ Vehicle = Name })
+			if Result[1] then
+				if VehicleStock(Name) and Result[1]["COUNT(Vehicle)"] >= VehicleStock(Name) then
+					TriggerClientEvent("Notify",source,"Aviso","Estoque insuficiente.","amarelo",5000)
+					Active[Passport] = nil
 
-				-- return false
-			-- end
+					return false
+				end
+			end
 
 			if VehicleMode(Name) == "Rental" then
 				local VehiclePrice = VehicleGemstone(Name)

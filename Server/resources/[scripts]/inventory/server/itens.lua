@@ -2780,10 +2780,13 @@ for Model,v in pairs(VehicleList()) do
 			if Vehicle[1] then
 				TriggerClientEvent("Notify",source,"Aviso","Já possui um <b>"..VehicleName(Model).."</b>.","amarelo",5000)
 			else
-				if VehicleStock(Model) and vRP.Scalar("vehicles/Count",{ Vehicle = Model }) >= VehicleStock(Model) then
-					TriggerClientEvent("Notify",source,"Aviso","Estoque insuficiente.","amarelo",5000)
+				local Result = vRP.Query("vehicles/Count",{ Vehicle = Model })
+				if Result[1] then
+					if VehicleStock(Model) and Result[1]["COUNT(Vehicle)"] >= VehicleStock(Model) then
+						TriggerClientEvent("Notify",source,"Aviso","Estoque insuficiente.","amarelo",5000)
 
-					return false
+						return false
+					end
 				end
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then

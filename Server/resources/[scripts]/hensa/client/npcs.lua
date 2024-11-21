@@ -192,6 +192,16 @@ local List = {
 		["Coords"] = vec4(-56.98,-1098.79,26.42,25.52),
 		["Model"] = "player_zero",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Lixeiro
+		["Distance"] = 50,
+		["Coords"] = vec4(-322.25,-1545.87,31.02,272.13),
+		["Model"] = "s_m_y_winclean_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Transporter Garagem
+		["Distance"] = 50,
+		["Coords"] = vec4(233.4,201.1,105.38,164.41),
+		["Model"] = "cs_casey",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Bus
 		["Distance"] = 50,
 		["Coords"] = vec4(453.47,-602.34,28.59,266.46),
@@ -202,7 +212,7 @@ local List = {
 		["Coords"] = vec4(-772.76,312.81,85.7,181.42),
 		["Model"] = "s_m_y_doorman_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Grime
+	},{ -- GoPostal
 		["Distance"] = 50,
 		["Coords"] = vec4(68.99,127.46,79.21,158.75),
 		["Model"] = "s_m_m_postal_01",
@@ -226,6 +236,11 @@ local List = {
 		["Distance"] = 50,
 		["Coords"] = vec4(901.97,-167.97,74.07,238.12),
 		["Model"] = "ig_dale",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Caminhoneiro Garagem
+		["Distance"] = 100,
+		["Coords"] = vec4(1265.03,-3278.42,5.9,87.88),
+		["Model"] = "s_m_m_trucker_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Caminhoneiro
 		["Distance"] = 100,
@@ -486,6 +501,56 @@ local List = {
 		["Distance"] = 30,
 		["Coords"] = vec4(-1816.64,-1193.73,14.31,334.49),
 		["Model"] = "a_f_y_eastsa_03",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Hospital
+		["Distance"] = 30,
+		["Coords"] = vec4(341.32,-578.82,28.8,167.25),
+		["Model"] = "s_m_m_paramedic_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Prisão
+		["Distance"] = 50,
+		["Coords"] = vec4(1839.86,2545.76,45.66,269.3),
+		["Model"] = "mp_m_securoguard_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Prisão
+		["Distance"] = 50,
+		["Coords"] = vec4(1839.86,2537.97,45.66,272.13),
+		["Model"] = "mp_m_securoguard_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Polícia
+		["Distance"] = 30,
+		["Coords"] = vec4(443.68,-974.3,25.7,181.42),
+		["Model"] = "mp_m_securoguard_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Polícia
+		["Distance"] = 30,
+		["Coords"] = vec4(455.97,-986.07,43.69,0.0),
+		["Model"] = "s_m_y_airworker",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Ballas
+		["Distance"] = 20,
+		["Coords"] = vec4(86.33,-1964.12,20.74,240.95),
+		["Model"] = "ig_ballasog",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Families
+		["Distance"] = 20,
+		["Coords"] = vec4(-20.07,-1436.9,30.65,90.71),
+		["Model"] = "g_f_y_families_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Vagos
+		["Distance"] = 20,
+		["Coords"] = vec4(335.86,-2031.24,21.42,147.41),
+		["Model"] = "g_f_y_vagos_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Aztecas
+		["Distance"] = 50,
+		["Coords"] = vec4(503.23,-1801.84,28.49,62.37),
+		["Model"] = "g_m_y_azteca_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Bloods
+		["Distance"] = 50,
+		["Coords"] = vec4(235.36,-1761.56,29.0,311.82),
+		["Model"] = "g_m_m_armlieut_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	}
 }

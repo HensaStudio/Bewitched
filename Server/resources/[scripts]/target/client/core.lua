@@ -48,12 +48,12 @@ local Towed = PolyZone:Create({
 -- TYRES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Tyres = {
-	{ ["Bone"] = "wheel_lf", ["Index"] = 0 },
-	{ ["Bone"] = "wheel_rf", ["Index"] = 1 },
-	{ ["Bone"] = "wheel_lm", ["Index"] = 2 },
-	{ ["Bone"] = "wheel_rm", ["Index"] = 3 },
-	{ ["Bone"] = "wheel_lr", ["Index"] = 4 },
-	{ ["Bone"] = "wheel_rr", ["Index"] = 5 }
+	["wheel_lf"] = 0,
+	["wheel_rf"] = 1,
+	["wheel_lm"] = 2,
+	["wheel_rm"] = 3,
+	["wheel_lr"] = 4,
+	["wheel_rr"] = 5
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- FUELS
@@ -721,12 +721,14 @@ function TargetEnable()
 						else
 							if GlobalState["Plates"][Plate] then
 								if GetVehicleDoorLockStatus(Entitys) <= 1 and GetSelectedPedWeapon(Ped) == GetHashKey("WEAPON_WRENCH") then
-									for Index = 1,#Tyres do
-										local BoneIndex = GetEntityBoneIndexByName(Entitys,Tyres[Index]["Bone"])
-										local TyreCoords = GetWorldPositionOfEntityBone(Vehicle,BoneIndex)
-										if #(Coords - TyreCoords) <= 1.0 then
-											Selected[6] = Tyres[Index]["Index"]
-											Menu[#Menu + 1] = { event = "inventory:RemoveTyres", label = "Retirar Pneu", tunnel = "server" }
+									for Index,Tyre in pairs(Tyres) do
+										local Wheel = GetEntityBoneIndexByName(Entitys,Index)
+										if Wheel ~= -1 then
+											local TyreCoords = GetWorldPositionOfEntityBone(Entitys,Wheel)
+											if #(Coords - TyreCoords) <= 1.0 then
+												Selected[6] = Tyre
+												Menu[#Menu + 1] = { event = "inventory:RemoveTyres", label = "Retirar Pneu", tunnel = "server" }
+											end
 										end
 									end
 								end

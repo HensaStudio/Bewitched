@@ -23,7 +23,7 @@ AddEventHandler("inventory:Tow",function(Selected)
 
 				TaskTurnPedToFaceEntity(Ped,Tower,5000)
 				TriggerEvent("sounds:Private","tow",0.5)
-				vRP.playAnim(false,{"mini@repair","fixing_a_player"},true)
+				vRP.PlayAnim(false,{"mini@repair","fixing_a_player"},true)
 
 				SetTimeout(5000,function()
 					vRP.Destroy()

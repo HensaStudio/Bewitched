@@ -27,7 +27,7 @@ AddEventHandler("inventory:Register",function(Number)
 				Active[Passport] = os.time() + 15
 				Player(source)["state"]["Buttons"] = true
 				TriggerClientEvent("Progress",source,"Roubando",15000)
-				vRPC.playAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
+				vRPC.PlayAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
 
 				exports["vrp"]:CallPolice({
 					["Source"] = source,

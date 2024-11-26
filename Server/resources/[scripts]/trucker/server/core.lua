@@ -40,8 +40,8 @@ function Hensa.Payment()
 
 		local GainExperience = 15
 		local Result = RandPercentage(Drops)
-		local Experience,Level = vRP.GetExperience(Passport,"Trucker")
-		local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Level)
+		local Experience = vRP.GetExperience(Passport,"Trucker")
+		local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
 
 		if exports["inventory"]:Buffs("Dexterity",Passport) then
 			Valuation = Valuation + (Valuation * 0.1)

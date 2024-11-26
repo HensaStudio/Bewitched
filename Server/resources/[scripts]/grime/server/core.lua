@@ -53,8 +53,8 @@ function Hensa.Payment(Selected)
 
 			local GainExperience = 3
 			local Amount = math.random(175,275)
-			local Experience,Level = vRP.GetExperience(Passport,"Grime")
-			local Valuation = Amount + Amount * (0.05 * Level)
+			local Experience = vRP.GetExperience(Passport,"Grime")
+			local Valuation = Amount + Amount * (0.05 * Experience)
 
 			if exports["inventory"]:Buffs("Dexterity",Passport) then
 				Valuation = Valuation + (Valuation * 0.1)

@@ -381,7 +381,7 @@ end
 -- FPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("cor",function(source,Message)
-	if Message[1] and parseInt(Message[1]) >= 0 and Weapon ~= "" and (LocalPlayer["state"]["Esmeralda"] or LocalPlayer["state"]["Diamante"] or LocalPlayer["state"]["Platina"] or LocalPlayer["state"]["Ouro"] or LocalPlayer["state"]["Prata"] or LocalPlayer["state"]["Bronze"] or LocalPlayer["state"]["Ferro"]) then
+	if Message[1] and parseInt(Message[1]) >= 0 and Weapon ~= "" and (LocalPlayer["state"]["Premium"]) then
 		SetPedWeaponTintIndex(PlayerPedId(),GetHashKey(Weapon),parseInt(Message[1]))
 		Cor = parseInt(Message[1])
 	end

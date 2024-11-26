@@ -132,7 +132,7 @@ AddEventHandler("inventory:Robberys",function(Crime)
 				Player(source)["state"]["Buttons"] = true
 				Cooldown[Mode] = os.time() + Robberys[Crime]["Cooldown"]
 				Active[Passport] = os.time() + Robberys[Crime]["Duration"]
-				vRPC.playAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
+				vRPC.PlayAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
 				TriggerClientEvent("Progress",source,"Roubando",Robberys[Crime]["Duration"] * 1000)
 
 				exports["vrp"]:CallPolice({

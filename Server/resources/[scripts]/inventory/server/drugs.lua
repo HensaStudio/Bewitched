@@ -73,8 +73,8 @@ function Hensa.PaymentDrugs()
 
 		local GainExperience = 2
 		local Amount = Drugs[Passport][3]
-		local Experience,Level = vRP.GetExperience(Passport,"Traffic")
-		local Valuation = Amount + Amount * (0.05 * Level)
+		local Experience = vRP.GetExperience(Passport,"Traffic")
+		local Valuation = Amount + Amount * (0.05 * Experience)
 
 		if exports["inventory"]:Buffs("Dexterity",Passport) then
 			Valuation = Valuation + (Valuation * 0.1)

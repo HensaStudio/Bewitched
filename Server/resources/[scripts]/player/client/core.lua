@@ -22,16 +22,14 @@ local DeathUpdate = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("fps",function()
 	local Ped = PlayerPedId()
-	if exports["chat"]:Open() then
-		BoostFPS = not BoostFPS
+	BoostFPS = not BoostFPS
 
-		if BoostFPS then
-			SetTimecycleModifier("cinema")
-			TriggerEvent("Notify","Otimização","Sistema ativado.","amarelo",5000)
-		else
-			ClearTimecycleModifier()
-			TriggerEvent("Notify","Otimização","Sistema desativado.","amarelo",5000)
-		end
+	if BoostFPS then
+		SetTimecycleModifier("cinema")
+		TriggerEvent("Notify","Otimização","Sistema ativado.","amarelo",5000)
+	else
+		ClearTimecycleModifier()
+		TriggerEvent("Notify","Otimização","Sistema desativado.","amarelo",5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -543,7 +541,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("ancorar",function()
 	local Ped = PlayerPedId()
-	if IsPedInAnyBoat(Ped) and exports["chat"]:Open() then
+	if IsPedInAnyBoat(Ped) then
 		local Vehicle = GetVehiclePedIsUsing(Ped)
 		if CanAnchorBoatHere(Vehicle) then
 			SetBoatAnchor(Vehicle,false)

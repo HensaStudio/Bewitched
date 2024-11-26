@@ -93,7 +93,7 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 		Active[Passport] = os.time() + 60
 		Player(source)["state"]["Buttons"] = true
 		TriggerClientEvent("Progress",source,"Desmanchando",60000)
-		vRPC.playAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
+		vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
 		repeat
 			if Active[Passport] and os.time() >= parseInt(Active[Passport]) and Dismantle[Plate] then
@@ -107,8 +107,8 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 
 				local GainExperience = 3
 				local Amount = math.random(1125,1375)
-				local Experience,Level = vRP.GetExperience(Passport,"Dismantle")
-				local Valuation = Amount + Amount * (0.05 * Level)
+				local Experience = vRP.GetExperience(Passport,"Dismantle")
+				local Valuation = Amount + Amount * (0.05 * Experience)
 
 				if exports["inventory"]:Buffs("Dexterity",Passport) then
 					Valuation = Valuation + (Valuation * 0.1)

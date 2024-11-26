@@ -32,24 +32,20 @@ AddEventHandler("inventory:Scuba",function()
 		local Ped = PlayerPedId()
 		local Coords = GetEntityCoords(Ped)
 
-		local Network = vRPS.CreateObject("p_s_scuba_tank_s",Coords["x"],Coords["y"],Coords["z"])
-		if Network then
+		local Progression,Network = vRPS.CreateObject("p_s_scuba_tank_s",Coords["x"],Coords["y"],Coords["z"])
+		if Progression then
 			ScubaTank = LoadNetwork(Network)
-			if ScubaTank then
-				AttachEntityToEntity(ScubaTank,Ped,GetPedBoneIndex(Ped,24818),-0.28,-0.24,0.0,180.0,90.0,0.0,true,true,false,true,2,true)
-				SetModelAsNoLongerNeeded("p_s_scuba_tank_s")
-				SetEntityLodDist(ScubaTank,0xFFFF)
-			end
+			AttachEntityToEntity(ScubaTank,Ped,GetPedBoneIndex(Ped,24818),-0.28,-0.24,0.0,180.0,90.0,0.0,true,true,false,true,2,true)
+			SetModelAsNoLongerNeeded("p_s_scuba_tank_s")
+			SetEntityLodDist(ScubaTank,0xFFFF)
 		end
 
-		local Network = vRPS.CreateObject("p_s_scuba_mask_s",Coords["x"],Coords["y"],Coords["z"])
-		if Network then
+		local Progression,Network = vRPS.CreateObject("p_s_scuba_mask_s",Coords["x"],Coords["y"],Coords["z"])
+		if Progression then
 			ScubaMask = LoadNetwork(Network)
-			if ScubaMask then
-				AttachEntityToEntity(ScubaMask,Ped,GetPedBoneIndex(Ped,12844),0.0,0.0,0.0,180.0,90.0,0.0,true,true,false,true,2,true)
-				SetModelAsNoLongerNeeded("p_s_scuba_mask_s")
-				SetEntityLodDist(ScubaMask,0xFFFF)
-			end
+			AttachEntityToEntity(ScubaMask,Ped,GetPedBoneIndex(Ped,12844),0.0,0.0,0.0,180.0,90.0,0.0,true,true,false,true,2,true)
+			SetModelAsNoLongerNeeded("p_s_scuba_tank_s")
+			SetEntityLodDist(ScubaMask,0xFFFF)
 		end
 
 		SetEnableScuba(Ped,true)

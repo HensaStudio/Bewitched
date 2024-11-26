@@ -1068,8 +1068,8 @@ AddEventHandler("inventory:Trasher",function(Entity)
 				if Trashs[Number]["Passport"] == Passport then
 					local GainExperience = 1
 					local Result = RandPercentage(TrashItens)
-					local Experience,Level = vRP.GetExperience(Passport,"Driver")
-					local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Level)
+					local Experience = vRP.GetExperience(Passport,"Driver")
+					local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
 
 					if exports["inventory"]:Buffs("Luck",Passport) then
 						Valuation = Valuation + (Valuation * 0.1)

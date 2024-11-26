@@ -43,7 +43,7 @@ AddEventHandler("inventory:Stockade",function(Vehicle)
 		Stockades[Plate] = Stockades[Plate] - 1
 		Player(source)["state"]["Buttons"] = true
 		TriggerClientEvent("Progress",source,"Roubando",20000)
-		vRPC.playAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
+		vRPC.PlayAnim(source,false,{"oddjobs@shop_robbery@rob_till","loop"},true)
 
 		repeat
 			if Active[Passport] and os.time() >= parseInt(Active[Passport]) then

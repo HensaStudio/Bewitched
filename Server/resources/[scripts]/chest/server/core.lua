@@ -303,7 +303,7 @@ function Hensa.Take(Item,Slot,Amount,Target)
 	if Passport and Open[Passport] and not vRP.TakeChest(Passport,Open[Passport]["Name"],Amount,Slot,Target) then
 		local Result = vRP.GetServerData(Open[Passport]["Name"])
 		if (Open[Passport]["Mode"] or Open[Passport]["Item"]) and json.encode(Result) == "[]" then
-			if Open[Passport]["Item"] and vRP.TakeItem(Passport,Open[Passport]["Item"]) then
+			if Open[Passport]["Item"] and vRP.TakeItem(Passport,Open[Passport]["Item"],Amount) then
 				TriggerClientEvent("inventory:Open",source,{
 					Action = "Open",
 					Type = "Inventory",

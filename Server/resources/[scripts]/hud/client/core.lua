@@ -52,11 +52,11 @@ local Wanted = 0
 local WantedMax = 0
 local WantedTimer = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
--- REPOSE
+-- REPOSED
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Repose = 0
-local ReposeMax = 0
-local ReposeTimer = GetGameTimer()
+local Reposed = 0
+local ReposedMax = 0
+local ReposedTimer = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LUCK
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -245,11 +245,11 @@ CreateThread(function()
 				SendNUIMessage({ name = "Wanted", payload = { Wanted,WantedMax } })
 			end
 
-			if Repose > 0 and ReposeTimer <= GetGameTimer() then
-				Repose = Repose - 1
-				ReposeTimer = GetGameTimer() + 1000
+			if Reposed > 0 and ReposedTimer <= GetGameTimer() then
+				Reposed = Reposed - 1
+				ReposedTimer = GetGameTimer() + 1000
 
-				SendNUIMessage({ name = "Repose", payload = { Repose,ReposeMax } })
+				SendNUIMessage({ name = "Repose", payload = { Reposed,ReposedMax } })
 			end
 
 			if GetEntityHealth(Ped) > 100 then
@@ -350,18 +350,18 @@ AddStateBagChangeHandler("Safezone",("player:%s"):format(LocalPlayer["state"]["P
 	SendNUIMessage({ name = "Safezone", payload = Value })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- HUD:REPOSE
+-- HUD:REPOSED
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("hud:Repose")
-AddEventHandler("hud:Repose",function(Seconds)
-	ReposeMax = Seconds
-	Repose = Seconds
+RegisterNetEvent("hud:Reposed")
+AddEventHandler("hud:Reposed",function(Seconds)
+	ReposedMax = Seconds
+	Reposed = Seconds
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- REPOSE
+-- REPOSED
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("Repose",function()
-	return Repose > 0 and true or false
+exports("Reposed",function()
+	return Reposed > 0 and true or false
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- HUD:ACTIVE

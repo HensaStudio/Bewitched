@@ -999,7 +999,7 @@ function Hensa.RemoveThrowing(Item)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and Item ~= "" and Item ~= nil then
-		vRP.TakeItem(Passport,Item)
+		vRP.TakeItem(Passport,Item,1)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1426,13 +1426,11 @@ AddEventHandler("inventory:Products",function(Service)
 				Active[Passport] = nil
 				vRPC.Destroy(source)
 
-				if not Products[Service]["Item"] or Products[Service]["Item"] then
+				if not Products[Service]["Item"] or (Products[Service]["Item"] and vRP.TakeItem(Passport,Products[Service]["Item"])) then
 					local Result = RandPercentage(Products[Service]["Itens"])
 					if not vRP.MaxItens(Passport,Result["Item"],Result["Valuation"]) and vRP.CheckWeight(Passport,Result["Item"],Result["Valuation"]) then
-						if vRP.TakeItem(Passport,Products[Service]["Item"],Result["Valuation"],true) then
-							vRP.GenerateItem(Passport,Result["Item"],Result["Valuation"],true)
-							vRP.UpgradeStress(Passport,1)
-						end
+						vRP.GenerateItem(Passport,Result["Item"],Result["Valuation"],true)
+						vRP.UpgradeStress(Passport,1)
 					else
 						TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
 						exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Valuation"])

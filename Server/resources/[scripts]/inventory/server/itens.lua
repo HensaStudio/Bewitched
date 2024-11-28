@@ -1405,7 +1405,7 @@ Use = {
 				vRPC.CreateObjects(source,"amb@world_human_stand_fishing@idle_a","idle_c","prop_fishing_rod_01",49,60309)
 			end
 
-			if vRP.TakeItem(Passport,"worm") then
+			if vRP.TakeItem(Passport,"worm",1) then
 				if vRP.Task(source,6,75000) then
 					local Result = RandPercentage({
 						{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
@@ -2683,7 +2683,7 @@ Use = {
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end
 		else
-			if vRP.LevelPremium(source) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
+			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end
@@ -2698,7 +2698,7 @@ Use = {
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end
 		else
-			if vRP.LevelPremium(source) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
+			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end
@@ -2713,7 +2713,7 @@ Use = {
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end
 		else
-			if vRP.LevelPremium(source) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
+			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
 				TriggerClientEvent("inventory:Update",source,"Backpack")
 			end

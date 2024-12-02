@@ -30,20 +30,19 @@ body,td,th {
 
 #menu_items li {
 	height: 60px;
-	letter-spacing: 2px;
 	padding-left: 20px;
 	padding-right: 20px;
 }
 
 #menu_items li:nth-child(odd) {
-	background-color: rgba(15,33,58,0.65);
+	background-color: rgba(35,40,96,0.65);
 }
 
 #menu_items li:nth-child(even) {
-	background-color: rgba(15,33,58,0.95);
+	background-color: rgba(35,40,96,0.95);
 }
 
 .item_selected {
-	background-color: #4182e2 !important;
+	background-color: #5865f2 !important;
 	color: #fff;
 }

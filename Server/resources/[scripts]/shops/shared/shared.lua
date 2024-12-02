@@ -101,11 +101,7 @@ Location = {
 		["Coords"] = vec3(-1266.4,349.82,65.66),
 		["Mode"] = "Paramedico"
 	},{
-		["Coords"] = vec3(-787.12,-1218.58,7.19),
-		["Mode"] = "Policia",
-		["Circle"] = 0.1
-	},{
-		["Coords"] = vec3(-1106.58,-822.22,14.79),
+		["Coords"] = vec3(487.59,-997.15,30.48),
 		["Mode"] = "Policia",
 		["Circle"] = 0.1
 	},{

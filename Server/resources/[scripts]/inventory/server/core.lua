@@ -33,6 +33,7 @@ Objects = {}
 Healths = {}
 Property = {}
 SaveObjects = {}
+RobberyActive = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- USERS
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -941,6 +942,11 @@ AddEventHandler("inventory:Cancel",function()
 			TriggerClientEvent("inventory:Camera",source)
 		end
 
+		if RobberyActive[Passport] then
+			TriggerEvent("inventory:RobberySingleActive",RobberyActive[Passport])
+			RobberyActive[Passport] = nil
+		end
+
 		vRP.FreezePlayer(source,false)
 		vRPC.Destroy(source)
 	end
@@ -1731,6 +1737,11 @@ AddEventHandler("Disconnect",function(Passport)
 		end
 
 		Carry[Passport] = nil
+	end
+
+	if RobberyActive[Passport] then
+		TriggerEvent("inventory:RobberySingleActive",RobberyActive[Passport])
+		RobberyActive[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

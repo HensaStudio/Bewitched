@@ -897,6 +897,10 @@ CreateThread(function()
 					if #(Coords - v["Position"]) <= 2.5 then
 						TimeDistance = 1
 
+						SetDrawOrigin(v["Position"])
+						DrawSprite("Targets","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+						ClearDrawOrigin()
+
 						if IsControlJustPressed(1,38) and vSERVER.CheckPermission(v["Permission"]) then
 							SetVehicleModKit(Vehicle,0)
 							FreezeEntityPosition(Vehicle,true)

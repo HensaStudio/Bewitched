@@ -735,7 +735,7 @@ function TargetEnable()
 
 								if not IsPedArmed(Ped,6) and GetVehicleDoorLockStatus(Entitys) <= 1 then
 									if VehicleWeight(Selected[2]) > 0 then
-										Menu[#Menu + 1] = { event = "trunkchest:openTrunk", label = "Abrir Porta-Malas", tunnel = "server" }
+										Menu[#Menu + 1] = { event = "trunkchest:OpenTrunk", label = "Abrir Porta-Malas", tunnel = "server" }
 									end
 
 									Menu[#Menu + 1] = { event = "inventory:ChangePlate", label = "Trocar Placa", tunnel = "server" }
@@ -770,8 +770,8 @@ function TargetEnable()
 							end
 
 							if CheckPolice() then
-								Menu[#Menu + 1] = { event = "towed:Impound", label = "Impound", tunnel = "server" }
-								Menu[#Menu + 1] = { event = "prison:Vehicle", label = "Apreender", tunnel = "server" }
+								Menu[#Menu + 1] = { event = "police:Impound", label = "Impound", tunnel = "server" }
+								Menu[#Menu + 1] = { event = "police:ArrestVehicles", label = "Apreender", tunnel = "server" }
 							else
 								for _,v in pairs(Dismantle) do
 									if #(Coords - v) <= 15 then

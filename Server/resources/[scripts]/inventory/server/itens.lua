@@ -913,7 +913,7 @@ Use = {
 
 					if vRP.Task(source,3,10000) and vRP.TakeItem(Passport,Full,1,true,Slot) then
 						TriggerClientEvent("Notify",source,"Sucesso","<b>Bloqueador de Sinal</b> instalado.","verde",5000)
-						TriggerEvent("SignalRemove",Plate)
+						TriggerEvent("RemoveSignal",Plate)
 					end
 
 					Player(source)["state"]["Buttons"] = false

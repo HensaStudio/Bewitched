@@ -1241,10 +1241,9 @@ AddEventHandler("inventory:ChangePlate",function(Entitys)
 					local Networked = NetworkGetEntityFromNetworkId(Entitys[4])
 					if DoesEntityExist(Networked) and not IsPedAPlayer(Networked) and GetEntityType(Networked) == 2 then
 						local NewPlate = vRP.GeneratePlate()
+						TriggerEvent("PlateEveryone", NewPlate)
 						SetVehicleNumberPlateText(Networked,NewPlate)
 						Plates[NewPlate] = true
-
-						TriggerEvent("garages:ChangePlate",Plate,NewPlate)
 
 						if not vRP.PassportPlate(NewPlate) then
 							Entity(Networked)["state"]:set("Lockpick",Passport,true)
@@ -1600,7 +1599,6 @@ function Hensa.StealPeds()
 			exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Valuation"])
 		end
 
-		-- if math.random(100) >= 75 and vRP.DoesEntityExist(source) then
 		if math.random(100) >= 75 then
 			exports["vrp"]:CallPolice({
 				["Source"] = source,
@@ -1627,16 +1625,14 @@ function Hensa.ShotsFired(Vehicle)
 			Vehicle = "Disparos com arma de fogo"
 		end
 
-		-- if vRP.DoesEntityExist(source) then
-			exports["vrp"]:CallPolice({
-				["Source"] = source,
-				["Passport"] = Passport,
-				["Permission"] = "Policia",
-				["Name"] = Vehicle,
-				["Code"] = 10,
-				["Color"] = 6
-			})
-		-- end
+		exports["vrp"]:CallPolice({
+			["Source"] = source,
+			["Passport"] = Passport,
+			["Permission"] = "Policia",
+			["Name"] = Vehicle,
+			["Code"] = 10,
+			["Color"] = 6
+		})
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1658,6 +1654,34 @@ AddEventHandler("inventory:Drink",function()
 				vRPC.Destroy(source,"one")
 				vRP.UpgradeThirst(Passport,10)
 				Player(source)["state"]["Buttons"] = false
+			end
+
+			Wait(100)
+		until not Active[Passport]
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:REFILLGALLON
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("inventory:RefillGallon")
+AddEventHandler("inventory:RefillGallon",function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and not Active[Passport] and vRP.ConsultItem(Passport,"emptybottle",1) then
+		Active[Passport] = os.time() + 30
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("Progress",source,"Enchendo",30000)
+		vRPC.PlayAnim(source,false,{"amb@prop_human_parking_meter@female@idle_a","idle_a_female"},true)
+
+		repeat
+			if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+				vRPC.Destroy(source)
+				Active[Passport] = nil
+				Player(source)["state"]["Buttons"] = false
+
+				if vRP.TakeItem(Passport,"emptybottle",1,true) then
+					vRP.GenerateItem(Passport,"water",1,true)
+				end
 			end
 
 			Wait(100)

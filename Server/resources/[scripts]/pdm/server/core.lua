@@ -124,7 +124,7 @@ function Hensa.Check()
 
 		if vRP.PaymentFull(Passport,Price) then
 			VehiclePlate[Passport] = "PDMSPORT"
-			TriggerEvent("plateEveryone", VehiclePlate[Passport])
+			TriggerEvent("PlateEveryone", VehiclePlate[Passport])
 
 			Player(source)["state"]["Route"] = Passport
 			SetPlayerRoutingBucket(source, Passport)
@@ -146,7 +146,7 @@ function Hensa.Remove()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		TriggerEvent("plateReveryone",VehiclePlate[Passport])
+		TriggerEvent("PlateReveryone",VehiclePlate[Passport])
 
 		Player(source)["state"]["Route"] = 0
 		SetPlayerRoutingBucket(source, 0)

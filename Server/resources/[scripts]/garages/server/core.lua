@@ -145,9 +145,9 @@ function Hensa.ServerVehicle(Model, x, y, z, Heading, Plate, Nitrox, Doors, Body
 	return true, Network, Vehicle
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- SIGNALREMOVE
+-- REMOVESIGNAL
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("signalRemove", function(Plate)
+AddEventHandler("RemoveSignal", function(Plate)
 	if not Signal[Plate] then
 		Signal[Plate] = true
 	end
@@ -155,7 +155,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PLATEREVERYONE
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("plateReveryone", function(Plate)
+AddEventHandler("PlateReveryone", function(Plate)
 	if GlobalState["Plates"][Plate] then
 		local Plates = GlobalState["Plates"]
 		Plates[Plate] = nil
@@ -165,15 +165,15 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PLATEEVERYONE
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("plateEveryone", function(Plate)
+AddEventHandler("PlateEveryone", function(Plate)
 	local Plates = GlobalState["Plates"]
 	Plates[Plate] = true
 	GlobalState:set("Plates", Plates, true)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PLATEPLAYERS
+-- PLAYERSPLATE
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("platePlayers", function(Plate, Passport)
+AddEventHandler("PlayersPlate", function(Plate, Passport)
 	if not vRP.PassportPlate(Plate) then
 		local Plates = GlobalState["Plates"]
 		Plates[Plate] = Passport
@@ -1042,7 +1042,7 @@ function SpawnVeh(data, network)
 	GlobalState:set("Plates", Plates, true)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- SIGNAL
+-- SPAWNVEH
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("SpawnVeh", SpawnVeh)
 -----------------------------------------------------------------------------------------------------------------------------------------

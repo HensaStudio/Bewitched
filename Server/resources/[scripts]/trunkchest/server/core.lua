@@ -220,8 +220,8 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRUNKCHEST:OPENTRUNK
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("trunkchest:openTrunk")
-AddEventHandler("trunkchest:openTrunk",function(Entity)
+RegisterServerEvent("trunkchest:OpenTrunk")
+AddEventHandler("trunkchest:OpenTrunk",function(Entity)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then

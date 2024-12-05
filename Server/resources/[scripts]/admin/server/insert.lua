@@ -506,8 +506,8 @@ AddEventHandler("admin:Dynamic", function(Mode)
 							SetVehicleDoorsLocked(Networked, 1)
 						end
 
-						TriggerEvent("plateEveryone", Plate)
-						TriggerEvent("platePlayers", Plate, Passport)
+						TriggerEvent("PlateEveryone", Plate)
+						TriggerEvent("PlayersPlate", Plate, Passport)
 
 						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** lockpick",0xa3c846)
 					end

@@ -33,7 +33,10 @@ AddEventHandler("inventory:Ration",function(Coords)
 	local Cooldown = 0
 	local Ped = PlayerPedId()
 	local Coords = GetEntityCoords(Ped)
+	local Heading = GetEntityHeading(Ped)
+
 	Model = Animals[math.random(#Animals)]
+
 	local SpawnX = Coords["x"] + math.random(-75,75)
 	local SpawnY = Coords["y"] + math.random(-75,75)
 	local HitZ,GroundZ = GetGroundZFor_3dCoord(SpawnX,SpawnY,Coords["z"],true)
@@ -48,8 +51,8 @@ AddEventHandler("inventory:Ration",function(Coords)
 	until (HitZ and HitSafe) or Cooldown >= 100
 
 	if HitZ and HitSafe then
-		local Network = vRPS.CreateModels("a_c_"..Model,SafeCoords["x"],SafeCoords["y"],SafeCoords["z"])
-		if Network then
+		local Application, Network = vRPS.CreatePed("a_c_"..Model, SafeCoords["x"], SafeCoords["y"], SafeCoords["z"], Heading, 28)
+		if Application then
 			SetTimeout(2500,function()
 				Entity = LoadNetwork(Network)
 				if Entity then

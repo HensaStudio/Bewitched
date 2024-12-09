@@ -42,6 +42,10 @@ local Labels = {
 			label = "Compartimento Pessoal",
 			tunnel = "client",
 			service = "Personal"
+		},{
+			event = "chest:Armour",
+			label = "Colete Balístico",
+			tunnel = "server"
 		}
 	},
 	["2"] = {
@@ -88,6 +92,12 @@ AddEventHandler("chest:Open",function(Name,Mode,Item,Blocked,Force)
 		end
 
 		Opened = true
+
+		if Mode ~= "Item" then
+			Animation = true
+			vRP.PlayAnim(false,{"amb@prop_human_bum_bin@base","base"},true)
+		end
+
 		TriggerEvent("inventory:Open",{
 			Action = "Open",
 			Type = "Chest",
@@ -110,11 +120,28 @@ AddEventHandler("chest:Item",function(Name)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CHEST:RECYCLE
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("chest:Recycle",function()
+	if vSERVER.Permissions("Recycle","Tray") and GetEntityHealth(PlayerPedId()) > 100 then
+		Opened = true
+		TriggerEvent("inventory:Open",{
+			Type = "Chest",
+			Resource = "chest"
+		})
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:CLOSE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("inventory:Close")
 AddEventHandler("inventory:Close",function()
 	if Opened then
+		if Animation then
+			Animation = false
+			vRP.Destroy()
+		end
+
 		Opened = false
 		Block = false
 	end

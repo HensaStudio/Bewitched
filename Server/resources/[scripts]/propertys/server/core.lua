@@ -15,75 +15,136 @@ vSKINSHOP = Tunnel.getInterface("skinshop")
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Lock = {}
+local Saved = {}
 local Inside = {}
-local Actived = {}
+local Active = {}
 local Robbery = {}
+local CountClothes = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GLOBALVARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 GlobalState["Markers"] = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ROBBERY
+-- PROPERTYS:ROBBERY
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Robbery(Name,Number)
+RegisterServerEvent("propertys:Robbery")
+AddEventHandler("propertys:Robbery",function(Name)
 	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and not Active[Passport] then
+		Active[Passport] = true
+		TriggerClientEvent("dynamic:Close",source)
 
-	if not Robbery[Name] then
-		Robbery[Name] = {}
+		local Service = vRP.HasService(Passport,"Policia")
+		local Lockpick = vRP.ConsultItem(Passport,"lockpick")
+		local Consult = vRP.Query("propertys/Exist",{ Name = Name })
+		local LockpickPlus = vRP.ConsultItem(Passport,"lockpickplus")
+		if (not Consult[1] or (Consult[1] and Consult[1]["Interior"] ~= "Galpão")) and (Service or ((Lockpick or LockpickPlus) and vRP.Task(source,5,5000))) then
+			if not Saved[Name] then
+				Saved[Name] = (Consult[1] and Consult[1]["Interior"] or exports["propertys"]:Informations())
+			end
+
+			if not Robbery[Name] then
+				Robbery[Name] = {}
+			end
+
+			if not Service then
+				if Lockpick then
+					vRP.RemoveItem(Passport,Lockpick["Item"],1,true)
+				end
+
+				if Consult[1] then
+					local Online = vRP.Source(Consult[1]["Passport"])
+					if Online then
+						TriggerClientEvent("Notify",Online,"Alerta de Segurança","Sua propriedade está sendo invadida, chame as autoridades para ajudar no local.","policia",5000)
+					end
+				end
+			end
+
+			TriggerClientEvent("propertys:Enter",source,Name,Saved[Name])
+		end
+
+		Active[Passport] = nil
 	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PROPERTYS:ROBBERYITEM
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("propertys:RobberyItem")
+AddEventHandler("propertys:RobberyItem",function(Number,Name)
+	local ItemList = nil
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and Robbery[Name] then
+		local Lockpick = vRP.ConsultItem(Passport,"lockpick")
+		if Lockpick or vRP.ConsultItem(Passport,"lockpickplus") then
+			if not Robbery[Name][Number] then
+				if (Number == "Locker" and not vRP.Safecrack(source,6)) or (Number ~= "Locker" and not vRP.Task(source,5,5000)) then
+					if Lockpick and math.random(100) >= 95 then
+						vRP.RemoveItem(Passport,Lockpick["Item"],1,true)
+					end
 
-	if not Robbery[Name][Number] then
-		Robbery[Name][Number] = 0
+					TriggerClientEvent("sounds:Area",-1,"alarm",1.0,Propertys[Name]["Coords"],75)
+					TriggerClientEvent("sounds:Area",-1,"alarm",1.0,vRP.GetEntityCoords(source),125,GetPlayerRoutingBucket(source))
+
+					exports["vrp"]:CallPolice({
+						["Source"] = source,
+						["Passport"] = Passport,
+						["Coords"] = Propertys[Name]["Coords"],
+						["Permission"] = "Policia",
+						["Name"] = "Roubo a Propriedade",
+						["Wanted"] = 30,
+						["Code"] = 31,
+						["Color"] = 44
+					})
+
+					return false
+				end
+
+				if Number == "Locker" then
+					ItemList = LockerItens
+				else
+					ItemList = OtherItens
+				end
+
+				Robbery[Name][Number] = true
+				TriggerClientEvent("propertys:RemCircleZone",source,Number)
+
+				for _,reward in ipairs(ItemList) do
+					if math.random(0, 225) <= reward["Chance"] then
+						local amount = math.random(reward["Min"], reward["Max"])
+						vRP.GenerateItem(Passport, reward["Item"], amount, true)
+						return
+					end
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Não tem mais nada aqui.","amarelo",5000)
+			end
+		else
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa de alguma <b>Lockpick</b>.","amarelo",5000)
+		end
 	end
-
-	if Robbery[Name] and os.time() < Robbery[Name][Number] then
-		TriggerClientEvent("Notify",source,"Atenção","Aguarde "..CompleteTimers(Robbery[Name][Number] - os.time())..".","amarelo",5000)
-
-		return false
-	end
-
-	return true
-end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- POLICE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Police(Coords)
+function Hensa.Police(Outside,Inside)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
+		TriggerClientEvent("sounds:Area",-1,"alarm",1.0,Outside,75)
+		TriggerClientEvent("sounds:Area",-1,"alarm",1.0,Inside,125,GetPlayerRoutingBucket(source))
+
 		exports["vrp"]:CallPolice({
 			["Source"] = source,
 			["Passport"] = Passport,
-			["Coords"] = Coords,
+			["Coords"] = Outside,
 			["Permission"] = "Policia",
 			["Name"] = "Roubo a Propriedade",
 			["Wanted"] = 300,
 			["Code"] = 31,
 			["Color"] = 44
 		})
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PAYBERRY
------------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Paybbery(Name,Number)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport and Robbery[Name] and os.time() >= Robbery[Name][Number] then
-		local Result = RandPercentage(IlegalItens)
-		if exports["inventory"]:Buffs("Luck",Passport) then
-			Result["Valuation"] = Result["Valuation"] + (Result["Valuation"] * 0.5)
-		end
-
-		if not vRP.MaxItens(Passport,Result["Item"],Result["Valuation"]) and vRP.CheckWeight(Passport,Result["Item"],Result["Valuation"]) then
-			vRP.GenerateItem(Passport,Result["Item"],Result["Valuation"],true)
-		else
-			TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
-			exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Valuation"])
-		end
-
-		TriggerClientEvent("player:Residual",source,"Resquício de Línter")
-		Robbery[Name][Number] = os.time() + 3600
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -105,13 +166,18 @@ function Hensa.Propertys(Name)
 			local Consult = vRP.Query("propertys/Exist",{ Name = Name })
 			if Consult[1] then
 				if Consult[1]["Passport"] == Passport or vRP.InventoryFull(Passport,"propertys-"..Consult[1]["Serial"]) or Lock[Name] then
+					if not Saved[Name] then
+						Saved[Name] = Consult[1]["Interior"]
+					end
+
+					local Interior = Saved[Name]
+					local Price = Informations[Interior]["Price"] * 0.25
 					local Tax = CompleteTimers(Consult[1]["Tax"] - os.time())
 
 					if os.time() > Consult[1]["Tax"] then
-						Tax = "Efetue o pagamento do <b>Iptu</b>."
-						local Price = Informations[Consult[1]["Interior"]]["Price"] * 0.15
+						Tax = "Efetue o pagamento da <b>Hipoteca</b>."
 
-						if vRP.Request(source,"Propriedades","Hipoteca atrasada, deseja pagar por <b>$"..Dotted(Price).."</b>?") and vRP.PaymentFull(Passport,Price) then
+						if vRP.Request(source,"Propriedades","Deseja pagar a hipoteca de <b>$"..Dotted(Price).."</b>?") and vRP.PaymentFull(Passport,Price) then
 							TriggerClientEvent("Notify",source,"Propriedades","Pagamento concluído.","verde",5000)
 							vRP.Query("propertys/Tax",{ Name = Name })
 							Tax = CompleteTimers(2592000)
@@ -121,7 +187,7 @@ function Hensa.Propertys(Name)
 					end
 
 					return {
-						["Interior"] = Consult[1]["Interior"],
+						["Interior"] = Interior,
 						["Tax"] = Tax
 					}
 				end
@@ -144,15 +210,24 @@ function Hensa.Toggle(Name,Mode)
 			Inside[Passport] = nil
 			TriggerEvent("vRP:BucketServer",source,"Exit")
 		else
-			Inside[Passport] = Name
+			Inside[Passport] = Propertys[Name]["Coords"]
 
 			if Name == "Hotel" then
-				TriggerEvent("vRP:BucketServer",source,"Enter",Passport)
+				TriggerEvent("vRP:BucketServer",source,"Enter",200000 + Passport)
 			else
-				TriggerEvent("vRP:BucketServer",source,"Enter",Route(Name))
+				TriggerEvent("vRP:BucketServer",source,"Enter",100000 + RouteNumber(Name))
 			end
 		end
 	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ROUTENUMBER
+-----------------------------------------------------------------------------------------------------------------------------------------
+function RouteNumber(Name)
+	local Name = Name
+	local Route = string.sub(Name,-4)
+
+	return parseInt(Route)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PROPERTYS:BUY
@@ -178,10 +253,11 @@ AddEventHandler("propertys:Buy",function(Name)
 						Markers[Name] = true
 						GlobalState:set("Markers",Markers,true)
 
+						Saved[Name] = Interior
 						vRP.GiveItem(Passport,"propertys-"..Serial,3,true)
 						TriggerClientEvent("Notify",source,"Propriedades","Compra concluída.","verde",5000)
 						exports["bank"]:AddTaxs(Passport,source,"Propriedades",Informations[Interior]["Price"],"Compra de propriedade.")
-						vRP.Query("propertys/Buy",{ Name = Name, Interior = Interior, Passport = Passport, Serial = Serial, Vault = Informations[Interior]["Vault"], Fridge = Informations[Interior]["Fridge"], Tax = os.time() + 2592000 })
+						vRP.Query("propertys/Buy",{ Name = Name, Interior = Interior, Passport = Passport, Serial = Serial, Vault = Informations[Interior]["Vault"] or 0, Fridge = Informations[Interior]["Fridge"] or 0, Tax = os.time() + 2592000 })
 					else
 						TriggerClientEvent("Notify",source,"Propriedades","<b>Dólares</b> insuficientes.","amarelo",5000)
 					end
@@ -191,9 +267,10 @@ AddEventHandler("propertys:Buy",function(Name)
 						Markers[Name] = true
 						GlobalState:set("Markers",Markers,true)
 
+						Saved[Name] = Interior
 						vRP.GiveItem(Passport,"propertys-"..Serial,3,true)
 						TriggerClientEvent("Notify",source,"Propriedades","Compra concluída.","verde",5000)
-						vRP.Query("propertys/Buy",{ Name = Name, Interior = Interior, Passport = Passport, Serial = Serial, Vault = Informations[Interior]["Vault"], Fridge = Informations[Interior]["Fridge"], Tax = os.time() + 31104000 })
+						vRP.Query("propertys/Buy",{ Name = Name, Interior = Interior, Passport = Passport, Serial = Serial, Vault = Informations[Interior]["Vault"] or 0, Fridge = Informations[Interior]["Fridge"] or 0, Tax = os.time() + 31104000 })
 					else
 						TriggerClientEvent("Notify",source,"Propriedades","<b>Diamantes</b> insuficientes.","amarelo",5000)
 					end
@@ -227,14 +304,15 @@ RegisterServerEvent("propertys:Sell")
 AddEventHandler("propertys:Sell",function(Name)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Actived[Passport] then
-		Actived[Passport] = true
+	if Passport and not Active[Passport] then
+		Active[Passport] = true
 
 		local Consult = vRP.Query("propertys/Exist",{ Name = Name })
 		if Consult[1] and Consult[1]["Passport"] == Passport then
 			TriggerClientEvent("dynamic:Close",source)
-			local Price = Informations[Consult[1]["Interior"]]["Price"] * 0.75
 
+			local Interior = Consult[1]["Interior"]
+			local Price = Informations[Interior]["Price"] * 0.25
 			if vRP.Request(source,"Propriedades","Vender por <b>$"..Dotted(Price).."</b>?") then
 				if GlobalState["Markers"][Name] then
 					local Markers = GlobalState["Markers"]
@@ -251,7 +329,7 @@ AddEventHandler("propertys:Sell",function(Name)
 			end
 		end
 
-		Actived[Passport] = nil
+		Active[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -261,8 +339,8 @@ RegisterServerEvent("propertys:Transfer")
 AddEventHandler("propertys:Transfer",function(Name)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Actived[Passport] and not exports["bank"]:CheckFines(Passport) then
-		Actived[Passport] = true
+	if Passport and not Active[Passport] and not exports["bank"]:CheckFines(Passport) then
+		Active[Passport] = true
 
 		local Consult = vRP.Query("propertys/Exist",{ Name = Name })
 		if Consult[1] and Consult[1]["Passport"] == Passport then
@@ -275,7 +353,7 @@ AddEventHandler("propertys:Transfer",function(Name)
 			end
 		end
 
-		Actived[Passport] = nil
+		Active[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -325,8 +403,9 @@ function Hensa.Clothes()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		local Consult = vRP.GetServerData("Wardrobe:"..Passport)
+		CountClothes[Passport] = 2
 
+		local Consult = vRP.GetServerData("Wardrobe:"..Passport)
 		for Table,_ in pairs(Consult) do
 			Clothes[#Clothes + 1] = Table
 		end
@@ -346,35 +425,37 @@ AddEventHandler("propertys:Clothes",function(Mode)
 		local Split = splitString(Mode)
 		local Name = Split[2]
 
-		if Split[1] == "save" then
+		if Split[1] == "Save" then
+			if CountTable(Consult) >= CountClothes[Passport] then
+				TriggerClientEvent("Notify",source,"Armário","Limite atingide de roupas.","amarelo",5000)
+
+				return false
+			end
+
 			local Keyboard = vKEYBOARD.Primary(source,"Nome")
 			if Keyboard then
 				local Check = sanitizeString(Keyboard[1],"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 
-				if not Consult[Check] then
-					Consult[Check] = vSKINSHOP.Customization(source)
-					vRP.SetServerData("Wardrobe:"..Passport,Consult)
-					TriggerClientEvent("propertys:ClothesReset",source)
-					TriggerClientEvent("Notify",source,"Propriedades","<b>"..Check.."</b> adicionado.","verde",5000)
+				if string.len(Check) >= 4 then
+					if not Consult[Check] then
+						Consult[Check] = vSKINSHOP.Customization(source)
+						vRP.SetServerData("Wardrobe:"..Passport,Consult)
+						TriggerClientEvent("dynamic:AddMenu",source,Check,"Informações da vestimenta.",Check,"wardrobe")
+						TriggerClientEvent("dynamic:AddButton",source,"Aplicar","Vestir-se com as vestimentas.","propertys:Clothes","Apply-"..Check,Check,true)
+						TriggerClientEvent("dynamic:AddButton",source,"Remover","Deletar a vestimenta do armário.","propertys:Clothes","Delete-"..Check,Check,true,true)
+					end
 				else
-					TriggerClientEvent("Notify",source,"Propriedades","Nome escolhido já existe em seu armário.","amarelo",5000)
+					TriggerClientEvent("Notify",source,"Armário","Nome escolhido precisa possuir mínimo de 4 letras.","amarelo",5000)
 				end
 			end
-		elseif Split[1] == "delete" then
+		elseif Split[1] == "Delete" then
 			if Consult[Name] then
 				Consult[Name] = nil
 				vRP.SetServerData("Wardrobe:"..Passport,Consult)
-				TriggerClientEvent("propertys:ClothesReset",source)
-				TriggerClientEvent("Notify",source,"Propriedades","<b>"..Name.."</b> removido.","verde",5000)
-			else
-				TriggerClientEvent("Notify",source,"Propriedades","A vestimenta salva não se encontra mais em seu armário.","amarelo",5000)
 			end
-		elseif Split[1] == "apply" then
+		elseif Split[1] == "Apply" then
 			if Consult[Name] then
 				TriggerClientEvent("skinshop:Apply",source,Consult[Name])
-				TriggerClientEvent("Notify",source,"Propriedades","<b>"..Name.."</b> aplicado.","verde",5000)
-			else
-				TriggerClientEvent("Notify",source,"Propriedades","A vestimenta salva não se encontra mais em seu armário.","amarelo",5000)
 			end
 		end
 	end
@@ -571,20 +652,16 @@ function Hensa.Update(Slot,Target,Amount,Name,Mode)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ROUTE
------------------------------------------------------------------------------------------------------------------------------------------
-function Route(Name)
-	local Split = splitString(Name,"ropertys")
-
-	return parseInt(100000 + Split[2])
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Disconnect",function(Passport)
 	if Inside[Passport] then
-		vRP.InsidePropertys(Passport,Propertys[Inside[Passport]])
+		vRP.InsidePropertys(Passport,Inside[Passport])
 		Inside[Passport] = nil
+	end
+
+	if CountClothes[Passport] then
+		CountClothes[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -611,14 +688,14 @@ AddEventHandler("ChosenCharacter",function(Passport,source)
 	if Consult[1] then
 		local Count = Consult[1]["COUNT(Passport)"]
 		if Count <= 0 then
-			Increments[#Increments + 1] = "Hotel"
+			Increments[#Increments + 1] = Propertys["Hotel"]["Coords"]
 		else
 			local All = vRP.Query("propertys/AllUser",{ Passport = Passport })
 			if All[1] then
 				for _,v in pairs(All) do
 					local Name = v["Name"]
 					if Propertys[Name] then
-						Increments[#Increments + 1] = Propertys[Name]
+						Increments[#Increments + 1] = Propertys[Name]["Coords"]
 					end
 				end
 			end

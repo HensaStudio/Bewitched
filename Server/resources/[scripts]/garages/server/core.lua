@@ -951,19 +951,19 @@ AddEventHandler("garages:Propertys", function(Name)
 		TriggerClientEvent("Notify", source, "Atenção", "Selecione o local da garagem.", "amarelo", 5000)
 
 		local Hash = "prop_offroad_tyres02"
-		local Application, Coords, Heading = vRPC.ObjectControlling(source, Hash)
+		local Application, Coords = vRPC.ObjectControlling(source, Hash)
 		if Application then
-			if #(Coords - exports["propertys"]:Coords(Name)) <= 25 then
+			if #(vec3(Coords) - exports["propertys"]:Coords(Name)) <= 25 then
 				TriggerClientEvent("Notify", source, "Atenção", "Selecione o local do veículo.", "amarelo", 5000)
 
-				local Open = Coords
+				local Open = vec3(Coords)
 				local Hash = "patriot"
-				local Application, Coords, Heading = vRPC.ObjectControlling(source, Hash)
+				local Application, Coords = vRPC.ObjectControlling(source, Hash)
 				if Application then
-					if #(Coords - exports["propertys"]:Coords(Name)) <= 25 then
+					if #(vec3(Coords) - exports["propertys"]:Coords(Name)) <= 25 then
 						local New = {
-							["1"] = { Optimize(Open["x"]), Optimize(Open["y"]), Optimize(Open["z"] + 1) },
-							["2"] = { Optimize(Coords["x"]), Optimize(Coords["y"]), Optimize(Coords["z"] + 1), Optimize(Heading) }
+							["1"] = { Open["x"], Open["y"], Open["z"] + 1 },
+							["2"] = { Coords[1], Coords[2], Coords[3] + 1, Coords[4] }
 						}
 
 						Garages[Name] = { name = "Garage", payment = false, license = false }

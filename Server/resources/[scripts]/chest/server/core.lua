@@ -81,7 +81,7 @@ function Hensa.Permissions(Name,Mode,Item)
 					["Name"] = "Personal:"..Passport,
 					["Weight"] = 50,
 					["Save"] = true,
-					["Slots"] = 20
+					["Slots"] = 25
 				}
 
 				return true
@@ -92,8 +92,13 @@ function Hensa.Permissions(Name,Mode,Item)
 			Open[Passport] = {
 				["Name"] = Name,
 				["Weight"] = 25,
-				["Slots"] = 20
+				["Slots"] = 25
 			}
+
+			if Name == "Recycle" then
+				Open[Passport]["Weight"] = 100
+				Open[Passport]["Recycle"] = true
+			end
 
 			return true
 		elseif Mode == "Custom" or Mode == "Trash" then
@@ -111,7 +116,7 @@ function Hensa.Permissions(Name,Mode,Item)
 			Open[Passport] = {
 				["Name"] = Name,
 				["Weight"] = 50,
-				["Slots"] = 20,
+				["Slots"] = 25,
 				["Mode"] = "Custom"
 			}
 
@@ -260,9 +265,24 @@ function Hensa.Store(Item,Slot,Amount,Target,Inactived)
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
 	if Passport and Open[Passport] and not Inactived then
-		if Item == "diagram" and Open[Passport]["NameLogs"] then
+		if Open[Passport]["Recycle"] then
+			local Recycled = ItemRecycle(Item)
+			if Recycled then
+				if vRP.TakeItem(Passport,Item,Amount) then
+					for Index,Number in pairs(Recycled) do
+						vRP.GenerateItem(Passport,Index,Number * Amount)
+					end
+
+					TriggerClientEvent("inventory:Update",source)
+				end
+			else
+				TriggerClientEvent("inventory:Notify",source,"Atenção",ItemName(Item).." não pode ser reciclado.","amarelo")
+				TriggerClientEvent("inventory:Update",source)
+			end
+		elseif Item == "diagram" and Open[Passport]["NameLogs"] then
 			if vRP.TakeItem(Passport,Item,Amount) then
 				vRP.Query("chests/UpdateWeight",{ Name = Open[Passport]["NameLogs"], Multiplier = Amount })
+				TriggerClientEvent("inventory:Notify",source,"Sucesso","Armazenamento melhorado.","verde")
 				Open[Passport]["Weight"] = Open[Passport]["Weight"] + (10 * Amount)
 				TriggerClientEvent("inventory:Update",source)
 			end
@@ -338,6 +358,17 @@ end
 RegisterServerEvent("chest:Cooldown")
 AddEventHandler("chest:Cooldown",function(Name)
 	Cooldown[Name] = os.time() + 600
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHEST:ARMOUR
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("chest:Armour")
+AddEventHandler("chest:Armour",function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasService(Passport,"Policia") then
+		vRP.SetArmour(source,100)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT

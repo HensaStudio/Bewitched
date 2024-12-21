@@ -193,6 +193,8 @@ AddEventHandler("inventory:DropsAdicionar",function(Route,Number,Table)
 	if Opened and Drops[Route][Number]["coords"] and #(Coords - Drops[Route][Number]["coords"]) <= 25 then
 		SendNUIMessage({ Action = "Backpack" })
 	end
+
+	TriggerEvent("inventory:CleanWeapons")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- MOUNT

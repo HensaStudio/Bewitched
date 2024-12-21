@@ -187,6 +187,11 @@ local List = {
 		["Coords"] = vec4(408.91,-1622.75,29.28,232.45),
 		["Model"] = "u_m_o_finguru_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Towed Impound
+		["Distance"] = 50,
+		["Coords"] = vec4(392.31,-1645.23,29.28,323.15),
+		["Model"] = "s_m_m_gardener_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Concessionária
 		["Distance"] = 25,
 		["Coords"] = vec4(-56.98,-1098.79,26.42,25.52),

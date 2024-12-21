@@ -201,6 +201,20 @@ AddEventHandler("onClientResourceStart",function(Resource)
 	RegisterCommand("-entityTarget",TargetDisable)
 	RegisterKeyMapping("+entityTarget","Interação auricular.","keyboard","LMENU")
 
+	AddCircleZone("Impound01", vec3(392.47,-1645.03,29.6), 0.5, {
+		name = "Impound01",
+		heading = 0.0
+	}, {
+		Distance = 1.25,
+		options = {
+			{
+				event = "garages:Impound",
+				label = "Verificar",
+				tunnel = "client"
+			}
+		}
+	})
+
 	AddCircleZone("Salary01", vec3(241.59,226.01,106.79), 0.5, {
 		name = "Salary01",
 		heading = 0.0

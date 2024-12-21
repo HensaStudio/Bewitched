@@ -83,10 +83,10 @@ AddEventHandler("police:ArrestVehicles",function(Entity)
 	if Passport and vRP.Request(source,"Garagem","Apreender o veículo?") then
 		local OtherPassport = vRP.PassportPlate(Entity[1])
 		if OtherPassport then
-			local Vehicle = vRP.Query("vehicles/selectVehicles",{ Passport = OtherPassport["Passport"], Vehicle = Entity[2] })
+			local Vehicle = vRP.Query("vehicles/selectVehicles",{ Passport = OtherPassport, Vehicle = Entity[2] })
 			if Vehicle[1] then
-				if not Vehicle[1]["Arrest"] then
-					vRP.Query("vehicles/arrestVehicles",{ Passport = OtherPassport["Passport"], Vehicle = Entity[2] })
+				if Vehicle[1]["Arrest"] == 0 then
+					vRP.Query("vehicles/arrestVehicles",{ Passport = OtherPassport, Vehicle = Entity[2] })
 					TriggerClientEvent("Notify",source,"Departamento Policial","Veículo apreendido.","policia",5000)
 				else
 					TriggerClientEvent("Notify",source,"Departamento Policial","Veículo já se encontra apreendido.","policia",5000)
@@ -96,31 +96,24 @@ AddEventHandler("police:ArrestVehicles",function(Entity)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PLACA
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("placa",function(source,Message)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasService(Passport,"Policia") and Message[1] then
-		PlateVehicle(source,Message[1])
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- POLICE:PLATE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("police:Plate")
-AddEventHandler("police:Plate",function(Entity)
+AddEventHandler("police:Plate",function()
 	local source = source
-	PlateVehicle(source,Entity[1])
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- PLATEVEHICLE
------------------------------------------------------------------------------------------------------------------------------------------
-function PlateVehicle(source,Plate)
-	local OtherPassport = vRP.PassportPlate(Plate)
-	if OtherPassport then
-		local Identity = vRP.Identity(OtherPassport["Passport"])
-		if Identity then
-			TriggerClientEvent("Notify",source,"Emplacamento","<b>Passaporte:</b> "..Identity["id"].."<br><b>Telefone:</b> "..Identity["Phone"].."<br><b>Nome:</b> "..Identity["Name"].." "..Identity["Lastname"],"policia",10000)
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasService(Passport,"Policia") then
+		local Keyboard = vKEYBOARD.Primary(source,"Placa")
+		if Keyboard and Keyboard[1] then
+			local OtherPassport = vRP.PassportPlate(Keyboard[1])
+			if OtherPassport then
+				local Identity = vRP.Identity(OtherPassport)
+				if Identity then
+					TriggerClientEvent("Notify", source, "Emplacamento", "<b>Passaporte:</b> "..Identity["id"].."<br><b>Telefone:</b> "..vRP.GetPhone(OtherPassport).."<br><b>Nome:</b> "..Identity["Name"].." "..Identity["Lastname"], "policia", 10000)
+				end
+			else
+				TriggerClientEvent("Notify", source, "Emplacamento", "Nada encontrado.", "policia", 5000)
+			end
 		end
 	end
-end
+end)

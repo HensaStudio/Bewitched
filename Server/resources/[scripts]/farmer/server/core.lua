@@ -72,10 +72,10 @@ AddEventHandler("farmer:Minerman",function(Number)
 
 					local Consult = RandPercentage(Result)
 
-					local Members = exports["vrp"]:Party(Passport,source,20)
-					if parseInt(#Members) >= 2 then
-						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
-					end
+					-- local Members = exports["vrp"]:Party(Passport,source,20)
+					-- if parseInt(#Members) >= 2 then
+						-- Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
+					-- end
 
 					if exports["inventory"]:Buffs("Luck",Passport) then
 						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)

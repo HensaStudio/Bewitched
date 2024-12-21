@@ -392,9 +392,9 @@ AddEventHandler("garages:Impound", function()
 			exports["dynamic"]:AddButton(v["Name"], "Clique para efetuar a liberação.", "garages:Impound", v["Model"], false, true)
 		end
 
-		exports["dynamic"]:openMenu()
+		exports["dynamic"]:Open()
 	else
-		TriggerEvent("Notify", "amarelo", "Você não possui veículos apreendidos.", "Atenção", 5000)
+		TriggerEvent("Notify", "Impound", "Você não possui veículos apreendidos.", "policia", 5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

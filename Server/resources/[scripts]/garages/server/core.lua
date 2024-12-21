@@ -138,8 +138,6 @@ function Hensa.ServerVehicle(Model, x, y, z, Heading, Plate, Nitrox, Doors, Body
 		local Nitro = GlobalState["Nitro"]
 		Nitro[Plate] = Nitrox or 0
 		GlobalState:set("Nitro", Nitro, true)
-	elseif Model == "taxi" or Model == "pbus" then
-		SetVehicleDoorsLocked(Networked, 1)
 	end
 
 	return true, Network, Vehicle
@@ -772,20 +770,9 @@ AddEventHandler("garages:Lock", function(Network, Plate, Model)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and GlobalState["Plates"][Plate] == Passport then
-		if Player(source)["state"]["Taxi"] then
-			if Model == "taxi" then
-				TriggerEvent("garages:OnlyUnlockVehicle", source, Network)
-				TriggerClientEvent("Notify", source, "Atenção", "Para a segurança de todos, durante o serviço de <b>Taxista</b> o veículo não pode ser trancado.", "amarelo", 5000)
-			else
-				TriggerEvent("garages:LockVehicle", source, Network)
-			end
-		elseif Player(source)["state"]["Corrections"] then
-			if Model == "pbus" then
-				TriggerEvent("garages:OnlyUnlockVehicle", source, Network)
-				TriggerClientEvent("Notify", source, "Atenção", "Para a segurança de todos, durante o serviço de <b>Transporte de Prisioneiro</b> o veículo não pode ser trancado.", "amarelo", 5000)
-			else
-				TriggerEvent("garages:LockVehicle", source, Network)
-			end
+		if Player(source)["state"]["BlockLocked"] then
+			TriggerEvent("garages:OnlyUnlockVehicle", source, Network)
+			TriggerClientEvent("Notify", source, "Atenção", "Para a segurança de todos, o veículo não pode ser trancado no momento.", "amarelo", 5000)
 		else
 			TriggerEvent("garages:LockVehicle", source, Network)
 		end

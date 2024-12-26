@@ -10,6 +10,10 @@ client_scripts {
 	"client/*"
 }
 
+server_script {
+	"server/*"
+}
+
 files {
 	"web/*",
 	"web/**/*"

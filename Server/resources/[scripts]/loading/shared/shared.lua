@@ -5,7 +5,23 @@ Socials = {
 	{
 		["type"] = "discord",
 		["url"] = "https://discord.gg/Qhxnvc4Ehu"
-	}
+	},
+	{
+		["type"] = "instagram",
+		["url"] = "https://www.instagram.com/soulucashen"
+	},
+	{
+		["type"] = "tiktok",
+		["url"] = "https://www.tiktok.com/@soulucashen"
+	},
+	-- {
+		-- ["type"] = "x",
+		-- ["url"] = "https://x.com/"
+	-- },
+	-- {
+		-- ["type"] = "youtube",
+		-- ["url"] = "https://www.youtube.com/"
+	-- }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- AUTOPLAY

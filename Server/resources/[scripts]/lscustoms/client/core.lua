@@ -7,880 +7,710 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
+Hensa = {}
+Tunnel.bindInterface("lscustoms",Hensa)
 vSERVER = Tunnel.getInterface("lscustoms")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
-local originalMod = nil
-local originalWheel = nil
-local originalCategory = nil
-local originalWheelType = nil
-local originalPlateIndex = nil
-local originalWindowTint = nil
-local originalDashColour = nil
-local originalNeonColourR = nil
-local originalNeonColourG = nil
-local originalNeonColourB = nil
-local originalXenonColour = nil
-local originalWheelColour = nil
-local originalInterColour = nil
-local originalCustomWheels = nil
-local originalPoliceLivery = nil
-local originalPrimaryColour = nil
-local originalWheelCategory = nil
-local originalNeonLightSide = nil
-local originalNeonLightState = nil
-local originalSecondaryColour = nil
-local originalPearlescentColour = nil
-local attemptingPurchase = false
-local isPurchaseSuccessful = false
+local Initial = {}
+local Focus = false
+local Opened = false
+local Information = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- SAVEVEHICLE
+-- BOOLEAN
 -----------------------------------------------------------------------------------------------------------------------------------------
-function SaveVehicle(Vehicle)
-	local vehicleMods = {
-		neon = {},
-		colors = {},
-		extracolors = {},
-		dashColour = -1,
-		interColour = -1,
-		lights = {},
-		tint = GetVehicleWindowTint(Vehicle),
-		wheeltype = GetVehicleWheelType(Vehicle),
-		platestyle = GetVehicleNumberPlateTextIndex(Vehicle),
-		mods = {},
-		var = {},
-		smokecolor = {},
-		xenonColor = -1,
-		liverys = 24,
-		extras = {},
-		plateIndex = 0
+function Boolean(Number)
+	return parseInt(Number) ~= 0
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ONEZERO
+-----------------------------------------------------------------------------------------------------------------------------------------
+function OneZero(Number)
+	return Number and 1 or 0
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- OPEN
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Open(Vehicle,Logo)
+	Information["Vehicle"] = Vehicle
+
+	SetVehicleModKit(Information["Vehicle"],0)
+	FreezeEntityPosition(Information["Vehicle"],true)
+	SetVehicleOnGroundProperly(Information["Vehicle"])
+
+	Wheel(Information["Vehicle"])
+	Respray(Information["Vehicle"])
+	WindowTint(Information["Vehicle"])
+	PlateHolder(Information["Vehicle"])
+	Xenons(Information["Vehicle"])
+	Turbo(Information["Vehicle"])
+	Neons(Information["Vehicle"])
+	VehicleExtras(Information["Vehicle"])
+
+	local Ignore = {
+		["Wheels"] = true,
+		["Respray"] = true,
+		["WindowTint"] = true,
+		["Xenons"] = true,
+		["Turbo"] = true,
+		["Neons"] = true,
+		["PlateHolder"] = true,
+		["VehicleExtras"] = true
 	}
 
-	vehicleMods["xenonColor"] = GetCurrentXenonColour(Vehicle)
-	vehicleMods["lights"][1],vehicleMods["lights"][2],vehicleMods["lights"][3] = GetVehicleNeonLightsColour(Vehicle)
-	vehicleMods["colors"][1],vehicleMods["colors"][2] = GetVehicleColours(Vehicle)
-	vehicleMods["extracolors"][1],vehicleMods["extracolors"][2] = GetVehicleExtraColours(Vehicle)
-	vehicleMods["smokecolor"][1],vehicleMods["smokecolor"][2],vehicleMods["smokecolor"][3] = GetVehicleTyreSmokeColor(Vehicle)
-	vehicleMods["dashColour"] = GetVehicleInteriorColour(Vehicle)
-	vehicleMods["interColour"] = GetVehicleDashboardColour(Vehicle)
-	vehicleMods["liverys"] = GetVehicleLivery(Vehicle)
-	vehicleMods["plateIndex"] = GetVehicleNumberPlateTextIndex(Vehicle)
+	for Mod,Number in pairs(Mods) do
+		if not Ignore[Mod] then
+			local Exist = GetVehicleMod(Information["Vehicle"],Number)
+			local Amount = GetNumVehicleMods(Information["Vehicle"],Number)
 
-	for i = 0,3 do
-		vehicleMods["neon"][i] = IsVehicleNeonLightEnabled(Vehicle,i)
-	end
+			if Amount > 0 then
+				Initial[Mod] = {
+					["Installed"] = Exist,
+					["Selected"] = Exist,
+					["Amount"] = Amount,
+					["Price"] = {}
+				}
 
-	for i = 0,16 do
-		vehicleMods["mods"][i] = GetVehicleMod(Vehicle,i)
-	end
+				for Value = 1,Amount do
+					local Price = 0
+					if type(Values[Mod]) ~= "table" then
+						Price = Values[Mod]
+					else
+						if Mod == "SuspensionUpgrade" or Mod == "TransmissionUpgrade" or Mod == "ShieldingUpgrade" or Mod == "EngineUpgrade" or Mod == "BrakeUpgrade" then
+							local Model = vRP.VehicleName()
+							local VehiclePrice = VehiclePrice(Model)
 
-	for i = 17,22 do
-		vehicleMods["mods"][i] = IsToggleModOn(Vehicle,i)
-	end
+							Values[Mod] = { parseInt(VehiclePrice * 0.05), parseInt(VehiclePrice * 0.10), parseInt(VehiclePrice * 0.15), parseInt(VehiclePrice * 0.20), parseInt(VehiclePrice * 0.25), parseInt(VehiclePrice * 0.30) }
+						end
 
-	for i = 23,48 do
-		vehicleMods["mods"][i] = GetVehicleMod(Vehicle,i)
+						local Total = #Values[Mod]
+						if Values[Mod] and Values[Mod][Value] and Value <= Total then
+							Price = Values[Mod][Value]
+						else
+							Price = Values[Mod][Total]
+						end
+					end
 
-		if i == 24 or i == 23 then
-			vehicleMods["var"][i] = GetVehicleModVariation(Vehicle,i)
-		end
-	end
-
-	for i = 1,12 do
-		local ison = IsVehicleExtraTurnedOn(Vehicle,i)
-		if 1 == tonumber(ison) then
-			vehicleMods["extras"][i] = 1
-		else
-			vehicleMods["extras"][i] = 0
-		end
-	end
-
-	TriggerServerEvent("lscustoms:Vehicle",vehicleMods,GetVehicleNumberPlateText(Vehicle),vRP.VehicleName())
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PURCHASE
------------------------------------------------------------------------------------------------------------------------------------------
-function Purchase(type,upgradeLevel)
-	if upgradeLevel ~= nil then
-		upgradeLevel = upgradeLevel + 2
-	end
-
-	TriggerServerEvent("lscustoms:Purchase",type,upgradeLevel)
-
-	attemptingPurchase = true
-
-	while attemptingPurchase do
-		Wait(1)
-	end
-
-	if not isPurchaseSuccessful then
-		PlaySoundFrontend(-1,"ERROR","HUD_FRONTEND_DEFAULT_SOUNDSET",1)
-	end
-
-	return isPurchaseSuccessful
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTMOD
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentMod(id)
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local Mode = GetVehicleMod(Vehicle,id)
-	local Name = GetLabelText(GetModTextLabel(Vehicle,id,Mode))
-
-	return Mode,Name
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentWheel()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local Wheel = GetVehicleMod(Vehicle,23)
-	local Name = GetLabelText(GetModTextLabel(Vehicle,23,Wheel))
-	local Type = GetVehicleWheelType(Vehicle)
-
-	return Wheel,Name,Type
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTCHUSTOMWHEELSTATE
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentCustomWheelState()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local State = GetVehicleModVariation(Vehicle,23)
-
-	if State then
-		return 1
-	else
-		return 0
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETORIGINALWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function GetOriginalWheel()
-	return originalWheel
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETORIGINALCUSTOMWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function GetOriginalCustomWheel()
-	return originalCustomWheels
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTWINDOWTINT
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentWindowTint()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-
-	return GetVehicleWindowTint(Vehicle)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTVEHICLEWHEELSMOKECLOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentVehicleWheelSmokeColour()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local r,g,b = GetVehicleTyreSmokeColor(Vehicle)
-
-	return r,g,b
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTNEONSTATE
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentNeonState(id)
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local Enabled = IsVehicleNeonLightEnabled(Vehicle,id)
-
-	if Enabled then
-		return 1
-	else
-		return 0
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTNEONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentNeonColour()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local r,g,b = GetVehicleNeonLightsColour(Vehicle)
-
-	return r,g,b
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTXENONSTATE
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentXenonState()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local Enabled = IsToggleModOn(Vehicle,22)
-
-	if Enabled then
-		return 1
-	else
-		return 0
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTXENONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentXenonColour()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-
-	return GetVehicleHeadlightsColour(Vehicle)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTTURBOSTATE
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentTurboState()
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-	local Enabled = IsToggleModOn(Vehicle,18)
-
-	if Enabled then
-		return 1
-	else
-		return 0
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- GETCURRENTEXTRASTATE
------------------------------------------------------------------------------------------------------------------------------------------
-function GetCurrentExtraState(extra)
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-
-	return IsVehicleExtraTurnedOn(Vehicle,extra)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- CHECKVALIDMODS
------------------------------------------------------------------------------------------------------------------------------------------
-function CheckValidMods(category,id,wheelType)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	local tempMod = GetVehicleMod(vehicle,id)
-	local tempWheel = GetVehicleMod(vehicle,23)
-	local tempWheelType = GetVehicleWheelType(vehicle)
-	local tempWheelCustom = GetVehicleModVariation(vehicle,23)
-	local amountValidMods = 0
-	local validMods = {}
-	local hornNames = {}
-
-	if wheelType ~= nil then
-		SetVehicleWheelType(vehicle,wheelType)
-	end
-
-	if id == 14 then
-		for k,v in pairs(vehicleCustomisation) do 
-			if vehicleCustomisation[k]["category"] == category then
-				hornNames = vehicleCustomisation[k]["hornNames"]
-				break
-			end
-		end
-	end
-
-	local modAmount = GetNumVehicleMods(vehicle,id)
-	for i = 1,modAmount do
-		local label = GetModTextLabel(vehicle,id,(i - 1))
-		local modName = GetLabelText(label)
-
-		if modName == "NULL" then
-			if id == 14 then
-				if i <= #hornNames then
-					modName = hornNames[i]["name"]
-				else
-					modName = "Horn "..i
+					Initial[Mod]["Price"][Value - 1] = Price
 				end
-			else
-				modName = category.." "..i
+			end
+		end
+	end
+
+	Focus = true
+	Opened = true
+	SetNuiFocus(Focus,Focus)
+	SetCursorLocation(0.5,0.5)
+	TriggerEvent("hud:Active",false)
+	SendNUIMessage({ Action = "Open", Payload = { Logo,Initial } })
+	Information["Model"] = GetEntityArchetypeName(Information["Vehicle"])
+	Information["Plate"] = GetVehicleNumberPlateText(Information["Vehicle"])
+	TriggerServerEvent("lscustoms:Network",VehToNet(Information["Vehicle"]),Information["Plate"])
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- RESPRAY
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Respray(Vehicle)
+	if not Initial["Respray"] then
+		Initial["Respray"] = {}
+	end
+
+	local Primary,Secondary = GetVehicleColours(Vehicle)
+	local InteriorColor = GetVehicleInteriorColour(Vehicle)
+	local DashboardColor = GetVehicleDashboardColour(Vehicle)
+	local PearlescentColor,WheelColor = GetVehicleExtraColours(Vehicle)
+	local PrimaryR,PrimaryG,PrimaryB = GetVehicleCustomPrimaryColour(Vehicle)
+	local SecondaryR,SecondaryG,SecondaryB = GetVehicleCustomSecondaryColour(Vehicle)
+
+	if Primary ~= 0 and Primary ~= 12 and Primary ~= 120 then
+		Primary = 0
+	end
+
+	if Secondary ~= 0 and Secondary ~= 12 and Secondary ~= 120 then
+		Secondary = 0
+	end
+
+	for Mode,Result in pairs(Resprays) do
+		if Mode == "PrimaryColour" or Mode == "SecondaryColour" then
+			Initial["Respray"][Mode] = {
+				["Installed"] = {
+					["Type"] = (Mode == "PrimaryColour" and Primary or Secondary),
+					["Color"] = (Mode == "PrimaryColour" and { PrimaryR,PrimaryG,PrimaryB } or { SecondaryR,SecondaryG,SecondaryB })
+				},
+				["Selected"] = {
+					["Type"] = (Mode == "PrimaryColour" and Primary or Secondary),
+					["Color"] = (Mode == "PrimaryColour" and { PrimaryR,PrimaryG,PrimaryB } or { SecondaryR,SecondaryG,SecondaryB })
+				},
+				["Price"] = Values["Respray"]
+			}
+		else
+			Initial["Respray"][Mode] = {
+				["Installed"] = (Mode == "PearlescentColour" and PearlescentColor) or (Mode == "WheelColour" and WheelColor) or (Mode == "DashboardColour" and DashboardColor) or (Mode == "InteriorColour" and InteriorColor),
+				["Selected"] = (Mode == "PearlescentColour" and PearlescentColor) or (Mode == "WheelColour" and WheelColor) or (Mode == "DashboardColour" and DashboardColor) or (Mode == "InteriorColour" and InteriorColor),
+				["Price"] = Values[Mod]
+			}
+		end
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- WHEEL
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Wheel(Vehicle)
+	if not Initial["Wheels"] then
+		Initial["Wheels"] = {}
+	end
+
+	local Number = Mods["Wheels"]
+	local ExistType = GetVehicleType(Vehicle)
+	local R,G,B = GetVehicleTyreSmokeColor(Vehicle)
+	local ExistWheel = GetVehicleMod(Vehicle,Number)
+	local ExistVariation = GetVehicleModVariation(Vehicle,Number)
+
+	for Mode,Result in pairs(Wheels) do
+		if Mode == "TyreSmoke" then
+			Initial["Wheels"][Mode] = {
+				["Installed"] = { R,G,B },
+				["Selected"] = { R,G,B },
+				["Price"] = Values["Wheels"]
+			}
+		elseif Mode == "CustomTyres" then
+			Initial["Wheels"][Mode] = {
+				["Installed"] = ExistVariation,
+				["Selected"] = ExistVariation,
+				["Price"] = Values["Wheels"]
+			}
+		else
+			SetVehicleWheelType(Vehicle,Result)
+
+			Initial["Wheels"][Mode] = {
+				["Selected"] = (ExistType == Result and ExistWheel or -1),
+				["Installed"] = (ExistType == Result and ExistWheel or -1),
+				["Amount"] = GetNumVehicleMods(Vehicle,Number),
+				["Initial"] = { ExistType,Number,ExistWheel,ExistVariation },
+				["Price"] = Values["Wheels"]
+			}
+		end
+	end
+
+	SetVehicleWheelType(Vehicle,ExistType)
+	SetVehicleMod(Vehicle,Number,ExistWheel,ExistVariation)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PLATEHOLDER
+-----------------------------------------------------------------------------------------------------------------------------------------
+function PlateHolder(Vehicle)
+	local Exist = GetVehicleNumberPlateTextIndex(Vehicle)
+
+	Initial["PlateHolder"] = {
+		["Selected"] = Exist,
+		["Installed"] = Exist,
+		["Price"] = Values["PlateHolder"]
+	}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- VEHICLEEXTRAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function VehicleExtras(Vehicle)
+	for Number = 1,12 do
+		if DoesExtraExist(Vehicle,Number) then
+			if not Initial["VehicleExtras"] then
+				Initial["VehicleExtras"] = {}
+			end
+
+			local Status = IsVehicleExtraTurnedOn(Vehicle,Number)
+
+			Initial["VehicleExtras"][tostring(Number)] = {
+				["Selected"] = Status and 0 or 1,
+				["Installed"] = Status and 0 or 1,
+				["Price"] = Values["VehicleExtras"]
+			}
+		end
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- WINDOWTINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function WindowTint(Vehicle)
+	local Exist = GetVehicleWindowTint(Vehicle)
+
+	Initial["WindowTint"] = {
+		["Selected"] = Exist,
+		["Installed"] = Exist,
+		["Price"] = Values["WindowTint"]
+	}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- XENONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Xenons(Vehicle)
+	local Enable = IsToggleModOn(Vehicle,22)
+	local Color = GetVehicleHeadlightsColour(Vehicle)
+
+	Initial["Xenons"] = {
+		["Installed"] = {
+			["Enable"] = Enable,
+			["Color"] = Color
+		},
+		["Selected"] = {
+			["Enable"] = Enable,
+			["Color"] = Color
+		},
+		["Price"] = Values["Xenons"]
+	}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TURBO
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Turbo(Vehicle)
+	local Enable = IsToggleModOn(Vehicle,18)
+	local Information = OneZero(Enable)
+
+	Initial["Turbo"] = {
+		["Installed"] = Information,
+		["Selected"] = Information,
+		["Price"] = Values["Turbo"]
+	}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- NEONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Neons(Vehicle)
+	local R,G,B = GetVehicleNeonLightsColour(Vehicle)
+	local Enable = IsVehicleNeonLightEnabled(Vehicle,0)
+
+	Initial["Neons"] = {
+		["Installed"] = {
+			["Enable"] = Enable,
+			["Color"] = { R,G,B }
+		},
+		["Selected"] = {
+			["Enable"] = Enable,
+			["Color"] = { R,G,B }
+		},
+		["Price"] = Values["Neons"]
+	}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- APPLY
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNUICallback("Apply",function(Data,Callback)
+	local Item = Data["Item"]
+	local Index = Data["Index"]
+	local Category = Data["Category"]
+
+	if Index == "Respray" then
+		if Category == "PrimaryColour" then
+			Initial[Index][Category]["Selected"]["Type"] = Data["Type"]
+			Initial[Index][Category]["Selected"]["Color"] = { Data["Color"][1],Data["Color"][2],Data["Color"][3] }
+
+			SetVehicleColours(Information["Vehicle"],Data["Type"],Initial[Index]["SecondaryColour"]["Selected"]["Type"])
+			SetVehicleCustomPrimaryColour(Information["Vehicle"],Data["Color"][1],Data["Color"][2],Data["Color"][3])
+		elseif Category == "SecondaryColour" then
+			Initial[Index][Category]["Selected"]["Type"] = Data["Type"]
+			Initial[Index][Category]["Selected"]["Color"] = { Data["Color"][1],Data["Color"][2],Data["Color"][3] }
+
+			SetVehicleColours(Information["Vehicle"],Initial[Index]["PrimaryColour"]["Selected"]["Type"],Data["Type"])
+			SetVehicleCustomSecondaryColour(Information["Vehicle"],Data["Color"][1],Data["Color"][2],Data["Color"][3])
+		elseif Category == "PearlescentColour" then
+			Initial[Index][Category]["Selected"] = Data["Color"]
+
+			SetVehicleExtraColours(Information["Vehicle"],Data["Color"],Initial[Index]["WheelColour"]["Selected"])
+		elseif Category == "WheelColour" then
+			Initial[Index][Category]["Selected"] = Data["Color"]
+
+			SetVehicleExtraColours(Information["Vehicle"],Initial[Index]["PearlescentColour"]["Selected"],Data["Color"])
+		elseif Category == "DashboardColour" then
+			Initial[Index][Category]["Selected"] = Data["Color"]
+
+			SetVehicleDashboardColor(Information["Vehicle"],Data["Color"])
+		elseif Category == "InteriorColour" then
+			Initial[Index][Category]["Selected"] = Data["Color"]
+
+			SetVehicleInteriorColor(Information["Vehicle"],Data["Color"])
+		end
+	elseif Index == "Wheels" then
+		if Category == "TyreSmoke" then
+			Initial[Index][Category]["Selected"] = { Data["Color"][1],Data["Color"][2],Data["Color"][3] }
+
+			ToggleVehicleMod(Information["Vehicle"],Wheels[Category],true)
+			SetVehicleTyreSmokeColor(Information["Vehicle"],Data["Color"][1],Data["Color"][2],Data["Color"][3])
+		elseif Category == "CustomTyres" then
+			Initial[Index][Category]["Selected"] = Boolean(Data["Enable"])
+
+			local ExistWheel = GetVehicleMod(Information["Vehicle"],Mods[Index])
+
+			SetVehicleMod(Information["Vehicle"],Mods[Index],ExistWheel,Initial[Index][Category]["Selected"])
+		else
+			for Categ,_ in pairs(Initial[Index]) do
+				if Categ ~= "TyreSmoke" and Categ ~= "CustomTyres" then
+					Initial[Index][Categ]["Selected"] = Initial[Index][Categ]["Installed"]
+				end
+			end
+
+			Initial[Index][Category]["Selected"] = Item
+
+			SetVehicleWheelType(Information["Vehicle"],Wheels[Category])
+			SetVehicleMod(Information["Vehicle"],Mods[Index],Item,Initial[Index]["CustomTyres"]["Selected"])
+		end
+	elseif Index == "VehicleExtras" then
+		Initial[Index][Item]["Selected"] = Boolean(Data["Enable"])
+
+		local Windows,Tyres,Doors = {},{},{}
+		local Health = GetEntityHealth(Information["Vehicle"])
+		local Body = GetVehicleBodyHealth(Information["Vehicle"])
+		local Engine = GetVehicleEngineHealth(Information["Vehicle"])
+
+		for Number = 0,7 do
+			Tyres[Number] = (GetTyreHealth(Information["Vehicle"],Number) ~= 1000.0 and true or false)
+		end
+
+		for Number = 0,5 do
+			Doors[Number] = IsVehicleDoorDamaged(Information["Vehicle"],Number)
+		end
+
+		for Number = 0,5 do
+			Windows[Number] = IsVehicleWindowIntact(Information["Vehicle"],Number)
+		end
+
+		SetVehicleExtra(Information["Vehicle"],parseInt(Item),Initial[Index][Item]["Selected"])
+		SetVehiclePetrolTankHealth(Information["Vehicle"],4000.0)
+
+		SetVehicleEngineHealth(Information["Vehicle"],Engine)
+		SetVehicleBodyHealth(Information["Vehicle"],Body)
+		SetEntityHealth(Information["Vehicle"],Health)
+
+		for Number,Enable in pairs(Tyres) do
+			if Enable then
+				SetVehicleTyreBurst(Information["Vehicle"],Number,true,1000.0)
 			end
 		end
 
-		validMods[i] = { id = (i - 1), name = modName }
-
-		amountValidMods = amountValidMods + 1
-	end
-
-	if modAmount > 0 then
-		table.insert(validMods,1,{ id = -1, name = "Original" })
-	end
-
-	if wheelType ~= nil then
-		SetVehicleWheelType(vehicle,tempWheelType)
-		SetVehicleMod(vehicle,23,tempWheel,tempWheelCustom)
-	end
-
-	return validMods,amountValidMods
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALMOD
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalMod()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleMod(vehicle,originalCategory,originalMod)
-	SetVehicleDoorsShut(vehicle,true)
-
-	originalCategory = nil
-	originalMod = nil
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALWINDOWTINT
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalWindowTint()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleWindowTint(vehicle,originalWindowTint)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALCOLOURS
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalColours()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleColours(vehicle,originalPrimaryColour,originalSecondaryColour)
-	SetVehicleExtraColours(vehicle,originalPearlescentColour,originalWheelColour)
-	SetVehicleDashboardColour(vehicle,originalDashColour)
-	SetVehicleInteriorColour(vehicle,originalInterColour)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALWHEELS
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalWheels()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	local doesHaveCustomWheels = GetVehicleModVariation(vehicle,23)
-
-	SetVehicleWheelType(vehicle,originalWheelType)
-
-	if originalWheelCategory ~= nil then
-		SetVehicleMod(vehicle,originalWheelCategory,originalWheel,originalCustomWheels)
-		
-		if GetVehicleClass(vehicle) == 8 then
-			SetVehicleMod(vehicle,24,originalWheel,originalCustomWheels)
+		for Number,Enable in pairs(Windows) do
+			if not Enable then
+				SmashVehicleWindow(Information["Vehicle"],Number)
+			end
 		end
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALNEONSTATES
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalNeonStates()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
 
-	SetVehicleNeonLightEnabled(vehicle,originalNeonLightSide,originalNeonLightState)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALNEONCOLOURS
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalNeonColours()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
+		for Number,Enable in pairs(Doors) do
+			if Enable then
+				SetVehicleDoorBroken(Information["Vehicle"],Number,true)
+			end
+		end
+	elseif Index == "WindowTint" then
+		Initial[Index]["Selected"] = Item
 
-	SetVehicleNeonLightsColour(vehicle,originalNeonColourR,originalNeonColourG,originalNeonColourB)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREORIGINALXENONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function RestoreOriginalXenonColour()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
+		SetVehicleWindowTint(Information["Vehicle"],Item)
+	elseif Index == "Xenons" then
+		if Data["Type"] == "Toggle" then
+			Initial[Index]["Selected"]["Enable"] = Data["Enable"]
 
-	SetVehicleHeadlightsColour(vehicle,originalXenonColour)
-	SetVehicleLights(vehicle,0)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREPOLICELIVERY
------------------------------------------------------------------------------------------------------------------------------------------
-function RestorePoliceLivery()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleLivery(vehicle,originalPoliceLivery)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- RESTOREPLATEINDEX
------------------------------------------------------------------------------------------------------------------------------------------
-function RestorePlateIndex()
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleNumberPlateTextIndex(vehicle,originalPlateIndex)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWMOD
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewMod(categoryID,modID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	if not originalMod and not originalCategory then
-		originalCategory = categoryID
-		originalMod = GetVehicleMod(vehicle,categoryID)
-	end
-
-	if categoryID == 39 or categoryID == 40 or categoryID == 41 then
-		SetVehicleDoorOpen(vehicle,4,false,true)
-	elseif categoryID == 37 or categoryID == 38 then
-		SetVehicleDoorOpen(vehicle,5,false,true)
-	end
-
-	SetVehicleMod(vehicle,categoryID,modID)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWWINDOWTINT
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewWindowTint(windowTintID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleWindowTint(vehicle,windowTintID)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewColour(paintType,paintCategory,paintID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	SetVehicleModKit(vehicle,0)
-
-	if not originalDashColour and not originalInterColour and not originalPrimaryColour and not originalSecondaryColour and not originalPearlescentColour and not originalWheelColour then
-		originalPrimaryColour,originalSecondaryColour = GetVehicleColours(vehicle)
-		originalPearlescentColour,originalWheelColour = GetVehicleExtraColours(vehicle)
-		originalDashColour = GetVehicleDashboardColour(vehicle)
-		originalInterColour = GetVehicleInteriorColour(vehicle)
-	end
-
-	if paintType == 0 then
-		if paintCategory == 1 then
-			SetVehicleColours(vehicle,paintID,originalSecondaryColour)
-			SetVehicleExtraColours(vehicle,originalPearlescentColour,originalWheelColour)
+			ToggleVehicleMod(Information["Vehicle"],Mods[Index],Initial[Index]["Selected"]["Enable"])
 		else
-			SetVehicleColours(vehicle,paintID,originalSecondaryColour)
+			Initial[Index]["Selected"]["Color"] = Data["Color"] or 0
+
+			SetVehicleHeadlightsColour(Information["Vehicle"],Data["Color"] or 0)
 		end
-	elseif paintType == 1 then
-		SetVehicleColours(vehicle,originalPrimaryColour,paintID)
-	elseif paintType == 2 then
-		SetVehicleExtraColours(vehicle,paintID,originalWheelColour)
-	elseif paintType == 3 then
-		SetVehicleExtraColours(vehicle,originalPearlescentColour,paintID)
-	elseif paintType == 4 then
-		SetVehicleDashboardColour(vehicle,paintID)
-	elseif paintType == 5 then
-		SetVehicleInteriorColour(vehicle,paintID)
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewWheel(categoryID,wheelID,wheelType)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	local doesHaveCustomWheels = GetVehicleModVariation(vehicle,23)
+	elseif Index == "Turbo" then
+		Initial[Index]["Selected"] = OneZero(Data["Enable"])
 
-	if not originalWheelCategory and not originalWheel and not originalWheelType and not originalCustomWheels then
-		originalWheelCategory = categoryID
-		originalWheelType = GetVehicleWheelType(vehicle)
-		originalWheel = GetVehicleMod(vehicle,23)
-		originalCustomWheels = GetVehicleModVariation(vehicle,23)
-	end
+		ToggleVehicleMod(Information["Vehicle"],Mods[Index],Initial[Index]["Selected"])
+	elseif Index == "PlateHolder" then
+		Initial[Index]["Selected"] = Item
 
-	SetVehicleWheelType(vehicle,wheelType)
-	SetVehicleMod(vehicle,categoryID,wheelID,doesHaveCustomWheels)
+		SetVehicleNumberPlateTextIndex(Information["Vehicle"],Item)
+	elseif Index == "Neons" then
+		if Data["Type"] == "Toggle" then
+			Initial[Index]["Selected"]["Enable"] = Data["Enable"]
 
-	if GetVehicleClass(vehicle) == 8 then
-		SetVehicleMod(vehicle,24,wheelID,doesHaveCustomWheels)
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWNEON
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewNeon(side,enabled)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	if not originalNeonLightState and not originalNeonLightSide then
-		if IsVehicleNeonLightEnabled(vehicle,side) then
-			originalNeonLightState = 1
+			SetVehicleNeonLightEnabled(Information["Vehicle"],0,Initial[Index]["Selected"]["Enable"])
+			SetVehicleNeonLightEnabled(Information["Vehicle"],1,Initial[Index]["Selected"]["Enable"])
+			SetVehicleNeonLightEnabled(Information["Vehicle"],2,Initial[Index]["Selected"]["Enable"])
+			SetVehicleNeonLightEnabled(Information["Vehicle"],3,Initial[Index]["Selected"]["Enable"])
 		else
-			originalNeonLightState = 0
+			Initial[Index]["Selected"]["Color"] = { Data["Color"][1] or 0,Data["Color"][2] or 0,Data["Color"][3] or 0 }
+
+			SetVehicleNeonLightsColour(Information["Vehicle"],Data["Color"][1] or 0,Data["Color"][2] or 0,Data["Color"][3] or 0)
 		end
-
-		originalNeonLightSide = side
-	end
-
-	SetVehicleNeonLightEnabled(vehicle,side,enabled)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWNEONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewNeonColour(r,g,b)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	if not originalNeonColourR and not originalNeonColourG and not originalNeonColourB then
-		originalNeonColourR,originalNeonColourG,originalNeonColourB = GetVehicleNeonLightsColour(vehicle)
-	end
-
-	SetVehicleNeonLightsColour(vehicle,r,g,b)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWXENONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewXenonColour(colour)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	if not originalXenonColour then
-		originalXenonColour = GetVehicleHeadlightsColour(vehicle)
-	end
-
-	SetVehicleLights(vehicle,2)
-	SetVehicleHeadlightsColour(vehicle,colour)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWPOLICELIVERY
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewPoliceLivery(liv)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleLivery(vehicle,tonumber(liv))
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PREVIEWPLATEINDEX
------------------------------------------------------------------------------------------------------------------------------------------
-function PreviewPlateIndex(index)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleNumberPlateTextIndex(vehicle,tonumber(index))
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYMOD
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyMod(categoryID,modID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	if categoryID == 18 then
-		ToggleVehicleMod(vehicle,categoryID,modID)
-	elseif categoryID == 11 or categoryID == 12 or categoryID== 13 or categoryID == 15 or categoryID == 16 then
-		originalCategory = categoryID
-		originalMod = modID
-
-		SetVehicleMod(vehicle,categoryID,modID)
 	else
-		originalCategory = categoryID
-		originalMod = modID
+		Initial[Index]["Selected"] = Item
 
-		SetVehicleMod(vehicle,categoryID,modID)
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYEXTRA
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyExtra(extraID)
-	local Ped = PlayerPedId()
-	local Vehicle = GetVehiclePedIsUsing(Ped)
-
-	local engine = GetVehicleEngineHealth(Vehicle)
-	local body = GetVehicleBodyHealth(Vehicle)
-	local health = GetEntityHealth(Vehicle)
-	local vehWindows = {}
-	local vehTyres = {}
-	local vehDoors = {}
-
-	for i = 0,7 do
-		local Status = false
-
-		if GetTyreHealth(Vehicle,i) ~= 1000.0 then
-			Status = true
-		end
-
-		vehTyres[i] = Status
+		SetVehicleMod(Information["Vehicle"],Mods[Index],Item)
 	end
 
-	for i = 0,5 do
-		vehDoors[i] = IsVehicleDoorDamaged(Vehicle,i)
-	end
+	SendNUIMessage({ Action = "Price", Payload = Calculate(Initial,vRP.VehicleName()) })
 
-	for i = 0,5 do
-		vehWindows[i] = IsVehicleWindowIntact(Vehicle,i)
-	end
-
-	local isEnabled = IsVehicleExtraTurnedOn(Vehicle,extraID)
-	if isEnabled == 1 then
-		SetVehicleExtra(Vehicle,tonumber(extraID),1)
-		SetVehiclePetrolTankHealth(Vehicle,4000.0)
-	else
-		SetVehicleExtra(Vehicle,tonumber(extraID),0)
-		SetVehiclePetrolTankHealth(Vehicle,4000.0)
-	end
-
-	SetVehicleEngineHealth(Vehicle,engine)
-	SetVehicleBodyHealth(Vehicle,body)
-	SetEntityHealth(Vehicle,health)
-
-	for Tyre,Burst in pairs(vehTyres) do
-		if Burst then
-			SetVehicleTyreBurst(Vehicle,Tyre,true,1000.0)
-		end
-	end
-
-	for k,v in pairs(vehWindows) do
-		if not v then
-			SmashVehicleWindow(Vehicle,k)
-		end
-	end
-
-	for k,v in pairs(vehDoors) do
-		if v then
-			SetVehicleDoorBroken(Vehicle,k,v)
-		end
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYWINDOWTINT
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyWindowTint(windowTintID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalWindowTint = windowTintID
-
-	SetVehicleWindowTint(vehicle,windowTintID)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyColour(paintType,paintCategory,paintID)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	local vehPrimaryColour,vehSecondaryColour = GetVehicleColours(vehicle)
-	local vehPearlescentColour,vehWheelColour = GetVehicleExtraColours(vehicle)
-
-	if paintType == 0 then
-		if paintCategory == 1 then
-			SetVehicleColours(vehicle,paintID,vehSecondaryColour)
-			SetVehicleExtraColours(vehicle,originalPearlescentColour,vehWheelColour)
-			originalPrimaryColour = paintID
-		else
-			SetVehicleColours(vehicle,paintID,vehSecondaryColour)
-			originalPrimaryColour = paintID
-		end
-	elseif paintType == 1 then
-		SetVehicleColours(vehicle,vehPrimaryColour,paintID)
-		originalSecondaryColour = paintID
-	elseif paintType == 2 then
-		SetVehicleExtraColours(vehicle,paintID,vehWheelColour)
-		originalPearlescentColour = paintID
-	elseif paintType == 3 then
-		SetVehicleExtraColours(vehicle,vehPearlescentColour,paintID)
-		originalWheelColour = paintID
-	elseif paintType == 4 then
-		SetVehicleDashboardColour(vehicle,paintID)
-		originalDashColour = paintID
-	elseif paintType == 5 then
-		SetVehicleInteriorColour(vehicle,paintID)
-		originalInterColour = paintID
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyWheel(categoryID,wheelID,wheelType)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-	local doesHaveCustomWheels = GetVehicleModVariation(vehicle,23)
-
-	originalWheelCategory = categoryID
-	originalWheel = wheelID
-	originalWheelType = wheelType
-
-	SetVehicleWheelType(vehicle,wheelType)
-	SetVehicleMod(vehicle,categoryID,wheelID,doesHaveCustomWheels)
-	
-	if GetVehicleClass(vehicle) == 8 then
-		SetVehicleMod(vehicle,24,wheelID,doesHaveCustomWheels)
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYCUSTOMWHEEL
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyCustomWheel(state)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	SetVehicleMod(vehicle,23,GetVehicleMod(vehicle,23),state)
-
-	if GetVehicleClass(vehicle) == 8 then
-		SetVehicleMod(vehicle,24,GetVehicleMod(vehicle,24),state)
-	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYNEON
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyNeon(side,enabled)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalNeonLightState = enabled
-	originalNeonLightSide = side
-
-	SetVehicleNeonLightEnabled(vehicle,side,enabled)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYNEONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyNeonColour(r,g,b)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalNeonColourR = r
-	originalNeonColourG = g
-	originalNeonColourB = b
-
-	SetVehicleNeonLightsColour(vehicle,r,g,b)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYXENONLIGHTS
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyXenonLights(category,state)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	ToggleVehicleMod(vehicle,category,state)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYXENONCOLOUR
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyXenonColour(colour)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalXenonColour = colour
-
-	SetVehicleHeadlightsColour(vehicle,colour)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYPOLICELIVERY
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyPoliceLivery(liv)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalPoliceLivery = liv
-
-	SetVehicleLivery(vehicle,liv)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYPLATEINDEX
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyPlateIndex(index)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	originalPlateIndex = index
-
-	SetVehicleNumberPlateTextIndex(vehicle,index)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- APPLYTYRESMOKE
------------------------------------------------------------------------------------------------------------------------------------------
-function ApplyTyreSmoke(r,g,b)
-	local Ped = PlayerPedId()
-	local vehicle = GetVehiclePedIsUsing(Ped)
-
-	ToggleVehicleMod(vehicle,20,true)
-	SetVehicleTyreSmokeColor(vehicle,r,g,b)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- EXITBENNYS
------------------------------------------------------------------------------------------------------------------------------------------
-function ExitBennys()
-	local Ped = PlayerPedId()
-	if IsPedInAnyVehicle(Ped) then
-		local Vehicle = GetVehiclePedIsUsing(Ped)
-		if GetPedInVehicleSeat(Vehicle,-1) == Ped then
-			FreezeEntityPosition(Vehicle,false)
-			SaveVehicle(Vehicle)
-		end
-	end
-
-	LocalPlayer["state"]:set("Bennys",false,false)
-	TriggerServerEvent("lscustoms:inVehicle",nil)
-	TriggerEvent("hud:Active", true)
-	DisplayMenuContainer(false)
-	DestroyMenus()
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- DISABLECONTROLS
------------------------------------------------------------------------------------------------------------------------------------------
-function DisableControls()
-	LocalPlayer["state"]:set("Bennys",true,false)
-
-	CreateThread(function()
-		while LocalPlayer["state"]["Bennys"] do
-			DisableControlAction(0,38,true)
-			DisableControlAction(0,172,true)
-			DisableControlAction(0,173,true)
-			DisableControlAction(0,177,true)
-			DisableControlAction(0,176,true)
-			DisableControlAction(0,71,true)
-			DisableControlAction(0,72,true)
-			DisableControlAction(0,34,true)
-			DisableControlAction(0,35,true)
-			DisableControlAction(0,75,true)
-
-			if IsDisabledControlJustReleased(1,172) then
-				MenuScrollFunctionality("up")
-				PlaySoundFrontend(-1,"NAV_UP_DOWN","HUD_FRONTEND_DEFAULT_SOUNDSET",1)
-			end
-
-			if IsDisabledControlJustReleased(1,173) then
-				MenuScrollFunctionality("down")
-				PlaySoundFrontend(-1,"NAV_UP_DOWN","HUD_FRONTEND_DEFAULT_SOUNDSET",1)
-			end
-
-			if IsDisabledControlJustReleased(1,176) then
-				MenuManager(true)
-				PlaySoundFrontend(-1,"OK","HUD_FRONTEND_DEFAULT_SOUNDSET",1)
-			end
-
-			if IsDisabledControlJustReleased(1,177) then
-				MenuManager(false)
-				PlaySoundFrontend(-1,"NO","HUD_FRONTEND_DEFAULT_SOUNDSET",1)
-			end
-
-			Wait(0)
-		end
-	end)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- PURCHASESUCCESFUL
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("lscustoms:purchaseSuccessful")
-AddEventHandler("lscustoms:purchaseSuccessful",function()
-	isPurchaseSuccessful = true
-	attemptingPurchase = false
+	Callback("Ok")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PURCHASEFAILED
+-- APPLY
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("lscustoms:purchaseFailed")
-AddEventHandler("lscustoms:purchaseFailed",function()
-	isPurchaseSuccessful = false
-	attemptingPurchase = false
+function Apply(Spawn,Table,Mode)
+	for Index,v in pairs(Table) do
+		if Index == "Respray" then
+			for Type,Results in pairs(Table[Index]) do
+				if Type == "PrimaryColour" then
+					SetVehicleColours(Spawn,Results[Mode]["Type"],Table[Index]["SecondaryColour"][Mode]["Type"])
+					SetVehicleCustomPrimaryColour(Spawn,Results[Mode]["Color"][1],Results[Mode]["Color"][2],Results[Mode]["Color"][3])
+				elseif Type == "SecondaryColour" then
+					SetVehicleColours(Spawn,Table[Index]["PrimaryColour"][Mode]["Type"],Results[Mode]["Type"])
+					SetVehicleCustomSecondaryColour(Spawn,Results[Mode]["Color"][1],Results[Mode]["Color"][2],Results[Mode]["Color"][3])
+				elseif Type == "PearlescentColour" then
+					SetVehicleExtraColours(Spawn,Results[Mode],Table[Index]["WheelColour"][Mode])
+				elseif Type == "WheelColour" then
+					SetVehicleExtraColours(Spawn,Table[Index]["PearlescentColour"][Mode],Results[Mode])
+				elseif Type == "DashboardColour" then
+					SetVehicleDashboardColor(Spawn,Results[Mode])
+				elseif Type == "InteriorColour" then
+					SetVehicleInteriorColor(Spawn,Results[Mode])
+				end
+			end
+		elseif Index == "Wheels" then
+			for Type,Results in pairs(Table[Index]) do
+				if Type == "TyreSmoke" then
+					ToggleVehicleMod(Spawn,Wheels[Type],true)
+					SetVehicleTyreSmokeColor(Spawn,Results[Mode][1],Results[Mode][2],Results[Mode][3])
+				elseif Type == "Highend" then
+					SetVehicleWheelType(Spawn,Results["Initial"][1])
+					SetVehicleMod(Spawn,Results["Initial"][2],Results["Initial"][3],Table[Index]["CustomTyres"]["Selected"])
+				end
+			end
+		elseif Index == "PlateHolder" then
+			SetVehicleNumberPlateTextIndex(Spawn,v[Mode])
+		elseif Index == "Turbo" then
+			ToggleVehicleMod(Spawn,Mods[Index],v[Mode])
+		elseif Index == "VehicleExtras" then
+			local Windows,Tyres,Doors = {},{},{}
+			local Health = GetEntityHealth(Spawn)
+			local Body = GetVehicleBodyHealth(Spawn)
+			local Engine = GetVehicleEngineHealth(Spawn)
+
+			for Number = 0,7 do
+				Tyres[Number] = (GetTyreHealth(Spawn,Number) ~= 1000.0 and true or false)
+			end
+
+			for Number = 0,5 do
+				Doors[Number] = IsVehicleDoorDamaged(Spawn,Number)
+			end
+
+			for Number = 0,5 do
+				Windows[Number] = IsVehicleWindowIntact(Spawn,Number)
+			end
+
+			for Type,Results in pairs(Table[Index]) do
+				SetVehicleExtra(Spawn,parseInt(Type),Boolean(Results))
+				SetVehiclePetrolTankHealth(Spawn,4000.0)
+			end
+
+			SetVehicleEngineHealth(Spawn,Engine)
+			SetVehicleBodyHealth(Spawn,Body)
+			SetEntityHealth(Spawn,Health)
+
+			for Number,Enable in pairs(Tyres) do
+				if Enable then
+					SetVehicleTyreBurst(Spawn,Number,true,1000.0)
+				end
+			end
+
+			for Number,Enable in pairs(Windows) do
+				if not Enable then
+					SmashVehicleWindow(Spawn,Number)
+				end
+			end
+
+			for Number,Enable in pairs(Doors) do
+				if Enable then
+					SetVehicleDoorBroken(Spawn,Number,true)
+				end
+			end
+		elseif Index == "WindowTint" then
+			SetVehicleWindowTint(Spawn,v[Mode])
+		elseif Index == "Xenons" then
+			local Information = v[Mode]["Enable"]
+
+			ToggleVehicleMod(Spawn,Mods[Index],Information)
+			SetVehicleHeadlightsColour(Spawn,v[Mode]["Color"] or 0)
+		elseif Index == "Neons" then
+			local Information = v[Mode]["Enable"]
+
+			SetVehicleNeonLightEnabled(Spawn,0,Information)
+			SetVehicleNeonLightEnabled(Spawn,1,Information)
+			SetVehicleNeonLightEnabled(Spawn,2,Information)
+			SetVehicleNeonLightEnabled(Spawn,3,Information)
+			SetVehicleNeonLightsColour(Spawn,v[Mode]["Color"][1] or 0,v[Mode]["Color"][2] or 0,v[Mode]["Color"][3] or 0)
+		elseif v["Installed"] ~= v["Selected"] then
+			SetVehicleMod(Spawn,Mods[Index],v[Mode])
+		end
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- LSCUSTOMS:APPLY
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("lscustoms:Apply")
+AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
+	if not Spawn then return end
+
+	SetVehicleModKit(Spawn, 0)
+
+	if type(Customize) == "table" then
+		for Index, v in pairs(Customize) do
+			if Index == "Respray" then
+
+				if v["PrimaryColour"] and v["PrimaryColour"]["Selected"] then
+					local Type = v["PrimaryColour"]["Selected"]["Type"]
+					local Color = v["PrimaryColour"]["Selected"]["Color"]
+					
+					SetVehicleColours(Spawn, Type, v["SecondaryColour"] and v["SecondaryColour"]["Selected"]["Type"] or 0)
+					if Color then
+						SetVehicleCustomPrimaryColour(Spawn, Color[1], Color[2], Color[3])
+					end
+				end
+				
+
+				if v["SecondaryColour"] and v["SecondaryColour"]["Selected"] then
+					local Type = v["SecondaryColour"]["Selected"]["Type"]
+					local Color = v["SecondaryColour"]["Selected"]["Color"]
+					
+					SetVehicleColours(Spawn, v["PrimaryColour"]["Selected"]["Type"], Type)
+					if Color then
+						SetVehicleCustomSecondaryColour(Spawn, Color[1], Color[2], Color[3])
+					end
+				end
+				
+
+				if v["PearlescentColour"] and v["PearlescentColour"]["Selected"] then
+					SetVehicleExtraColours(Spawn, v["PearlescentColour"]["Selected"], 
+						v["WheelColour"] and v["WheelColour"]["Selected"] or 0)
+				end
+				
+
+				if v["WheelColour"] and v["WheelColour"]["Selected"] then
+					SetVehicleExtraColours(Spawn, 
+						v["PearlescentColour"] and v["PearlescentColour"]["Selected"] or 0,
+						v["WheelColour"]["Selected"])
+				end
+				
+
+				if v["DashboardColour"] and v["DashboardColour"]["Selected"] then
+					SetVehicleDashboardColor(Spawn, v["DashboardColour"]["Selected"])
+				end
+				
+
+				if v["InteriorColour"] and v["InteriorColour"]["Selected"] then
+					SetVehicleInteriorColor(Spawn, v["InteriorColour"]["Selected"])
+				end
+				
+			elseif Index == "Wheels" then
+
+				for Category, Data in pairs(v) do
+					if Category ~= "TyreSmoke" and Category ~= "CustomTyres" then
+						if Data["Selected"] and Data["Selected"] >= 0 then
+							SetVehicleWheelType(Spawn, Wheels[Category])
+							SetVehicleMod(Spawn, Mods["Wheels"], Data["Selected"], true)
+						end
+					end
+				end
+				
+				if v["TyreSmoke"] and v["TyreSmoke"]["Selected"] then
+					local Color = v["TyreSmoke"]["Selected"]
+					ToggleVehicleMod(Spawn, Wheels["TyreSmoke"], true)
+					SetVehicleTyreSmokeColor(Spawn, Color[1], Color[2], Color[3])
+				end
+				
+			elseif Index == "WindowTint" then
+				if v["Selected"] then
+					SetVehicleWindowTint(Spawn, v["Selected"])
+				end
+				
+			elseif Index == "Xenons" then
+				if v["Selected"] then
+
+					ToggleVehicleMod(Spawn, Mods["Xenons"], v["Selected"]["Enable"])
+
+					if v["Selected"]["Color"] then
+						SetVehicleHeadlightsColour(Spawn, v["Selected"]["Color"])
+					end
+				end
+				
+			elseif Index == "Turbo" then
+				if v["Selected"] ~= nil then
+					ToggleVehicleMod(Spawn, Mods["Turbo"], v["Selected"])
+				end
+				
+			elseif Index == "PlateHolder" then
+				if v["Selected"] then
+					SetVehicleNumberPlateTextIndex(Spawn, v["Selected"])
+				end
+				
+			elseif Index == "Neons" then
+				if v["Selected"] then
+
+					local enable = v["Selected"]["Enable"]
+					for i = 0, 3 do
+						SetVehicleNeonLightEnabled(Spawn, i, enable)
+					end
+					
+
+					if v["Selected"]["Color"] then
+						local Color = v["Selected"]["Color"]
+						SetVehicleNeonLightsColour(Spawn, Color[1], Color[2], Color[3])
+					end
+				end
+				
+			elseif Mods[Index] then
+
+				if type(v["Selected"]) == "number" then
+					SetVehicleMod(Spawn, Mods[Index], v["Selected"], false)
+				end
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SAVE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNUICallback("Save",function(Data,Callback)
+
+	if not vSERVER.Save(Information["Model"],Information["Plate"],Initial, Calculate(Initial,Information["Model"])) then
+		Apply(Information["Vehicle"],Initial,"Installed")
+	end
+
+	Focus = false
+	Opened = false
+	SetNuiFocus(Focus,Focus)
+	TriggerEvent("hud:Active",true)
+	TriggerServerEvent("lscustoms:Network")
+	FreezeEntityPosition(Information["Vehicle"],false)
+	Information = {}
+	Initial = {}
+
+	Callback("Ok")
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CLOSE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNUICallback("Close",function(Data,Callback)
+	Apply(Information["Vehicle"],Initial,"Installed")
+
+	Focus = false
+	Opened = false
+	SetNuiFocus(Focus,Focus)
+	TriggerEvent("hud:Active",true)
+	TriggerServerEvent("lscustoms:Network")
+	FreezeEntityPosition(Information["Vehicle"],false)
+	Information = {}
+	Initial = {}
+
+	Callback("Ok")
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SPACE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNUICallback("Space",function(Data,Callback)
+	SetNuiFocusKeepInput(Focus)
+	Focus = not Focus
+
+	Callback("Ok")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADOPEN
@@ -889,64 +719,23 @@ CreateThread(function()
 	while true do
 		local TimeDistance = 999
 		local Ped = PlayerPedId()
-		if not LocalPlayer["state"]["Bennys"] and IsPedInAnyVehicle(Ped) then
-			local Coords = GetEntityCoords(Ped)
+		if not Opened and IsPedInAnyVehicle(Ped) then
 			local Vehicle = GetVehiclePedIsUsing(Ped)
 			if GetPedInVehicleSeat(Vehicle,-1) == Ped then
-				for _,v in pairs(Locations) do
-					if #(Coords - v["Position"]) <= 2.5 then
+				local Coords = GetEntityCoords(Ped)
+
+				for Index,v in pairs(Locations) do
+					if #(Coords - v["Coords"]["xyz"]) <= 2.5 then
 						TimeDistance = 1
 
-						SetDrawOrigin(v["Position"])
+						SetDrawOrigin(v["Coords"]["xyz"])
 						DrawSprite("Targets","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 						ClearDrawOrigin()
 
-						if IsControlJustPressed(1,38) and vSERVER.CheckPermission(v["Permission"]) then
-							SetVehicleModKit(Vehicle,0)
-							FreezeEntityPosition(Vehicle,true)
-							SetVehicleOnGroundProperly(Vehicle)
-							SetEntityCoords(Vehicle,v["Position"])
-							SetEntityHeading(Vehicle,v["Heading"])
-
-							originalMod = nil
-							originalWheel = nil
-							originalCategory = nil
-							originalWheelType = nil
-							originalPlateIndex = nil
-							originalWindowTint = nil
-							originalDashColour = nil
-							originalNeonColourR = nil
-							originalNeonColourG = nil
-							originalNeonColourB = nil
-							originalXenonColour = nil
-							originalWheelColour = nil
-							originalInterColour = nil
-							originalCustomWheels = nil
-							originalPoliceLivery = nil
-							originalPrimaryColour = nil
-							originalWheelCategory = nil
-							originalNeonLightSide = nil
-							originalNeonLightState = nil
-							originalSecondaryColour = nil
-							originalPearlescentColour = nil
-
-							local Name = vRP.VehicleName()
-							local Price = VehiclePrice(Name)
-
-							if Price then
-								Payments["engines"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-								Payments["brakes"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-								Payments["transmission"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-								Payments["suspension"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-								Payments["shield"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-							end
-
-							InitiateMenus()
-							DisableControls()
-							DisplayMenuContainer(true)
-							DisplayMenu(true,"mainMenu")
-							TriggerEvent("hud:Active", false)
-							TriggerServerEvent("lscustoms:inVehicle",VehToNet(Vehicle),GetVehicleNumberPlateText(Vehicle))
+						if IsControlJustPressed(1,38) and vSERVER.Permission(Index) then
+							SetEntityCoords(Vehicle,v["Coords"]["xyz"])
+							SetEntityHeading(Vehicle,v["Coords"]["w"])
+							Open(Vehicle,v["Logo"])
 						end
 					end
 				end
@@ -957,58 +746,20 @@ CreateThread(function()
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ADMINVEHEDIT
+-- LSCUSTOMS:OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("adminvehedit",function()
-	if LocalPlayer["state"]["Admin"] then
-		local Ped = PlayerPedId()
-		if not LocalPlayer["state"]["Bennys"] and IsPedInAnyVehicle(Ped) then
-			local Coords = GetEntityCoords(Ped)
-			local Vehicle = GetVehiclePedIsUsing(Ped)
-			if GetPedInVehicleSeat(Vehicle,-1) == Ped then
-				SetVehicleModKit(Vehicle,0)
-				FreezeEntityPosition(Vehicle,true)
-				SetVehicleOnGroundProperly(Vehicle)
+RegisterNetEvent("lscustoms:Open")
+AddEventHandler("lscustoms:Open",function()
+	local Ped = PlayerPedId()
+	if not Opened and IsPedInAnyVehicle(Ped) then
+		local Coords = GetEntityCoords(Ped)
+		local Heading = GetEntityCoords(Ped)
+		local Vehicle = GetVehiclePedIsUsing(Ped)
 
-				originalMod = nil
-				originalWheel = nil
-				originalCategory = nil
-				originalWheelType = nil
-				originalPlateIndex = nil
-				originalWindowTint = nil
-				originalDashColour = nil
-				originalNeonColourR = nil
-				originalNeonColourG = nil
-				originalNeonColourB = nil
-				originalXenonColour = nil
-				originalWheelColour = nil
-				originalInterColour = nil
-				originalCustomWheels = nil
-				originalPoliceLivery = nil
-				originalPrimaryColour = nil
-				originalWheelCategory = nil
-				originalNeonLightSide = nil
-				originalNeonLightState = nil
-				originalSecondaryColour = nil
-				originalPearlescentColour = nil
-
-				local Name = vRP.VehicleName()
-				local Price = VehiclePrice(Name)
-
-				if Price then
-					Payments["engines"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-					Payments["brakes"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-					Payments["transmission"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-					Payments["suspension"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-					Payments["shield"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-				end
-
-				InitiateMenus()
-				DisableControls()
-				DisplayMenuContainer(true)
-				DisplayMenu(true,"mainMenu")
-				TriggerServerEvent("lscustoms:inVehicle",VehToNet(Vehicle),GetVehicleNumberPlateText(Vehicle))
-			end
+		if GetPedInVehicleSeat(Vehicle,-1) == Ped then
+			SetEntityHeading(Vehicle,Heading)
+			SetEntityCoords(Vehicle,Coords)
+			Open(Vehicle,"lscustoms.png")
 		end
 	end
 end)

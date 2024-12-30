@@ -11,20 +11,21 @@ vRP = Proxy.getInterface("vRP")
 Hensa = {}
 Tunnel.bindInterface("lscustoms",Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VARIABLES
------------------------------------------------------------------------------------------------------------------------------------------
-local inVehicle = {}
------------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKPERMISSIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.CheckPermission(Permission)
+function Hensa.Permission(Index)
 	local source = source
 	local Passport = vRP.Passport(source)
+	local Permission = Locations[Index]["Permission"]
 	if Passport then
+		-- if exports["hud"]:Wanted(Passport,source) then
+			-- return false
+		-- end
+
 		if not Permission then
 			return true
 		else
-			if vRP.HasPermission(Passport, Permission) then
+			if vRP.HasService(Passport,Permission) then
 				return true
 			else
 				TriggerClientEvent("Notify", source, "Atenção", "Você não tem permissões.", "amarelo", 5000)
@@ -35,56 +36,27 @@ function Hensa.CheckPermission(Permission)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- LSCUSTOMS:PURCHASE
+-- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("lscustoms:Purchase")
-AddEventHandler("lscustoms:Purchase",function(Mode,Number)
+function Hensa.Save(Model,Plate,Mods,Price)
 	local source = source
 	local Passport = vRP.Passport(source)
+
 	if Passport then
-		if Mode == "engines" or Mode == "brakes" or Mode == "transmission" or Mode == "suspension" or Mode == "shield" then
-			local Name = vRPC.VehicleName(source)
-			local Price = VehiclePrice(Name)
-
-			if Price then
-				Payments["engines"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-				Payments["brakes"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-				Payments["transmission"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-				Payments["suspension"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-				Payments["shield"] = { 999999, parseInt(Price * 0.05), parseInt(Price * 0.10), parseInt(Price * 0.20), parseInt(Price * 0.30), parseInt(Price * 0.40), parseInt(Price * 0.50) }
-			end
-
-			if vRP.PaymentFull(Passport, Payments[Mode][Number]) then
-				TriggerClientEvent("lscustoms:purchaseSuccessful", source)
-				vRP.UpgradeStress(Passport, math.random(2, 4))
-			else
-				TriggerClientEvent("lscustoms:purchaseFailed", source)
-			end
-		else
-			if vRP.PaymentFull(Passport, Payments[Mode]) then
-				TriggerClientEvent("lscustoms:purchaseSuccessful", source)
-				vRP.UpgradeStress(Passport, math.random(2, 4))
-			else
-				TriggerClientEvent("lscustoms:purchaseFailed", source)
-			end
+		if vRP.PaymentFull(Passport,Price) then
+			vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..Passport..":"..Model, Information = json.encode(Mods) })
+			return true
 		end
 	end
-end)
+	
+	return false
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- LSCUSTOMS:VEHICLE
+-- INVEHICLE
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("lscustoms:Vehicle")
-AddEventHandler("lscustoms:Vehicle",function(Mods,Plate,Name)
-	local Passport = vRP.PassportPlate(Plate)
-	if Passport then
-		vRP.Query("entitydata/SetData",{ Name = "Mods:"..Passport["Passport"]..":"..Name, Information = json.encode(Mods) })
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- LSCUSTOMS:INVEHICLE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("lscustoms:inVehicle")
-AddEventHandler("lscustoms:inVehicle",function(Network,Plate)
+local inVehicle = {}
+RegisterServerEvent("lscustoms:Network")
+AddEventHandler("lscustoms:Network",function(Network,Plate)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
@@ -103,8 +75,7 @@ end)
 AddEventHandler("Disconnect",function(Passport)
 	if inVehicle[Passport] then
 		Wait(1000)
-
-		TriggerEvent("garages:DeleteVehicle",inVehicle[Passport][1],inVehicle[Passport][2])
+		TriggerEvent("garages:deleteVehicle",inVehicle[Passport][1],inVehicle[Passport][2])
 		inVehicle[Passport] = nil
 	end
 end)

@@ -376,7 +376,7 @@ function Hensa.Sell(Name)
 				if Consult[1] then
 					vRP.GiveBank(Passport, Price)
 					vRP.Query("vehicles/removeVehicles",{ Passport = Passport, Vehicle = Name })
-					vRP.Query("entitydata/RemoveData",{ Name = "Mods:"..Passport..":"..Name })
+					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
 					vRP.Query("entitydata/RemoveData",{ Name = "Chest:"..Passport..":"..Name })
 				end
 			end
@@ -419,10 +419,10 @@ function Hensa.Transfer(Name)
 							else
 								vRP.Query("vehicles/moveVehicles", { Passport = Passport, OtherPassport = parseInt(OtherPassport), Vehicle = Name })
 
-								local Datatable = vRP.Query("entitydata/GetData",{ Name = "Mods:"..Passport..":"..Name })
+								local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name })
 								if parseInt(#Datatable) > 0 then
-									vRP.Query("entitydata/SetData",{ Name = "Mods:"..OtherPassport..":"..Name, Information = Datatable[1]["Information"] })
-									vRP.Query("entitydata/RemoveData",{ Name = "Mods:"..Passport..":"..Name })
+									vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..OtherPassport..":"..Name, Information = Datatable[1]["Information"] })
+									vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
 								end
 
 								local Datatable = vRP.GetServerData("Chest:" .. Passport .. ":" .. Name)
@@ -565,10 +565,10 @@ function Hensa.Spawn(Name, Number)
 
 					local Coords = vCLIENT.SpawnPosition(source, Number)
 					if Coords then
-						local Mods = nil
-						local Datatable = vRP.Query("entitydata/GetData",{ Name = "Mods:"..Passport..":"..Name })
+						local LsCustoms = nil
+						local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name })
 						if parseInt(#Datatable) > 0 then
-							Mods = Datatable[1]["Information"]
+							LsCustoms = Datatable[1]["Information"]
 						end
 
 						if Garages[Number]["payment"] then
@@ -580,7 +580,7 @@ function Hensa.Spawn(Name, Number)
 								if Exist then
 									local Networked = NetworkGetEntityFromNetworkId(Network)
 
-									vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], Mods, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
+									vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], LsCustoms, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
 									TriggerClientEvent("Notify", source, "Próximo pagamento", CompleteTimers(vehicle[1]["Tax"] - os.time()), "azul", 5000)
 									Entity(Networked)["state"]:set("Fuel", vehicle[1]["Fuel"], true)
 									TriggerEvent("engine:InsertBrakes", Network, vehicle[1]["Brakes"])
@@ -602,7 +602,7 @@ function Hensa.Spawn(Name, Number)
 									if Exist then
 										local Networked = NetworkGetEntityFromNetworkId(Network)
 
-										vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], Mods, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
+										vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], LsCustoms, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
 										TriggerClientEvent("Notify", source, "Vencimento", CompleteTimers(vehicle[1]["Dismantle"] - os.time()), "azul", 5000)
 										Entity(Networked)["state"]:set("Fuel", vehicle[1]["Fuel"], true)
 										TriggerEvent("engine:InsertBrakes", Network, vehicle[1]["Brakes"])
@@ -627,7 +627,7 @@ function Hensa.Spawn(Name, Number)
 										if Exist then
 											local Networked = NetworkGetEntityFromNetworkId(Network)
 
-											vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], Mods, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
+											vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], LsCustoms, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
 											TriggerClientEvent("Notify", source, "Próximo pagamento", CompleteTimers(vehicle[1]["Tax"] - os.time()), "azul", 5000)
 											Entity(Networked)["state"]:set("Fuel", vehicle[1]["Fuel"], true)
 											TriggerEvent("engine:InsertBrakes", Network, vehicle[1]["Brakes"])
@@ -649,7 +649,7 @@ function Hensa.Spawn(Name, Number)
 												if Exist then
 													local Networked = NetworkGetEntityFromNetworkId(Network)
 
-													vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], Mods, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
+													vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], LsCustoms, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
 													TriggerClientEvent("Notify", source, "Próximo pagamento", CompleteTimers(vehicle[1]["Tax"] - os.time()), "azul", 5000)
 													Entity(Networked)["state"]:set("Fuel", vehicle[1]["Fuel"], true)
 													TriggerEvent("engine:InsertBrakes", Network, vehicle[1]["Brakes"])
@@ -676,7 +676,7 @@ function Hensa.Spawn(Name, Number)
 							if Exist then
 								local Networked = NetworkGetEntityFromNetworkId(Network)
 
-								vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], Mods, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
+								vCLIENT.CreateVehicle(-1, Name, Network, vehicle[1]["Engine"], vehicle[1]["Health"], LsCustoms, vehicle[1]["Windows"], vehicle[1]["Tyres"], vehicle[1]["Brakes"], false)
 								TriggerClientEvent("Notify", source, "Próximo pagamento", CompleteTimers(vehicle[1]["Tax"] - os.time()), "azul", 5000)
 								Entity(Networked)["state"]:set("Fuel", vehicle[1]["Fuel"], true)
 								TriggerEvent("engine:InsertBrakes", Network, vehicle[1]["Brakes"])
@@ -1012,13 +1012,13 @@ exports("VehSpawned", Spawned)
 -- SPAWNVEH
 -----------------------------------------------------------------------------------------------------------------------------------------
 function SpawnVeh(data, network)
-	local Mods = nil
-	local Datatable = vRP.Query("entitydata/GetData",{ Name = "Mods:"..data["passport"]..":"..data["model"] })
+	local LsCustoms = nil
+	local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..data["passport"]..":"..data["model"] })
 	if parseInt(#Datatable) > 0 then
-		Mods = Datatable[1]["Information"]
+		LsCustoms = Datatable[1]["Information"]
 	end
 
-	vCLIENT.CreateVehicle(-1, data["model"], network, data["engine"], data["health"], Mods, data["windows"], data["tyres"], data["brakes"], false)
+	vCLIENT.CreateVehicle(-1, data["model"], network, data["engine"], data["health"], LsCustoms, data["windows"], data["tyres"], data["brakes"], false)
 	TriggerEvent("engine:tryFuel", data["plate"], data["fuel"])
 	TriggerEvent("engine:insertBrakes", network, data["brakes"])
 	Spawn[data["plate"]] = { data["passport"], data["model"], network }

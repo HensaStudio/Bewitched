@@ -25,88 +25,8 @@ local Dict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@"
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VEHICLEMODS
 -----------------------------------------------------------------------------------------------------------------------------------------
-function VehicleMods(Vehicle, Customize)
-	if Customize then
-		SetVehicleModKit(Vehicle, 0)
-
-		if Customize["wheeltype"] ~= nil then
-			SetVehicleWheelType(Vehicle, Customize["wheeltype"])
-		end
-
-		if Customize["mods"] then
-			for i = 0, 16 do
-				if Customize["mods"][tostring(i)] ~= nil then
-					SetVehicleMod(Vehicle, i, Customize["mods"][tostring(i)])
-				end
-			end
-
-			for i = 17, 22 do
-				if Customize["mods"][tostring(i)] ~= nil then
-					ToggleVehicleMod(Vehicle, i, Customize["mods"][tostring(i)])
-				end
-			end
-
-			for i = 23, 24 do
-				if Customize["mods"][tostring(i)] ~= nil then
-					if not Customize["var"] then
-						Customize["var"] = {}
-						Customize["var"][tostring(i)] = 0
-					end
-
-					SetVehicleMod(Vehicle, i, Customize["mods"][tostring(i)], Customize["var"][tostring(i)])
-				end
-			end
-
-			for i = 25, 48 do
-				if Customize["mods"][tostring(i)] ~= nil then
-					SetVehicleMod(Vehicle, i, Customize["mods"][tostring(i)])
-				end
-			end
-		end
-
-		if Customize["neon"] ~= nil then
-			for i = 0, 3 do
-				SetVehicleNeonLightEnabled(Vehicle, i, Customize["neon"][tostring(i)])
-			end
-		end
-
-		if Customize["extras"] ~= nil then
-			for i = 1, 12 do
-				local onoff = tonumber(Customize["extras"][i])
-				if onoff == 1 then
-					SetVehicleExtra(Vehicle, i, 0)
-				else
-					SetVehicleExtra(Vehicle, i, 1)
-				end
-			end
-		end
-
-		if Customize["liverys"] ~= nil and Customize["liverys"] ~= 24 then
-			SetVehicleLivery(Vehicle, Customize["liverys"])
-		end
-
-		if Customize["plateIndex"] ~= nil and Customize["plateIndex"] ~= 4 then
-			SetVehicleNumberPlateTextIndex(Vehicle, Customize["plateIndex"])
-		end
-
-		SetVehicleXenonLightsColour(Vehicle, Customize["xenonColor"])
-		SetVehicleColours(Vehicle, Customize["colors"][1], Customize["colors"][2])
-		SetVehicleExtraColours(Vehicle, Customize["extracolors"][1], Customize["extracolors"][2])
-		SetVehicleNeonLightsColour(Vehicle, Customize["lights"][1], Customize["lights"][2], Customize["lights"][3])
-		SetVehicleTyreSmokeColor(Vehicle, Customize["smokecolor"][1], Customize["smokecolor"][2], Customize["smokecolor"][3])
-
-		if Customize["tint"] ~= nil then
-			SetVehicleWindowTint(Vehicle, Customize["tint"])
-		end
-
-		if Customize["dashColour"] ~= nil then
-			SetVehicleInteriorColour(Vehicle, Customize["dashColour"])
-		end
-
-		if Customize["interColour"] ~= nil then
-			SetVehicleDashboardColour(Vehicle, Customize["interColour"])
-		end
-	end
+function VehicleMods(Vehicle,Customize)
+	TriggerEvent("lscustoms:Apply",Vehicle,Customize)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SPAWNPOSITION
@@ -170,7 +90,6 @@ function Hensa.CreateVehicle(Model, Network, Engine, Health, Customize, Windows,
 	if NetworkDoesNetworkIdExist(Network) then
 		local Vehicle = NetToEnt(Network)
 		if DoesEntityExist(Vehicle) then
-			-- TriggerEvent("lscustoms:Apply",Vehicle,json.decode(Customize))
 
 			if Customize ~= nil then
 				local Mods = json.decode(Customize)

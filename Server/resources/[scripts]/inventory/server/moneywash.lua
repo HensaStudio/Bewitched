@@ -36,25 +36,28 @@ local Itens = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WASHERS
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Washers(Model,Plate,Value)
+function Hensa.Washers(Value)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and vRP.TakeItem(Passport,"wetdollar",Value) then
-		exports["vrp"]:CallPolice({
-			["Source"] = source,
-			["Passport"] = Passport,
-			["Permission"] = "Policia",
-			["Name"] = "Lavagem de Dinheiro",
-			["Percentage"] = Itens["promissory"..Value]["Police"],
-			["Vehicle"] = VehicleName(Model).." - "..Plate,
-			["Wanted"] = 60,
-			["Code"] = 31,
-			["Color"] = 22
-		})
+	if Passport then
+		if vRP.TakeItem(Passport,"wetdollar",Value) then
+			exports["vrp"]:CallPolice({
+				["Source"] = source,
+				["Passport"] = Passport,
+				["Permission"] = "Policia",
+				["Name"] = "Lavagem de Dinheiro",
+				["Percentage"] = Itens["promissory"..Value]["Police"],
+				["Wanted"] = 60,
+				["Code"] = 31,
+				["Color"] = 22
+			})
 
-		vRP.GenerateItem(Passport,"promissory"..Value,1,true)
+			vRP.GenerateItem(Passport,"promissory"..Value,1,true)
 
-		return true
+			return true
+		else
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa de "..Value.."x "..ItemName(DefaultMoneyThree)..".","amarelo",5000)
+		end
 	end
 
 	return false

@@ -226,9 +226,8 @@ AddEventHandler("trunkchest:OpenTrunk",function(Entity)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		local PassportPlate = vRP.PassportPlate(Entity[1])
-
 		if PassportPlate then
-			local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = PassportPlate["Passport"], Vehicle = Entity[2] })
+			local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = PassportPlate, Vehicle = Entity[2] })
 			if Consult[1]["Weight"] > 0 then
 
 				Vehicle[Passport] = {
@@ -236,8 +235,8 @@ AddEventHandler("trunkchest:OpenTrunk",function(Entity)
 					["Plate"] = Entity[1],
 					["Model"] = Entity[2],
 					["Weight"] = Consult[1]["Weight"],
-					["User"] = PassportPlate["Passport"],
-					["Data"] = "Trunkchest:"..PassportPlate["Passport"]..":"..Entity[2]
+					["User"] = PassportPlate,
+					["Data"] = "Trunkchest:"..PassportPlate..":"..Entity[2]
 				}
 
 				TriggerClientEvent("trunkchest:Open",source)

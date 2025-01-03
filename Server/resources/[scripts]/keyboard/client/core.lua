@@ -312,7 +312,7 @@ function Quaternary(First,Second,Third,Fourth)
 				value = ""
 			},{
 				id = 2,
-				mode = "text",
+				mode = "area",
 				placeholder = Second,
 				value = ""
 			},{
@@ -322,7 +322,7 @@ function Quaternary(First,Second,Third,Fourth)
 				value = ""
 			},{
 				id = 4,
-				mode = "area",
+				mode = "text",
 				placeholder = Fourth,
 				value = ""
 			}

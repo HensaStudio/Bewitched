@@ -234,8 +234,8 @@ local List = {
 		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
 	},{ -- MoneyWash
 		["Distance"] = 50,
-		["Coords"] = vec4(68.93,-1569.81,29.59,48.19),
-		["Model"] = "a_m_m_soucent_03",
+		["Coords"] = vec4(457.09,-916.82,26.4,280.63),
+		["Model"] = "ig_money",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Taxi
 		["Distance"] = 50,

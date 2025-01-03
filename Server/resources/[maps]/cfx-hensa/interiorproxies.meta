@@ -256,5 +256,8 @@
 		<Item>hei_id2_rd</Item>
 		<Item>hei_id2_rd_long_0</Item>
 		<Item>hei_id2_rd_strm_4</Item>
+		<Item>mxc_m24_1_bounty_delperro_ymap</Item>
+		<Item>mxc_m24_1_bounty_downtown_ymap</Item>
+		<Item>mxc_m24_1_bounty_harmony_ymap</Item>
 	</proxies>
 </SInteriorOrderData>

@@ -188,6 +188,8 @@ RegisterCommand("EmergencyFunctions",function()
 		local Health = GetEntityHealth(Ped)
 
 		if CheckPolice() then
+			exports["dynamic"]:AddButton("Computador", "Abrir painel da Polícia.", "police:Open", "", false, false)
+
 			exports["dynamic"]:AddButton("Placa", "Verificar emplacamento.", "police:Plate", "", false, true)
 
 			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Policia", false, true)

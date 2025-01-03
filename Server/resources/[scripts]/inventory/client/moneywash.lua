@@ -5,7 +5,7 @@ local Config = {
 	["Sends"] = {},
 	["Active"] = false,
 	["Cooldown"] = GetGameTimer(),
-	["Init"] = vec4(68.93,-1569.81,29.59,48.19),
+	["Init"] = vec4(457.09,-916.82,26.4,280.63),
 	["Washs"] = {
 		vec3(149.83,-1041.33,29.59),
 		vec3(314.17,-279.7,54.39),

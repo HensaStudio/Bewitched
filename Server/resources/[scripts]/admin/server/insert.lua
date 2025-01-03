@@ -581,9 +581,9 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "announce" then
 			if vRP.HasGroup(Passport,"Admin") then
-				local Keyboard = vKEYBOARD.Quaternary(source,"Tema:","Segundos:","Título:","Anúncio:")
+				local Keyboard = vKEYBOARD.Quaternary(source,"Tema:","Anúncio:","Título:","Segundos:")
 				if Keyboard then
-					TriggerClientEvent("Notify",-1,Keyboard[1],Keyboard[2] * 1000,Keyboard[3],Keyboard[4])
+					TriggerClientEvent("Notify", -1, Keyboard[3], Keyboard[2], Keyboard[1], Keyboard[4] * 1000)
 					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** announce "..Keyboard[1].." "..Keyboard[2].." "..Keyboard[3].." "..Keyboard[4] * 1000,0xa3c846)
 				end
 			else

@@ -11,17 +11,17 @@ vRP = Proxy.getInterface("vRP")
 Hensa = {}
 Tunnel.bindInterface("lscustoms",Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- CHECKPERMISSIONS
+-- VARIABLES
+-----------------------------------------------------------------------------------------------------------------------------------------
+local InVehicle = {}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PERMISSION
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Permission(Index)
 	local source = source
 	local Passport = vRP.Passport(source)
 	local Permission = Locations[Index]["Permission"]
 	if Passport then
-		-- if exports["hud"]:Wanted(Passport,source) then
-			-- return false
-		-- end
-
 		if not Permission then
 			return true
 		else
@@ -36,36 +36,35 @@ function Hensa.Permission(Index)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VARIABLES
+-- SAVE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Save(Model,Plate,Mods,Price)
 	local source = source
 	local Passport = vRP.Passport(source)
-
 	if Passport then
 		if vRP.PaymentFull(Passport,Price) then
 			vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..Passport..":"..Model, Information = json.encode(Mods) })
+			vRP.UpgradeStress(Passport,math.random(5))
 			return true
 		end
 	end
-	
+
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- INVEHICLE
+-- LSCUSTOMS:NETWORK
 -----------------------------------------------------------------------------------------------------------------------------------------
-local inVehicle = {}
 RegisterServerEvent("lscustoms:Network")
 AddEventHandler("lscustoms:Network",function(Network,Plate)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if not Network then
-			if inVehicle[Passport] then
-				inVehicle[Passport] = nil
+			if InVehicle[Passport] then
+				InVehicle[Passport] = nil
 			end
 		else
-			inVehicle[Passport] = { Network,Plate }
+			InVehicle[Passport] = { Network,Plate }
 		end
 	end
 end)
@@ -73,9 +72,10 @@ end)
 -- DISCONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Disconnect",function(Passport)
-	if inVehicle[Passport] then
-		Wait(1000)
-		TriggerEvent("garages:deleteVehicle",inVehicle[Passport][1],inVehicle[Passport][2])
-		inVehicle[Passport] = nil
+	if InVehicle[Passport] then
+		SetTimeout(1000,function()
+			TriggerEvent("garages:deleteVehicle",InVehicle[Passport][1],InVehicle[Passport][2])
+			InVehicle[Passport] = nil
+		end)
 	end
 end)

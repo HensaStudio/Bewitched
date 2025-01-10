@@ -148,7 +148,7 @@ function Respray(Vehicle)
 			Initial["Respray"][Mode] = {
 				["Installed"] = (Mode == "PearlescentColour" and PearlescentColor) or (Mode == "WheelColour" and WheelColor) or (Mode == "DashboardColour" and DashboardColor) or (Mode == "InteriorColour" and InteriorColor),
 				["Selected"] = (Mode == "PearlescentColour" and PearlescentColor) or (Mode == "WheelColour" and WheelColor) or (Mode == "DashboardColour" and DashboardColor) or (Mode == "InteriorColour" and InteriorColor),
-				["Price"] = Values[Mod]
+				["Price"] = Values[Mode]
 			}
 		end
 	end

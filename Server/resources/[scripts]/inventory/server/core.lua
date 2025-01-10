@@ -435,39 +435,43 @@ function Hensa.Mount()
 		local Primary = {}
 		local Inv = vRP.Inventory(Passport)
 		for Index,v in pairs(Inv) do
-			v["name"] = ItemName(v["item"])
-			v["weight"] = ItemWeight(v["item"])
-			v["index"] = ItemIndex(v["item"])
-			v["amount"] = parseInt(v["amount"])
-			v["rarity"] = ItemRarity(v["item"])
-			v["economy"] = ItemEconomy(v["item"])
-			v["desc"] = ItemDescription(v["item"])
-			v["key"] = v["item"]
-			v["slot"] = Index
+			if (v["amount"] <= 0 or not ItemExist(v["item"])) then
+				vRP.RemoveItem(Passport,v["item"],v["amount"],false)
+			else
+				v["name"] = ItemName(v["item"])
+				v["weight"] = ItemWeight(v["item"])
+				v["index"] = ItemIndex(v["item"])
+				v["amount"] = parseInt(v["amount"])
+				v["rarity"] = ItemRarity(v["item"])
+				v["economy"] = ItemEconomy(v["item"])
+				v["desc"] = ItemDescription(v["item"])
+				v["key"] = v["item"]
+				v["slot"] = Index
 
-			local Split = splitString(v["item"])
+				local Split = splitString(v["item"])
 
-			if not v["desc"] then
-				if Split[1] == "vehkey" and Split[2] then
-					v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
-				elseif ItemNamed(Split[1]) and Split[2] then
-					v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+				if not v["desc"] then
+					if Split[1] == "vehkey" and Split[2] then
+						v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
+					elseif ItemNamed(Split[1]) and Split[2] then
+						v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					end
 				end
+
+				if Split[2] then
+					local Loaded = ItemLoads(v["item"])
+					if Loaded then
+						v["charges"] = parseInt(Split[2] * (100 / Loaded))
+					end
+
+					if ItemDurability(v["item"]) then
+						v["durability"] = parseInt(os.time() - Split[2])
+						v["days"] = ItemDurability(v["item"])
+					end
+				end
+
+				Primary[Index] = v
 			end
-
-			if Split[2] then
-				local Loaded = ItemLoads(v["item"])
-				if Loaded then
-					v["charges"] = parseInt(Split[2] * (100 / Loaded))
-				end
-
-				if ItemDurability(v["item"]) then
-					v["durability"] = parseInt(os.time() - Split[2])
-					v["days"] = ItemDurability(v["item"])
-				end
-			end
-
-			Primary[Index] = v
 		end
 
 		return Primary,vRP.GetWeight(Passport)
@@ -480,43 +484,46 @@ function Hensa.Blueprint()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and Users["Blueprints"][Passport] then
-	print("bluepr")
 		local Primary = {}
 		local Inv = vRP.Inventory(Passport)
 		for Index,v in pairs(Inv) do
-			v["name"] = ItemName(v["item"])
-			v["weight"] = ItemWeight(v["item"])
-			v["index"] = ItemIndex(v["item"])
-			v["amount"] = parseInt(v["amount"])
-			v["rarity"] = ItemRarity(v["item"])
-			v["economy"] = ItemEconomy(v["item"])
-			v["desc"] = ItemDescription(v["item"])
-			v["key"] = v["item"]
-			v["slot"] = Index
+			if (v["amount"] <= 0 or not ItemExist(v["item"])) then
+				vRP.RemoveItem(Passport,v["item"],v["amount"],false)
+			else
+				v["name"] = ItemName(v["item"])
+				v["weight"] = ItemWeight(v["item"])
+				v["index"] = ItemIndex(v["item"])
+				v["amount"] = parseInt(v["amount"])
+				v["rarity"] = ItemRarity(v["item"])
+				v["economy"] = ItemEconomy(v["item"])
+				v["desc"] = ItemDescription(v["item"])
+				v["key"] = v["item"]
+				v["slot"] = Index
 
-			local Split = splitString(v["item"])
+				local Split = splitString(v["item"])
 
-			if not v["desc"] then
-				if Split[1] == "vehkey" and Split[2] then
-					v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
-				elseif ItemNamed(Split[1]) and Split[2] then
-					v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+				if not v["desc"] then
+					if Split[1] == "vehkey" and Split[2] then
+						v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
+					elseif ItemNamed(Split[1]) and Split[2] then
+						v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					end
 				end
+
+				if Split[2] then
+					local Loaded = ItemLoads(v["item"])
+					if Loaded then
+						v["charges"] = parseInt(Split[2] * (100 / Loaded))
+					end
+
+					if ItemDurability(v["item"]) then
+						v["durability"] = parseInt(os.time() - Split[2])
+						v["days"] = ItemDurability(v["item"])
+					end
+				end
+
+				Primary[Index] = v
 			end
-
-			if Split[2] then
-				local Loaded = ItemLoads(v["item"])
-				if Loaded then
-					v["charges"] = parseInt(Split[2] * (100 / Loaded))
-				end
-
-				if ItemDurability(v["item"]) then
-					v["durability"] = parseInt(os.time() - Split[2])
-					v["days"] = ItemDurability(v["item"])
-				end
-			end
-
-			Primary[Index] = v
 		end
 
 		local Secondary = {}
@@ -578,7 +585,7 @@ function Hensa.Send(Slot,Amount)
 
 						if vRP.TakeItem(Passport,Item,Amount,true,Slot) then
 							vRP.GiveItem(OtherPassport,Item,Amount,true)
-							TriggerClientEvent("inventory:Update",source,"Backpack")
+							TriggerClientEvent("inventory:Update",source)
 							TriggerClientEvent("inventory:Update",ClosestPed,"Backpack")
 						end
 					end
@@ -706,7 +713,7 @@ function Hensa.Deliver(Work)
 				return false
 			end
 
-			local TransporterItem = "milkbottle"
+			local TransporterItem = "pouch"
 			local TransporterItemAmount = 1
 			if vRP.TakeItem(Passport,TransporterItem,TransporterItemAmount,false,Slot) then
 				local GainExperience = TransporterItemAmount
@@ -761,6 +768,8 @@ function Hensa.Use(Slot,Amount)
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] then
+		if Amount <= 0 then Amount = 1 end
+
 		local Inv = vRP.Inventory(Passport)
 		if not Inv[Slot] or not Inv[Slot]["item"] then
 			return
@@ -849,7 +858,7 @@ function Hensa.Use(Slot,Amount)
 					Users["Ammos"][Passport][Item] = AmmoClip + Amount
 
 					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),Amount,ItemName(Full) })
-					TriggerClientEvent("inventory:Update",source,"Backpack")
+					TriggerClientEvent("inventory:Update",source)
 					vCLIENT.Reloading(source,Weapon,Amount)
 				end
 			end
@@ -896,7 +905,7 @@ function Hensa.Use(Slot,Amount)
 					if not Users["Attachs"][Passport][Weapon][Item] then
 						if vRP.TakeItem(Passport,Full,1,false,Slot) then
 							TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full) })
-							TriggerClientEvent("inventory:Update",source,"Backpack")
+							TriggerClientEvent("inventory:Update",source)
 							Users["Attachs"][Passport][Weapon][Item] = true
 							vCLIENT.GiveComponent(source,Component)
 						end
@@ -923,18 +932,27 @@ AddEventHandler("inventory:Cancel",function()
 		if Active[Passport] then
 			Active[Passport] = nil
 			vGARAGE.UpdateHotwired(source,false)
-			Player(source)["state"]["Buttons"] = false
 			TriggerClientEvent("Progress",source,"Cancelando",1000)
+		end
+
+		if Player(source)["state"]["Buttons"] then
+			Player(source)["state"]["Buttons"] = false
 		end
 
 		if Carry[Passport] then
 			if vRP.Passport(Carry[Passport]) then
 				TriggerClientEvent("inventory:Carry",Carry[Passport],nil,"Detach")
-				Player(Carry[Passport])["state"]["Carry"] = false
 				vRPC.Destroy(Carry[Passport])
+
+				if Player(Carry[Passport])["state"]["Carry"] then
+					Player(Carry[Passport])["state"]["Carry"] = false
+				end
 			end
 
-			Player(source)["state"]["Carry"] = false
+			if Player(source)["state"]["Carry"] then
+				Player(source)["state"]["Carry"] = false
+			end
+
 			Carry[Passport] = nil
 		end
 
@@ -979,7 +997,7 @@ function Hensa.VerifyWeapon(Item,Ammo)
 		end
 
 		TriggerClientEvent("inventory:RemoveWeapon",source,Item)
-		TriggerClientEvent("inventory:Update",source,"Backpack")
+		TriggerClientEvent("inventory:Update",source)
 
 		return false
 	end
@@ -1024,7 +1042,13 @@ function Hensa.PreventWeapons(Item,Ammo)
 				Users["Ammos"][Passport][Ammunation] = nil
 			end
 		end
+
+		if ItemTypeCheck(Item,"Armamento") and vRP.ConsultItem(Passport,Item) then
+			return true
+		end
 	end
+
+	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:TRASHER
@@ -1280,7 +1304,7 @@ AddEventHandler("inventory:StealTrunk",function(Entity)
 				vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 				Active[Passport] = os.time() + 100
 
-				if vRP.Task(source,5,7500) then
+				if vRP.Task(source,5,5000) then
 					Active[Passport] = os.time() + 20
 					Player(source)["state"]["Buttons"] = true
 					TriggerClientEvent("Progress",source,"Vasculhando",20000)
@@ -1405,7 +1429,7 @@ AddEventHandler("inventory:Products",function(Service)
 			return false
 		end
 
-		if Products[Service]["Police"] and not vRP.Task(source,3,7500) then
+		if Products[Service]["Police"] and not vRP.Task(source,5,5000) then
 			exports["vrp"]:CallPolice({
 				["Source"] = source,
 				["Passport"] = Passport,
@@ -1478,7 +1502,7 @@ AddEventHandler("inventory:RemoveTyres",function(Entity)
 					Player(source)["state"]["Buttons"] = true
 					vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
-					if vRP.Task(source,3,5000) then
+					if vRP.Task(source,5,5000) then
 						Active[Passport] = os.time() + 10
 						TriggerClientEvent("Progress",source,"Removendo",10000)
 
@@ -1712,6 +1736,10 @@ AddEventHandler("SaveServer",function(Silenced)
 	end
 
 	vRP.Query("entitydata/SetData",{ Name = "SaveObjects", Information = json.encode(SaveObjects) })
+
+	if not Silenced then
+		print("O resource ^2Inventory^7 salvou os dados.")
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT
@@ -1756,8 +1784,11 @@ AddEventHandler("Disconnect",function(Passport)
 	if Carry[Passport] then
 		if vRP.Passport(Carry[Passport]) then
 			TriggerClientEvent("inventory:Carry",Carry[Passport],nil,"Detach")
-			Player(Carry[Passport])["state"]["Carry"] = false
 			vRPC.Destroy(Carry[Passport])
+
+			if Player(Carry[Passport])["state"]["Carry"] then
+				Player(Carry[Passport])["state"]["Carry"] = false
+			end
 		end
 
 		Carry[Passport] = nil

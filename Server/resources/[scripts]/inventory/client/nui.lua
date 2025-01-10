@@ -225,7 +225,6 @@ end)
 -- BLUEPRINT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Blueprint",function(Data,Callback)
-print("blueprint 1")
 	local Primary,PrimaryMaxWeight,Secondary = vSERVER.Blueprint()
 	if Primary then
 		TriggerEvent("inventory:Open",{

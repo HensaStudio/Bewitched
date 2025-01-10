@@ -831,7 +831,6 @@ function TargetEnable()
 				Selected = { source }
 
 				Menu[#Menu + 1] = { event = "inspect:Player", label = "Revistar", tunnel = "paramedic" }
-				Menu[#Menu + 1] = { event = "paramedic:Diagnostic", label = "Informações", tunnel = "paramedic" }
 
 				if GetEntityHealth(Entitys) <= 100 then
 					if Player(source)["state"]["Crawl"] then
@@ -849,6 +848,7 @@ function TargetEnable()
 					end
 
 					if LocalPlayer["state"]["Paramedico"] then
+						Menu[#Menu + 1] = { event = "paramedic:Diagnostic", label = "Informações", tunnel = "paramedic" }
 						Menu[#Menu + 1] = { event = "paramedic:Treatment", label = "Tratamento", tunnel = "paramedic" }
 						Menu[#Menu + 1] = { event = "paramedic:presetBurn", label = "Roupa de Queimadura", tunnel = "paramedic" }
 						Menu[#Menu + 1] = { event = "paramedic:presetPlaster", label = "Colocar Gesso", tunnel = "paramedic" }

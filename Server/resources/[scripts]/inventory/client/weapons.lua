@@ -2,19 +2,11 @@
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 Weapon = ""
-local Cor = nil
 local Skins = {}
 local Objects = {}
 TakeWeapon = false
 StoreWeapon = false
 local Reloaded = GetGameTimer()
------------------------------------------------------------------------------------------------------------------------------------------
--- INVENTORY:SKINS
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("inventory:Skins")
-AddEventHandler("inventory:Skins",function(Table)
-	Skins = Table
-end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -340,11 +332,25 @@ RegisterNetEvent("inventory:verifyWeapon")
 AddEventHandler("inventory:verifyWeapon",function(Item)
 	local Name = SplitOne(Item)
 
-	if Weapon == Name then
+	if Weapon ~= "" then
 		local Ped = PlayerPedId()
-		local Ammo = GetAmmoInPedWeapon(Ped,Weapon)
-		if not vSERVER.VerifyWeapon(Weapon,Ammo) then
-			TriggerEvent("inventory:CleanWeapons")
+		local TypeAmmo01 = WeaponAmmo(Item)
+		local TypeAmmo02 = WeaponAmmo(Weapon)
+
+		if TypeAmmo01 and TypeAmmo02 then
+			if TypeAmmo01 ~= TypeAmmo02 then
+				local Ammo = GetAmmoInPedWeapon(Ped,Name)
+				if not vSERVER.VerifyWeapon(Name,Ammo) then
+					TriggerEvent("inventory:CleanWeapons")
+				end
+			elseif Weapon == Name then
+				local Ammo = GetAmmoInPedWeapon(Ped,Weapon)
+				if not vSERVER.VerifyWeapon(Weapon,Ammo) then
+					TriggerEvent("inventory:CleanWeapons")
+				end
+			else
+				TriggerEvent("inventory:RemoveWeapon",Item)
+			end
 		end
 	else
 		vSERVER.VerifyWeapon(Name)
@@ -364,7 +370,6 @@ AddEventHandler("inventory:CleanWeapons",function()
 
 		TriggerEvent("hud:Weapon",false)
 		RemoveAllPedWeapons(Ped,true)
-		TriggerEvent("Weapon","")
 
 		Actived = false
 		Weapon = ""
@@ -377,15 +382,6 @@ end)
 function Hensa.ReturnWeapon()
 	return Weapon ~= "" and Weapon or false
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- FPS
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("cor",function(source,Message)
-	if Message[1] and parseInt(Message[1]) >= 0 and Weapon ~= "" and (LocalPlayer["state"]["Premium"]) then
-		SetPedWeaponTintIndex(PlayerPedId(),GetHashKey(Weapon),parseInt(Message[1]))
-		Cor = parseInt(Message[1])
-	end
-end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKWEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -401,7 +397,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TAKEWEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin,Premium)
+function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 	if not TakeWeapon then
 		if not Ammo then
 			Ammo = 0
@@ -425,20 +421,6 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin,Premium)
 			TriggerEvent("inventory:RemoveWeapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
 
-			if Skin then
-				GiveWeaponComponentToPed(Ped,Weapon,Skin)
-			elseif Cor then
-				SetPedWeaponTintIndex(Ped,Weapon,Cor)
-			end
-
-			if Premium then
-				for Item,Comp in pairs(WeaponAttachs(Weapon)) do
-					if Item ~= "ATTACH_SILENCER" then
-						GiveWeaponComponentToPed(Ped,Weapon,Comp)
-					end
-				end
-			end
-
 			if Components then
 				for Item,_ in pairs(Components) do
 					local Comp = WeaponAttach(Item,Weapon)
@@ -454,12 +436,6 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin,Premium)
 			TriggerEvent("Weapon",Weapon)
 			TriggerEvent("inventory:RemoveWeapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
-
-			if Skin then
-				GiveWeaponComponentToPed(Ped,Weapon,Skin)
-			elseif Cor then
-				SetPedWeaponTintIndex(Ped,Weapon,Cor)
-			end
 
 			if Components then
 				for Item,_ in pairs(Components) do

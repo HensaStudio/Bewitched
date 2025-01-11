@@ -138,14 +138,14 @@ Use = {
 	["newchars"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vRP.TakeItem(Passport,Full,1,false,Slot) then
 			vRP.UpgradeCharacters(source)
-			TriggerClientEvent("inventory:Update",source,"Backpack")
+			TriggerClientEvent("inventory:Update",source)
 			TriggerClientEvent("Notify",source,"Sucesso","Personagem liberado.","verde",5000)
 		end
 	end,
 
 	["gemstone"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vRP.TakeItem(Passport,Full,Amount,false,Slot) then
-			TriggerClientEvent("inventory:Update",source,"Backpack")
+			TriggerClientEvent("inventory:Update",source)
 			vRP.UpgradeGemstone(Passport,Amount,false)
 		end
 	end,
@@ -157,7 +157,7 @@ Use = {
 		if Keyboard then
 			if vRP.TakeItem(Passport,Full,1,true,Slot) then
 				TriggerClientEvent("Notify",source,"Sucesso","Passaporte atualizado.","verde",5000)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 				vRP.UpgradeNames(Passport,Keyboard[1],Keyboard[2])
 			end
 		end
@@ -793,12 +793,13 @@ Use = {
 				Player(source)["state"]["Buttons"] = true
 				TriggerClientEvent("inventory:Close",source)
 
+				local NotifyTitle = "Roubo de Veículo"
 				local Networked = NetworkGetEntityFromNetworkId(Network)
 
 				if vRPC.InsideVehicle(source) then
 					vGARAGE.StartHotwired(source)
 
-					if vRP.Task(source,10,10000) then
+					if vRP.Task(source,10,5000) then
 						vGARAGE.RegisterDecors(source,Vehicle)
 						TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
@@ -806,7 +807,7 @@ Use = {
 							["Source"] = source,
 							["Passport"] = Passport,
 							["Permission"] = "Policia",
-							["Name"] = "Roubo de Veículo",
+							["Name"] = NotifyTitle,
 							["Percentage"] = 250,
 							["Wanted"] = 300,
 							["Code"] = 31,
@@ -836,11 +837,21 @@ Use = {
 						TriggerClientEvent("Progress",source,"Destravando",15000)
 						TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
+						if Dismantle[Plate] then
+							NotifyTitle = "Desmanche"
+							TriggerClientEvent("dismantle:Dispatch",source)
+						end
+
+						if Boosting[Plate] then
+							NotifyTitle = "Boosting"
+							TriggerClientEvent("boosting:Dispatch",source)
+						end
+
 						exports["vrp"]:CallPolice({
 							["Source"] = source,
 							["Passport"] = Passport,
 							["Permission"] = "Policia",
-							["Name"] = "Roubo de Veículo",
+							["Name"] = NotifyTitle,
 							["Percentage"] = 250,
 							["Wanted"] = 300,
 							["Code"] = 31,
@@ -848,21 +859,9 @@ Use = {
 							["Vehicle"] = VehicleName(Model).." - "..Plate
 						})
 
-						if Dismantle[Plate] then
-							TriggerClientEvent("dismantle:Dispatch",source)
-						end
-
-						if Boosting[Plate] then
-							TriggerClientEvent("boosting:Dispatch",source)
-						end
-
 						repeat
 							if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
 								Active[Passport] = nil
-
-								if Dismantle[Plate] then
-									TriggerClientEvent("target:Dismantle",source,Model)
-								end
 
 								if DoesEntityExist(Networked) then
 									if not vRP.PassportPlate(Plate) then
@@ -1395,41 +1394,29 @@ Use = {
 	end,
 
 	["fishingrod"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		if vCLIENT.Fishing(source) then
+		if vCLIENT.Fishing(source,"fishingrod") then
 			Active[Passport] = os.time() + 100
 			Player(source)["state"]["Buttons"] = true
 			TriggerClientEvent("inventory:Close",source)
 
 			if not vRPC.PlayingAnim(source,"amb@world_human_stand_fishing@idle_a","idle_c") then
-				vRPC.AnimActive(source)
 				vRPC.CreateObjects(source,"amb@world_human_stand_fishing@idle_a","idle_c","prop_fishing_rod_01",49,60309)
 			end
 
-			if vRP.TakeItem(Passport,"worm",1) then
-				if vRP.Task(source,6,75000) then
-					local Result = RandPercentage({
-						{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "anchovy", ["Chance"] = 75, ["Amount"] = 1 },
-						{ ["Item"] = "catfish", ["Chance"] = 75, ["Amount"] = 1 },
-						{ ["Item"] = "herring", ["Chance"] = 50, ["Amount"] = 1 },
-						{ ["Item"] = "yellowperch", ["Chance"] = 50, ["Amount"] = 1 },
-						{ ["Item"] = "salmon", ["Chance"] = 25, ["Amount"] = 1 }
-					})
+			if vRP.Task(source,10,25000) and vRP.TakeItem(Passport,"worm") then
+				local Result = RandPercentage({
+					{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 }
+				})
 
-					vRP.UpgradeStress(Passport,1)
-
-					if vRP.CheckWeight(Passport,Result["Item"],1) then
-						vRP.PutExperience(Passport,"Fisherman",1)
-						vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
-					else
-						TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
-						exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
-					end
+				vRP.PutExperience(Passport,"Fisherman",1)
+				if vRP.CheckWeight(Passport,Result["Item"]) then
+					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
+				else
+					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
+					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
-			else
-				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName("worm").."</b>.","amarelo",5000)
 			end
 
 			Player(source)["state"]["Buttons"] = false
@@ -1437,42 +1424,106 @@ Use = {
 		end
 	end,
 
-	["fishingrodplus"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		if vCLIENT.Fishing(source) then
+	["fishingrod2"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if vCLIENT.Fishing(source,"fishingrod2") then
 			Active[Passport] = os.time() + 100
 			Player(source)["state"]["Buttons"] = true
 			TriggerClientEvent("inventory:Close",source)
 
 			if not vRPC.PlayingAnim(source,"amb@world_human_stand_fishing@idle_a","idle_c") then
-				vRPC.AnimActive(source)
 				vRPC.CreateObjects(source,"amb@world_human_stand_fishing@idle_a","idle_c","prop_fishing_rod_01",49,60309)
 			end
 
-			if vRP.TakeItem(Passport,"worm") then
-				if vRP.Task(source,3,75000) then
-					local Result = RandPercentage({
-						{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 },
-						{ ["Item"] = "anchovy", ["Chance"] = 75, ["Amount"] = 1 },
-						{ ["Item"] = "catfish", ["Chance"] = 75, ["Amount"] = 1 },
-						{ ["Item"] = "herring", ["Chance"] = 50, ["Amount"] = 1 },
-						{ ["Item"] = "yellowperch", ["Chance"] = 50, ["Amount"] = 1 },
-						{ ["Item"] = "salmon", ["Chance"] = 50, ["Amount"] = 1 },
-						{ ["Item"] = "smallshark", ["Chance"] = 25, ["Amount"] = 1 },
-						{ ["Item"] = "treasurebox", ["Chance"] = 5, ["Amount"] = 1 }
-					})
+			if vRP.Task(source,10,25000) and vRP.TakeItem(Passport,"worm") then
+				local Result = RandPercentage({
+					{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "anchovy", ["Chance"] = 75, ["Amount"] = 1 },
+					{ ["Item"] = "catfish", ["Chance"] = 75, ["Amount"] = 1 }
+				})
 
-					if vRP.CheckWeight(Passport,Result["Item"],1) then
-						vRP.PutExperience(Passport,"Fisherman",1)
-						vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
-					else
-						TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
-						exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
-					end
+				vRP.PutExperience(Passport,"Fisherman",1)
+				if vRP.CheckWeight(Passport,Result["Item"]) then
+					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
+				else
+					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
+					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
-			else
-				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName("worm").."</b>.","amarelo",5000)
+			end
+
+			Player(source)["state"]["Buttons"] = false
+			Active[Passport] = nil
+		end
+	end,
+
+	["fishingrod3"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if vCLIENT.Fishing(source,"fishingrod3") then
+			Active[Passport] = os.time() + 100
+			Player(source)["state"]["Buttons"] = true
+			TriggerClientEvent("inventory:Close",source)
+
+			if not vRPC.PlayingAnim(source,"amb@world_human_stand_fishing@idle_a","idle_c") then
+				vRPC.CreateObjects(source,"amb@world_human_stand_fishing@idle_a","idle_c","prop_fishing_rod_01",49,60309)
+			end
+
+			if vRP.Task(source,10,25000) and vRP.TakeItem(Passport,"worm") then
+				local Result = RandPercentage({
+					{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "anchovy", ["Chance"] = 75, ["Amount"] = 1 },
+					{ ["Item"] = "catfish", ["Chance"] = 75, ["Amount"] = 1 },
+					{ ["Item"] = "herring", ["Chance"] = 50, ["Amount"] = 1 },
+					{ ["Item"] = "yellowperch", ["Chance"] = 50, ["Amount"] = 1 },
+					{ ["Item"] = "salmon", ["Chance"] = 50, ["Amount"] = 1 }
+				})
+
+				vRP.PutExperience(Passport,"Fisherman",1)
+				if vRP.CheckWeight(Passport,Result["Item"]) then
+					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
+				else
+					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
+					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
+				end
+			end
+
+			Player(source)["state"]["Buttons"] = false
+			Active[Passport] = nil
+		end
+	end,
+
+	["fishingrod4"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if vCLIENT.Fishing(source,"fishingrod4") then
+			Active[Passport] = os.time() + 100
+			Player(source)["state"]["Buttons"] = true
+			TriggerClientEvent("inventory:Close",source)
+
+			if not vRPC.PlayingAnim(source,"amb@world_human_stand_fishing@idle_a","idle_c") then
+				vRPC.CreateObjects(source,"amb@world_human_stand_fishing@idle_a","idle_c","prop_fishing_rod_01",49,60309)
+			end
+
+			if vRP.Task(source,10,25000) and vRP.TakeItem(Passport,"worm") then
+				local Result = RandPercentage({
+					{ ["Item"] = "sardine", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "smalltrout", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "orangeroughy", ["Chance"] = 100, ["Amount"] = 1 },
+					{ ["Item"] = "anchovy", ["Chance"] = 75, ["Amount"] = 1 },
+					{ ["Item"] = "catfish", ["Chance"] = 75, ["Amount"] = 1 },
+					{ ["Item"] = "herring", ["Chance"] = 50, ["Amount"] = 1 },
+					{ ["Item"] = "yellowperch", ["Chance"] = 50, ["Amount"] = 1 },
+					{ ["Item"] = "salmon", ["Chance"] = 50, ["Amount"] = 1 },
+					{ ["Item"] = "smallshark", ["Chance"] = 25, ["Amount"] = 1 },
+					{ ["Item"] = "treasurebox", ["Chance"] = 1, ["Amount"] = 1 }
+				})
+
+				vRP.PutExperience(Passport,"Fisherman",1)
+				if vRP.CheckWeight(Passport,Result["Item"]) then
+					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
+				else
+					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
+					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
+				end
 			end
 
 			Player(source)["state"]["Buttons"] = false
@@ -2491,7 +2542,7 @@ Use = {
 
 	["dismantle"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vCLIENT.Dismantle(source) and vRP.TakeItem(Passport,Full,1,true,Slot) then
-			TriggerClientEvent("inventory:Update",source,"Backpack")
+			TriggerClientEvent("inventory:Update",source)
 		end
 	end,
 
@@ -2680,12 +2731,12 @@ Use = {
 		if not vRP.UserPremium(Passport) then
 			if vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.SetPremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		else
 			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		end
 	end,
@@ -2695,12 +2746,12 @@ Use = {
 		if not vRP.UserPremium(Passport) then
 			if vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.SetPremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		else
 			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		end
 	end,
@@ -2710,12 +2761,12 @@ Use = {
 		if not vRP.UserPremium(Passport) then
 			if vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.SetPremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		else
 			if vRP.LevelPremium(Passport) == Hierarchy and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				vRP.UpgradePremium(source,Passport,Hierarchy)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		end
 	end,
@@ -2764,7 +2815,7 @@ for Name,v in pairs(ItemList()) do
 
 			if vRP.TakeItem(Passport,Full,1,true,Slot) then
 				TriggerClientEvent("inventory:Notify",source,"Sucesso","Aprendizado adicionado.","verde")
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 				Users["Blueprints"][Passport][Name] = true
 			end
 		end
@@ -2799,7 +2850,7 @@ for Model,v in pairs(VehicleList()) do
 					end
 
 					TriggerClientEvent("Notify",source,"Sucesso","Veículo <b>"..VehicleName(Model).."</b> adicionado.","verde",5000)
-					TriggerClientEvent("inventory:Update",source,"Backpack")
+					TriggerClientEvent("inventory:Update",source)
 				end
 			end
 		end

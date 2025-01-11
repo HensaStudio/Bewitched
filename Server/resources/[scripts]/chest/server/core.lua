@@ -47,6 +47,7 @@ local ChestItens = {
 		}
 	},
 	["medicbag"] = {
+		["Permission"] = "Paramedico",
 		["Slots"] = 25,
 		["Weight"] = 10,
 		["Close"] = true,
@@ -124,6 +125,14 @@ function Hensa.Permissions(Name,Mode,Item)
 		elseif Mode == "Item" then
 			local Previous = SplitOne(Name,":")
 			if ChestItens[Previous] then
+				if ChestItens[Previous]["Permission"] then
+					if not vRP.HasService(Passport,ChestItens[Previous]["Permission"]) then
+						TriggerClientEvent("Notify",source,"Atenção","Você não possui permissões suficientes.","amarelo",5000)
+
+						return false
+					end
+				end
+
 				Open[Passport] = {
 					["Name"] = Name,
 					["Save"] = true,
@@ -297,6 +306,7 @@ function Hensa.Store(Item,Slot,Amount,Target,Inactived)
                         Resource = "inventory"
                     },true)
                 else
+					TriggerClientEvent("inventory:Notify",source,"Aviso","Você não pode guardar este item aqui.","vermelho")
                     TriggerClientEvent("inventory:Update",source)
                 end
 
@@ -305,8 +315,10 @@ function Hensa.Store(Item,Slot,Amount,Target,Inactived)
 
 			if vRP.StoreChest(Passport,Open[Passport]["Name"],Amount,Open[Passport]["Weight"],Slot,Target) then
 				TriggerClientEvent("inventory:Update",source)
-			elseif Open[Passport]["Logs"] then
-				exports["discord"]:Embed(Open[Passport]["NameLogs"],"**Passaporte:** "..Passport.."\n**Guardou:** "..Amount.."x "..ItemName(Item),0xa3c846)
+
+				if Open[Passport]["Logs"] then
+					exports["discord"]:Embed(Open[Passport]["NameLogs"],"**Passaporte:** "..Passport.."\n**Guardou:** "..Amount.."x "..ItemName(Item),0xa3c846)
+				end
 			end
 		end
 	else
@@ -334,8 +346,10 @@ function Hensa.Take(Item,Slot,Amount,Target)
 			if SplitBoolean(Open[Passport]["Name"],"Helicrash",":") then
 				GlobalState["Helibox"] = GlobalState["Helibox"] - 1
 			end
-		elseif Open[Passport]["Logs"] then
-			exports["discord"]:Embed(Open[Passport]["NameLogs"],"**Passaporte:** "..Passport.."\n**Retirou:** "..Amount.."x "..ItemName(Item),0xe84855)
+
+			if Open[Passport]["Logs"] then
+				exports["discord"]:Embed(Open[Passport]["NameLogs"],"**Passaporte:** "..Passport.."\n**Retirou:** "..Amount.."x "..ItemName(Item),0xe84855)
+			end
 		end
 	else
 		TriggerClientEvent("inventory:Update",source)

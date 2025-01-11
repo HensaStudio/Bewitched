@@ -30,13 +30,13 @@ function Hensa.Drops(Item,Slot,Amount)
 		if not vRP.CheckDamaged(Item) then
 			if vRP.TakeItem(Passport,Item,Amount,false) then
 				exports["inventory"]:Drops(Passport,source,Item,Amount)
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 			end
 		else
 			TriggerClientEvent("inventory:Notify",source,"Aviso","Utilize as lixeiras para jogar itens danificados.","vermelho")
 		end
 	else
-		TriggerClientEvent("inventory:Update",source,"Backpack")
+		TriggerClientEvent("inventory:Update",source)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ function Hensa.Pickup(Number,Route,Target,Amount)
 		if vRP.CheckWeight(Passport,Drops[Route][Number]["key"],Amount) then
 			local Inv = vRP.Inventory(Passport)
 			if not Drops[Route] or not Drops[Route][Number] or not Drops[Route][Number]["key"] or not Drops[Route][Number]["amount"] or Drops[Route][Number]["amount"] < Amount or (Inv[Target] and Inv[Target]["item"] ~= Drops[Route][Number]["key"]) or vRP.MaxItens(Passport,Drops[Route][Number]["key"],Amount) then
-				TriggerClientEvent("inventory:Update",source,"Backpack")
+				TriggerClientEvent("inventory:Update",source)
 				Active[Passport] = nil
 
 				return false
@@ -127,14 +127,14 @@ function Hensa.Pickup(Number,Route,Target,Amount)
 				end
 			end
 
-			TriggerClientEvent("inventory:Update",source,"Backpack")
+			TriggerClientEvent("inventory:Update",source)
 		else
-			TriggerClientEvent("inventory:Update",source,"Backpack")
+			TriggerClientEvent("inventory:Update",source)
 			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","amarelo",5000)
 		end
 
 		Active[Passport] = nil
 	else
-		TriggerClientEvent("inventory:Update",source,"Backpack")
+		TriggerClientEvent("inventory:Update",source)
 	end
 end

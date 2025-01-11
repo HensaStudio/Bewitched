@@ -144,11 +144,22 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- FISHING
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Fishing()
+function Hensa.Fishing(Item)
 	local Fishings = false
 	local Ped = PlayerPedId()
-	if #(GetEntityCoords(Ped) - vec3(-2026.53,-1460.38,5.34)) <= 200 then
-		Fishings = true
+	local Coords = GetEntityCoords(Ped)
+
+	local Locates = {
+		{ ["Coords"] = vec3(1183.88,4002.14,30.23), ["Item"] = "fishingrod" },
+		{ ["Coords"] = vec3(-230.83,-3332.51,0.59), ["Item"] = "fishingrod2" },
+		{ ["Coords"] = vec3(-1314.5,6207.45,-0.56), ["Item"] = "fishingrod3" },
+		{ ["Coords"] = vec3(-627.61,7597.86,-0.42), ["Item"] = "fishingrod4" }
+	}
+
+	for _,v in pairs(Locates) do
+		if #(Coords - v["Coords"]) <= 200 and Item == v["Item"] then
+			Fishings = true
+		end
 	end
 
 	return Fishings

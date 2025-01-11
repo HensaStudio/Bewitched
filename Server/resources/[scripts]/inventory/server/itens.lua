@@ -1447,6 +1447,7 @@ Use = {
 				})
 
 				vRP.PutExperience(Passport,"Fisherman",1)
+
 				if vRP.CheckWeight(Passport,Result["Item"]) then
 					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
 				else
@@ -1485,6 +1486,7 @@ Use = {
 				})
 
 				vRP.PutExperience(Passport,"Fisherman",1)
+
 				if vRP.CheckWeight(Passport,Result["Item"]) then
 					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
 				else
@@ -1525,6 +1527,7 @@ Use = {
 				})
 
 				vRP.PutExperience(Passport,"Fisherman",1)
+
 				if vRP.CheckWeight(Passport,Result["Item"]) then
 					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
 				else

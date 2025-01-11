@@ -1411,12 +1411,15 @@ Use = {
 				})
 
 				vRP.PutExperience(Passport,"Fisherman",1)
+
 				if vRP.CheckWeight(Passport,Result["Item"]) then
 					vRP.GenerateItem(Passport,Result["Item"],Result["Amount"],true)
 				else
 					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
 					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
+
+				vRPC.Destroy(source,"one")
 			end
 
 			Player(source)["state"]["Buttons"] = false
@@ -1450,6 +1453,8 @@ Use = {
 					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
 					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
+
+				vRPC.Destroy(source,"one")
 			end
 
 			Player(source)["state"]["Buttons"] = false
@@ -1486,6 +1491,8 @@ Use = {
 					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
 					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
+
+				vRPC.Destroy(source,"one")
 			end
 
 			Player(source)["state"]["Buttons"] = false
@@ -1524,6 +1531,8 @@ Use = {
 					TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
 					exports["inventory"]:Drops(Passport,source,Result["Item"],Result["Amount"])
 				end
+
+				vRPC.Destroy(source,"one")
 			end
 
 			Player(source)["state"]["Buttons"] = false

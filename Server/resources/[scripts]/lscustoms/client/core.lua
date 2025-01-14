@@ -18,18 +18,6 @@ local Focus = false
 local Opened = false
 local Information = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- BOOLEAN
------------------------------------------------------------------------------------------------------------------------------------------
-function Boolean(Number)
-	return parseInt(Number) ~= 0
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- ONEZERO
------------------------------------------------------------------------------------------------------------------------------------------
-function OneZero(Number)
-	return Number and 1 or 0
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Open(Vehicle,Logo)
@@ -162,7 +150,7 @@ function Wheel(Vehicle)
 	end
 
 	local Number = Mods["Wheels"]
-	local ExistType = GetVehicleType(Vehicle)
+	local ExistType = GetVehicleWheelType(Vehicle)
 	local R,G,B = GetVehicleTyreSmokeColor(Vehicle)
 	local ExistWheel = GetVehicleMod(Vehicle,Number)
 	local ExistVariation = GetVehicleModVariation(Vehicle,Number)
@@ -221,8 +209,8 @@ function VehicleExtras(Vehicle)
 			local Status = IsVehicleExtraTurnedOn(Vehicle,Number)
 
 			Initial["VehicleExtras"][tostring(Number)] = {
-				["Selected"] = Status and 0 or 1,
-				["Installed"] = Status and 0 or 1,
+				["Selected"] = not Status and 1 or 0,
+				["Installed"] = not Status and 1 or 0,
 				["Price"] = Values["VehicleExtras"]
 			}
 		end
@@ -264,11 +252,10 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Turbo(Vehicle)
 	local Enable = IsToggleModOn(Vehicle,18)
-	local Information = OneZero(Enable)
 
 	Initial["Turbo"] = {
-		["Installed"] = Information,
-		["Selected"] = Information,
+		["Installed"] = Enable and 1 or 0,
+		["Selected"] = Enable and 1 or 0,
 		["Price"] = Values["Turbo"]
 	}
 end
@@ -336,7 +323,7 @@ RegisterNUICallback("Apply",function(Data,Callback)
 			ToggleVehicleMod(Information["Vehicle"],Wheels[Category],true)
 			SetVehicleTyreSmokeColor(Information["Vehicle"],Data["Color"][1],Data["Color"][2],Data["Color"][3])
 		elseif Category == "CustomTyres" then
-			Initial[Index][Category]["Selected"] = Boolean(Data["Enable"])
+			Initial[Index][Category]["Selected"] = Data["Enable"] and 1 or 0
 
 			local ExistWheel = GetVehicleMod(Information["Vehicle"],Mods[Index])
 
@@ -354,7 +341,7 @@ RegisterNUICallback("Apply",function(Data,Callback)
 			SetVehicleMod(Information["Vehicle"],Mods[Index],Item,Initial[Index]["CustomTyres"]["Selected"])
 		end
 	elseif Index == "VehicleExtras" then
-		Initial[Index][Item]["Selected"] = Boolean(Data["Enable"])
+		Initial[Index][Item]["Selected"] = Data["Enable"]
 
 		local Windows,Tyres,Doors = {},{},{}
 		local Health = GetEntityHealth(Information["Vehicle"])
@@ -374,8 +361,8 @@ RegisterNUICallback("Apply",function(Data,Callback)
 		end
 
 		SetVehicleExtra(Information["Vehicle"],parseInt(Item),Initial[Index][Item]["Selected"])
-		SetVehiclePetrolTankHealth(Information["Vehicle"],4000.0)
 
+		SetVehiclePetrolTankHealth(Information["Vehicle"],4000.0)
 		SetVehicleEngineHealth(Information["Vehicle"],Engine)
 		SetVehicleBodyHealth(Information["Vehicle"],Body)
 		SetEntityHealth(Information["Vehicle"],Health)
@@ -412,7 +399,7 @@ RegisterNUICallback("Apply",function(Data,Callback)
 			SetVehicleHeadlightsColour(Information["Vehicle"],Data["Color"] or 0)
 		end
 	elseif Index == "Turbo" then
-		Initial[Index]["Selected"] = OneZero(Data["Enable"])
+		Initial[Index]["Selected"] = Data["Enable"] and 1 or 0
 
 		ToggleVehicleMod(Information["Vehicle"],Mods[Index],Initial[Index]["Selected"])
 	elseif Index == "PlateHolder" then
@@ -472,7 +459,7 @@ function Apply(Spawn,Table,Mode)
 					SetVehicleTyreSmokeColor(Spawn,Results[Mode][1],Results[Mode][2],Results[Mode][3])
 				elseif Type == "Highend" then
 					SetVehicleWheelType(Spawn,Results["Initial"][1])
-					SetVehicleMod(Spawn,Results["Initial"][2],Results["Initial"][3],Table[Index]["CustomTyres"]["Selected"])
+					SetVehicleMod(Spawn,Results["Initial"][2],Results["Initial"][3],Table[Index]["CustomTyres"][Mode])
 				end
 			end
 		elseif Index == "PlateHolder" then
@@ -498,10 +485,10 @@ function Apply(Spawn,Table,Mode)
 			end
 
 			for Type,Results in pairs(Table[Index]) do
-				SetVehicleExtra(Spawn,parseInt(Type),Boolean(Results))
-				SetVehiclePetrolTankHealth(Spawn,4000.0)
+				SetVehicleExtra(Spawn,parseInt(Type),Results[Mode])
 			end
 
+			SetVehiclePetrolTankHealth(Spawn,4000.0)
 			SetVehicleEngineHealth(Spawn,Engine)
 			SetVehicleBodyHealth(Spawn,Body)
 			SetEntityHealth(Spawn,Health)
@@ -550,12 +537,12 @@ RegisterNetEvent("lscustoms:Apply")
 AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 	if not Spawn then return end
 
-	SetVehicleModKit(Spawn, 0)
+	SetVehicleModKit(Spawn,0)
+	SetVehicleLivery(Spawn,0)
 
 	if type(Customize) == "table" then
 		for Index, v in pairs(Customize) do
 			if Index == "Respray" then
-
 				if v["PrimaryColour"] and v["PrimaryColour"]["Selected"] then
 					local Type = v["PrimaryColour"]["Selected"]["Type"]
 					local Color = v["PrimaryColour"]["Selected"]["Color"]
@@ -565,7 +552,6 @@ AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 						SetVehicleCustomPrimaryColour(Spawn, Color[1], Color[2], Color[3])
 					end
 				end
-				
 
 				if v["SecondaryColour"] and v["SecondaryColour"]["Selected"] then
 					local Type = v["SecondaryColour"]["Selected"]["Type"]
@@ -576,32 +562,26 @@ AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 						SetVehicleCustomSecondaryColour(Spawn, Color[1], Color[2], Color[3])
 					end
 				end
-				
 
 				if v["PearlescentColour"] and v["PearlescentColour"]["Selected"] then
 					SetVehicleExtraColours(Spawn, v["PearlescentColour"]["Selected"], 
 						v["WheelColour"] and v["WheelColour"]["Selected"] or 0)
 				end
-				
 
 				if v["WheelColour"] and v["WheelColour"]["Selected"] then
 					SetVehicleExtraColours(Spawn, 
 						v["PearlescentColour"] and v["PearlescentColour"]["Selected"] or 0,
 						v["WheelColour"]["Selected"])
 				end
-				
 
 				if v["DashboardColour"] and v["DashboardColour"]["Selected"] then
 					SetVehicleDashboardColor(Spawn, v["DashboardColour"]["Selected"])
 				end
-				
 
 				if v["InteriorColour"] and v["InteriorColour"]["Selected"] then
 					SetVehicleInteriorColor(Spawn, v["InteriorColour"]["Selected"])
 				end
-				
 			elseif Index == "Wheels" then
-
 				for Category, Data in pairs(v) do
 					if Category ~= "TyreSmoke" and Category ~= "CustomTyres" then
 						if Data["Selected"] and Data["Selected"] >= 0 then
@@ -610,18 +590,16 @@ AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 						end
 					end
 				end
-				
+
 				if v["TyreSmoke"] and v["TyreSmoke"]["Selected"] then
 					local Color = v["TyreSmoke"]["Selected"]
 					ToggleVehicleMod(Spawn, Wheels["TyreSmoke"], true)
 					SetVehicleTyreSmokeColor(Spawn, Color[1], Color[2], Color[3])
 				end
-				
 			elseif Index == "WindowTint" then
 				if v["Selected"] then
 					SetVehicleWindowTint(Spawn, v["Selected"])
 				end
-				
 			elseif Index == "Xenons" then
 				if v["Selected"] then
 
@@ -631,17 +609,14 @@ AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 						SetVehicleHeadlightsColour(Spawn, v["Selected"]["Color"])
 					end
 				end
-				
 			elseif Index == "Turbo" then
 				if v["Selected"] ~= nil then
 					ToggleVehicleMod(Spawn, Mods["Turbo"], v["Selected"])
 				end
-				
 			elseif Index == "PlateHolder" then
 				if v["Selected"] then
 					SetVehicleNumberPlateTextIndex(Spawn, v["Selected"])
 				end
-				
 			elseif Index == "Neons" then
 				if v["Selected"] then
 
@@ -649,16 +624,13 @@ AddEventHandler("lscustoms:Apply", function(Spawn, Customize)
 					for i = 0, 3 do
 						SetVehicleNeonLightEnabled(Spawn, i, enable)
 					end
-					
 
 					if v["Selected"]["Color"] then
 						local Color = v["Selected"]["Color"]
 						SetVehicleNeonLightsColour(Spawn, Color[1], Color[2], Color[3])
 					end
 				end
-				
 			elseif Mods[Index] then
-
 				if type(v["Selected"]) == "number" then
 					SetVehicleMod(Spawn, Mods[Index], v["Selected"], false)
 				end
@@ -729,7 +701,7 @@ CreateThread(function()
 						TimeDistance = 1
 
 						SetDrawOrigin(v["Coords"]["xyz"])
-						DrawSprite("Targets","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+						DrawSprite("Textures","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 						ClearDrawOrigin()
 
 						if IsControlJustPressed(1,38) and vSERVER.Permission(Index) then

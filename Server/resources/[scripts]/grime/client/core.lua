@@ -83,7 +83,7 @@ CreateThread(function()
 					TimeDistance = 1
 
 					SetDrawOrigin(Locations[Selected]["x"],Locations[Selected]["y"],Locations[Selected]["z"])
-					DrawSprite("Targets","H",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+					DrawSprite("Textures","H",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 					ClearDrawOrigin()
 
 					if Distance <= 1.0 and IsControlJustPressed(1,74) and vSERVER.Payment(Selected) then

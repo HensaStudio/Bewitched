@@ -45,7 +45,7 @@ CreateThread(function()
 						TimeDistance = 1
 
 						SetDrawOrigin(v[1]["x"],v[1]["y"],v[1]["z"])
-						DrawSprite("Targets","Evidence",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+						DrawSprite("Textures","Evidence",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 						ClearDrawOrigin()
 
 						if Distance <= 1.2 and IsControlJustPressed(1,38) then

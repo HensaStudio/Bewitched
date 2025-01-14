@@ -335,8 +335,21 @@ RegisterCommand("AdminFunctions", function()
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CARREGAR
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("Carregar",function()
+	if LocalPlayer["state"]["Admin"] or LocalPlayer["state"]["Paramedico"] or CheckPolice() then
+		local Ped = PlayerPedId()
+		local Health = GetEntityHealth(Ped)
+		if Health > 100 and not IsPedInAnyVehicle(Ped) then
+			TriggerServerEvent("inventory:Carry")
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- KEYMAPPING
 -----------------------------------------------------------------------------------------------------------------------------------------
+RegisterKeyMapping("Carregar","Carregar personagem.","keyboard","H")
 RegisterKeyMapping("PlayerFunctions","Abrir menu principal.","keyboard","F9")
 RegisterKeyMapping("EmergencyFunctions","Abrir menu de emergencial.","keyboard","F10")
 RegisterKeyMapping("AdminFunctions","Abrir menu de administração.","keyboard","INSERT")

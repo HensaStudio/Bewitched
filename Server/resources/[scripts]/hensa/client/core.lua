@@ -1,4 +1,8 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- VARIABLES
+-----------------------------------------------------------------------------------------------------------------------------------------
+local BunnyHope = GetGameTimer()
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- BLIPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Blips = {
@@ -299,6 +303,12 @@ CreateThread(function()
 					TaskRappelFromHeli(Ped,1)
 				end
 			end
+		else
+			if BunnyHope >= GetGameTimer() then
+				DisableControlAction(1,22,true)
+			elseif IsPedJumping(Ped) and BunnyHope <= GetGameTimer() then
+				BunnyHope = GetGameTimer() + 1000
+			end
 		end
 
 		for Number = 1,22 do
@@ -355,6 +365,14 @@ CreateThread(function()
 		SetCreateRandomCopsOnScenarios(false)
 		SetCreateRandomCopsNotOnScenarios(false)
 
+		SetEntityProofs(Ped,false,true,true,false,false,false,false,false)
+		N_0x4757f00bc6323cfe(-1553120962,0.0)
+		N_0x4757f00bc6323cfe(539292904,0.0)
+
+		SetWeatherTypeNow(GlobalState["Weather"])
+		SetWeatherTypePersist(GlobalState["Weather"])
+		SetWeatherTypeNowPersist(GlobalState["Weather"])
+
 		if IsPlayerWantedLevelGreater(Pid,0) then
 			ClearPlayerWantedLevel(Pid)
 		end
@@ -362,8 +380,6 @@ CreateThread(function()
 		if IsPedInAnyVehicle(Ped) then
 			DisableControlAction(0,345,true)
 		end
-
-		-- SetPlayerLockonRangeOverride(Pid, 0.0)
 
 		if LocalPlayer["state"]["Active"] then
 			NetworkOverrideClockTime(GlobalState["Hours"], GlobalState["Minutes"], 00)

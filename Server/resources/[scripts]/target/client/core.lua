@@ -191,12 +191,6 @@ AddEventHandler("onClientResourceStart",function(Resource)
 		return
 	end
 
-	RequestStreamedTextureDict("Targets",true)
-	while not HasStreamedTextureDictLoaded("Targets") do
-		RequestStreamedTextureDict("Targets",true)
-		Wait(1)
-	end
-
 	RegisterCommand("+entityTarget",TargetEnable)
 	RegisterCommand("-entityTarget",TargetDisable)
 	RegisterKeyMapping("+entityTarget","Interação auricular.","keyboard","LMENU")
@@ -703,7 +697,10 @@ function TargetEnable()
 		end
 
 		if EntityHit and GetEntityType(Entitys) ~= 0 then
-			--TriggerServerEvent("admin:Doords",GetEntityCoords(Entitys),GetEntityModel(Entitys),GetEntityHeading(Entitys))
+			if LocalPlayer["state"]["Admin"] and IsControlJustPressed(1,38) then
+				TriggerServerEvent("admin:Doords",GetEntityCoords(Entitys),GetEntityModel(Entitys),GetEntityHeading(Entitys))
+			end
+
 			if IsEntityAVehicle(Entitys) and GetEntityHealth(Ped) > 100 and #(Coords - HitCoords) <= 1.0 then
 				local Menu = {}
 				local Network = nil

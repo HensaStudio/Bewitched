@@ -320,11 +320,26 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "timeset" then
 			if vRP.HasGroup(Passport,"Admin",1) then
-				local Keyboard = vKEYBOARD.Secondary(source,"Hora:","Minuto:")
+				local Hours = { "00" ,"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }
+				local Minutes = { "00" ,"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }
+
+				local Keyboard = vKEYBOARD.Timeset(source,Hours,Minutes)
 				if Keyboard then
 					GlobalState["Hours"] = parseInt(Keyboard[1])
 					GlobalState["Minutes"] = parseInt(Keyboard[2])
-					TriggerClientEvent("Notify",source,"Sucesso","Você mudou a hora do mundo.","verde",5000)
+					TriggerClientEvent("Notify",source,"Sucesso","Você mudou o <b>Horário</b>.","verde",5000)
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+			end
+		elseif Mode == "weatherset" then
+			if vRP.HasGroup(Passport,"Admin",1) then
+				local Options = { "EXTRASUNNY", "CLEAR", "CLOUDS", "SMOG", "FOGGY", "OVERCAST", "RAIN", "THUNDER", "CLEARING", "NEUTRAL", "SNOW", "BLIZZARD", "SNOWLIGHT", "XMAS", "HALLOWEEN" }
+
+				local Keyboard = vKEYBOARD.Weather(source,Options)
+				if Keyboard then
+					GlobalState["Weather"] = Keyboard[1]
+					TriggerClientEvent("Notify",source,"Sucesso","Você alterou o <b>Clima</b>.","verde",5000)
 				end
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)

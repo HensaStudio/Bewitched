@@ -396,10 +396,10 @@ CreateThread(function()
 							SetEntityNoCollisionEntity(Vehicle,Ped,false)
 							TriggerServerEvent("hud:VehicleEject",SeatbeltVelocity)
 
-							Wait(500)
-
-							SetEntityNoCollisionEntity(Ped,Vehicle,true)
-							SetEntityNoCollisionEntity(Vehicle,Ped,true)
+							SetTimeout(500,function()
+								SetEntityNoCollisionEntity(Ped,Vehicle,true)
+								SetEntityNoCollisionEntity(Vehicle,Ped,true)
+							end)
 						end
 
 						SeatbeltVelocity = GetEntityVelocity(Vehicle)

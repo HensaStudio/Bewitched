@@ -21,7 +21,6 @@ local DeathUpdate = false
 -- FPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("fps",function()
-	local Ped = PlayerPedId()
 	BoostFPS = not BoostFPS
 
 	if BoostFPS then
@@ -41,8 +40,12 @@ CreateThread(function()
 		local Ped = PlayerPedId()
 		if LocalPlayer["state"]["Carry"] or LocalPlayer["state"]["Handcuff"] or IsEntityPlayingAnim(Ped,"missfinale_c2mcs_1","fin_c2_mcs_1_camman",3) then
 			TimeDistance = 1
+
+			if LocalPlayer["state"]["Handcuff"] then
+				DisableControlAction(0,21,true)
+			end
+
 			DisableControlAction(0,18,true)
-			DisableControlAction(0,21,true)
 			DisableControlAction(0,55,true)
 			DisableControlAction(0,76,true)
 			DisableControlAction(0,22,true)
@@ -74,7 +77,7 @@ CreateThread(function()
 		local TimeDistance = 999
 		local Ped = PlayerPedId()
 		if IsPedInAnyVehicle(Ped) then
-			TimeDistance = 100
+			TimeDistance = 1
 
 			local Vehicle = GetVehiclePedIsIn(Ped)
 			if GetPedInVehicleSeat(Vehicle,0) == Ped and not GetIsTaskActive(Ped,164) and GetIsTaskActive(Ped,165) then

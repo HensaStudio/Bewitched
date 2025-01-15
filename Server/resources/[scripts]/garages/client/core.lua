@@ -332,7 +332,7 @@ CreateThread(function()
 					TimeDistance = 1
 
 					SetDrawOrigin(v["x"],v["y"],v["z"])
-					DrawSprite("Targets","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+					DrawSprite("Textures","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 					ClearDrawOrigin()
 
 					if Distance <= 1.25 and IsControlJustPressed(1,38) and not exports["hud"]:Wanted() then

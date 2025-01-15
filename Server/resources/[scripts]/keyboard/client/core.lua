@@ -136,35 +136,55 @@ function Options(First,Second)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- TIMESET
+-- WEATHER
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Timeset(First,Second,Third)
+function Weather(First)
 	local Array = Keyboard({
 		title = "Formulário",
 		subtitle = "Preencha os campos abaixo",
 		rows = {
 			{
 				id = 1,
-				mode = "text",
-				placeholder = First,
-				value = ""
-			},{
-				id = 2,
-				mode = "text",
-				placeholder = Second,
-				value = ""
-			},{
-				id = 3,
 				mode = "options",
-				placeholder = "Selecione uma opção",
-				options = Third,
+				placeholder = "Selecione um Clima",
+				options = First,
 				value = ""
 			}
 		}
 	})
 
-	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" and Array["3"] and Array["3"]["input"] ~= "" then
-		return { Array["1"]["input"],Array["2"]["input"],Array["3"]["input"] }
+	if Array and Array["1"] and Array["1"]["input"] ~= "" then
+		return { Array["1"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TIMESET
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Timeset(First,Second)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "options",
+				placeholder = "Selecione uma Hora",
+				options = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "options",
+				placeholder = "Selecione um Minuto",
+				options = Second,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"] }
 	end
 
 	return false
@@ -433,10 +453,16 @@ function Hensa.Options(First,Secondary)
 	return Options(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- WEATHER
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Weather(First)
+	return Weather(First)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- TIMESET
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Timeset(First,Secondary,Third)
-	return Timeset(First,Secondary,Third)
+function Hensa.Timeset(First,Secondary)
+	return Timeset(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ITEM
@@ -451,6 +477,7 @@ exports("Item",Item)
 exports("Area",Area)
 exports("Copy",Copy)
 exports("Options",Options)
+exports("Weather",Weather)
 exports("Timeset",Timeset)
 exports("Primary",Primary)
 exports("Password",Password)

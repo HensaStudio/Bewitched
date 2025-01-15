@@ -43,8 +43,10 @@ function Hensa.Save(Model,Plate,Mods,Price)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if vRP.PaymentFull(Passport,Price) then
-			vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..Passport..":"..Model, Information = json.encode(Mods) })
+			local Identifier = vRP.PassportPlate(Plate) or Passport
+			vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..Identifier..":"..Model, Information = json.encode(Mods) })
 			vRP.UpgradeStress(Passport,math.random(5))
+
 			return true
 		end
 	end

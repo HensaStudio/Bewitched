@@ -158,6 +158,7 @@ CREATE TABLE IF NOT EXISTS `races` (
 DROP TABLE IF EXISTS `vehicles`;
 CREATE TABLE IF NOT EXISTS `vehicles` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
+  `Serial` varchar(10) DEFAULT NULL,
   `Passport` int(10) NOT NULL DEFAULT 0,
   `Vehicle` varchar(100) DEFAULT NULL,
   `Tax` int(20) NOT NULL DEFAULT 0,
@@ -180,6 +181,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
   `Brakes` longtext NOT NULL,
   `Drift` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
+  KEY `Serial` (`Serial`),
   KEY `Passport` (`Passport`),
   KEY `Vehicle` (`Vehicle`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -72,10 +72,11 @@ AddEventHandler("farmer:Minerman",function(Number)
 
 					local Consult = RandPercentage(Result)
 
-					-- local Members = exports["vrp"]:Party(Passport,source,20)
-					-- if parseInt(#Members) >= 2 then
-						-- Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
-					-- end
+					if exports["party"]:DoesExist(Passport,2) then
+						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
+
+						TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
+					end
 
 					if exports["inventory"]:Buffs("Luck",Passport) then
 						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
@@ -135,9 +136,10 @@ AddEventHandler("farmer:Lumberman",function(Number)
 
 					local Valuation = 3
 
-					local Members = exports["vrp"]:Party(Passport,source,20)
-					if parseInt(#Members) >= 2 then
+					if exports["party"]:DoesExist(Passport,2) then
 						Valuation = Valuation + (Valuation * 0.25)
+
+						TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
 					end
 
 					if exports["inventory"]:Buffs("Luck",Passport) then

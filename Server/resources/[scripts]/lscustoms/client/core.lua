@@ -729,6 +729,8 @@ AddEventHandler("lscustoms:Open",function()
 		local Vehicle = GetVehiclePedIsUsing(Ped)
 
 		if GetPedInVehicleSeat(Vehicle,-1) == Ped then
+			TriggerEvent("dynamic:Close")
+
 			SetEntityHeading(Vehicle,Heading)
 			SetEntityCoords(Vehicle,Coords)
 			Open(Vehicle,"lscustoms.png")

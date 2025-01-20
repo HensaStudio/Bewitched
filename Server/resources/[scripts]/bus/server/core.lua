@@ -29,12 +29,14 @@ function Hensa.Payment(Selected)
 		end
 
 		local GainExperience = 1
-		local Amount = math.random(35,45)
+		local Amount = math.random(75,95)
 		local Experience = vRP.GetExperience(Passport,"Driver")
 		local Valuation = Amount + Amount * (0.05 * Experience)
 
 		if exports["party"]:DoesExist(Passport,4) then
 			Valuation = Valuation + (Valuation * 0.1)
+
+			TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
 		end
 
 		if exports["inventory"]:Buffs("Dexterity",Passport) then

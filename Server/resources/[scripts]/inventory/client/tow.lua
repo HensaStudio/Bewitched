@@ -10,7 +10,7 @@ AddEventHandler("inventory:Tow",function(Selected)
 	local Ped = PlayerPedId()
 	local Selected = Selected[3]
 	local Vehicle = GetLastDrivenVehicle()
-	if DoesEntityExist(Selected) and DoesEntityExist(Vehicle) and not Entity(Selected)["state"]["Tower"] and (GetEntityArchetypeName(Vehicle) == "flatbed" or GetEntityArchetypeName(Vehicle) == "wrdeliveryst") and not IsPedInAnyVehicle(Ped) then
+	if DoesEntityExist(Selected) and DoesEntityExist(Vehicle) and not Entity(Selected)["state"]["Tower"] and GetEntityArchetypeName(Vehicle) == "flatbed" and not IsPedInAnyVehicle(Ped) then
 		local Coords = GetEntityCoords(Selected)
 		local OtherCoords = GetEntityCoords(Vehicle)
 
@@ -24,6 +24,8 @@ AddEventHandler("inventory:Tow",function(Selected)
 				TaskTurnPedToFaceEntity(Ped,Tower,5000)
 				TriggerEvent("sounds:Private","tow",0.5)
 				vRP.PlayAnim(false,{"mini@repair","fixing_a_player"},true)
+
+				TriggerEvent("Progress","Rebocando",5000)
 
 				SetTimeout(5000,function()
 					vRP.Destroy()

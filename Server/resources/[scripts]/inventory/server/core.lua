@@ -627,9 +627,11 @@ function Hensa.Deliver(Work)
 				local Experience = vRP.GetExperience(Passport,"Lumberman")
 				local Valuation = Amount + Amount * (0.05 * Experience)
 
-				-- if exports["party"]:DoesExist(Passport,2) then
-					-- Valuation = Valuation + (Valuation * 0.1)
-				-- end
+				if exports["party"]:DoesExist(Passport,2) then
+					Valuation = Valuation + (Valuation * 0.1)
+
+					TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
+				end
 
 				if exports["inventory"]:Buffs("Dexterity",Passport) then
 					Valuation = Valuation + (Valuation * 0.1)
@@ -674,9 +676,11 @@ function Hensa.Deliver(Work)
 				local Experience = vRP.GetExperience(Passport,"Milkman")
 				local Valuation = Amount + Amount * (0.05 * Experience)
 
-				-- if exports["party"]:DoesExist(Passport,2) then
-					-- Valuation = Valuation + (Valuation * 0.1)
-				-- end
+				if exports["party"]:DoesExist(Passport,2) then
+					Valuation = Valuation + (Valuation * 0.1)
+
+					TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
+				end
 
 				if exports["inventory"]:Buffs("Dexterity",Passport) then
 					Valuation = Valuation + (Valuation * 0.1)
@@ -721,9 +725,11 @@ function Hensa.Deliver(Work)
 				local Experience = vRP.GetExperience(Passport,"Transporter")
 				local Valuation = Amount + Amount * (0.05 * Experience)
 
-				-- if exports["party"]:DoesExist(Passport,2) then
-					-- Valuation = Valuation + (Valuation * 0.1)
-				-- end
+				if exports["party"]:DoesExist(Passport,2) then
+					Valuation = Valuation + (Valuation * 0.1)
+
+					TriggerClientEvent("Notify",source,"Central de Empregos","Você ganhou uma bonificação por estar em um <b>Grupo</b>.","money",5000)
+				end
 
 				if exports["inventory"]:Buffs("Dexterity",Passport) then
 					Valuation = Valuation + (Valuation * 0.1)

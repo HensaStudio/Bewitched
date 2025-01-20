@@ -153,6 +153,7 @@ CreateThread(function()
 
 					if #(Coords - OtherCoords) <= 25 then
 						TimeDistance = 1
+
 						DrawText3D(OtherCoords,"~w~"..List[Source],0.45)
 					end
 				end

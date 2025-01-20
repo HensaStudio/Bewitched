@@ -109,7 +109,7 @@ AddEventHandler("towed:Payment",function(Plate)
 			GainExperience = GainExperience + 3
 		end
 
-		TriggerEvent("garages:Deleted",Vehicles[Plate]["Network"],Plate)
+		TriggerEvent("garages:DeleteVehicle",Vehicles[Plate]["Network"],Plate)
 		vRP.GenerateItem(Passport,Result["Item"],Valuation,true)
 		vRP.PutExperience(Passport,"Towed",GainExperience)
 		vRP.GenerateItem(Passport,"dollar",250,true)

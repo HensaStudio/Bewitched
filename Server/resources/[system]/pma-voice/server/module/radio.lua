@@ -19,14 +19,16 @@ end
 local radioNameGetter = radioNameGetter_orig
 
 function overrideRadioNameGetter(channel,cb)
-	local cbType = type(cb)
 	radioNameGetter = cb
 end
 exports("overrideRadioNameGetter",overrideRadioNameGetter)
 
 function addPlayerToRadio(source,radioChannel)
 	if not canJoinChannel(source,radioChannel) then
-		return TriggerClientEvent("pma-voice:removePlayerFromRadio",source,source)
+		TriggerClientEvent("pma-voice:radioChangeRejected",source)
+		TriggerClientEvent("pma-voice:removePlayerFromRadio",source,source)
+
+		return false
 	end
 
 	radioData[radioChannel] = radioData[radioChannel] or {}
@@ -40,6 +42,8 @@ function addPlayerToRadio(source,radioChannel)
 	voiceData[source].radio = radioChannel
 	radioData[radioChannel][source] = false
 	TriggerClientEvent("pma-voice:syncRadioData",source,radioData[radioChannel],plyName)
+
+	return true
 end
 
 function removePlayerFromRadio(source, radioChannel)
@@ -69,20 +73,21 @@ function setPlayerRadio(source,_radioChannel)
 		TriggerClientEvent("pma-voice:clSetPlayerRadio",source,radioChannel)
 	end
 
-	Player(source).state.radioChannel = radioChannel
+	if radioChannel ~= 0 then
+		if plyVoice.radio > 0 then
+			removePlayerFromRadio(source,plyVoice.radio)
+		end
 
-	if radioChannel ~= 0 and plyVoice.radio == 0 then
-		addPlayerToRadio(source,radioChannel)
+		local wasAdded = addPlayerToRadio(source,radioChannel)
+		Player(source).state.radioChannel = wasAdded and radioChannel or 0
 	elseif radioChannel == 0 then
 		removePlayerFromRadio(source,plyVoice.radio)
-	elseif plyVoice.radio > 0 then
-		removePlayerFromRadio(source,plyVoice.radio)
-		addPlayerToRadio(source,radioChannel)
+		Player(source).state.radioChannel = 0
 	end
 end
 exports("setPlayerRadio",setPlayerRadio)
 
-RegisterServerEvent("pma-voice:setPlayerRadio",function(radioChannel)
+RegisterNetEvent("pma-voice:setPlayerRadio",function(radioChannel)
 	setPlayerRadio(source,radioChannel)
 end)
 
@@ -99,7 +104,7 @@ function setTalkingOnRadio(talking)
 		end
 	end
 end
-RegisterServerEvent("pma-voice:setTalkingOnRadio",setTalkingOnRadio)
+RegisterNetEvent("pma-voice:setTalkingOnRadio",setTalkingOnRadio)
 
 AddEventHandler("onResourceStop",function(Resource)
 	for channel,cfxFunctionRef in pairs(radioChecks) do
@@ -113,7 +118,7 @@ AddEventHandler("onResourceStop",function(Resource)
 	if type(radioNameGetter) == "table" then
 		local radioRef = radioNameGetter.__cfx_functionReference
 		if radioRef then
-			local isResource = string.match(functionRef,Resource)
+			local isResource = string.match(radioRef,Resource)
 			if isResource then
 				radioNameGetter = radioNameGetter_orig
 			end

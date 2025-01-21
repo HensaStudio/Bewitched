@@ -2,6 +2,17 @@ voiceData = {}
 radioData = {}
 callData = {}
 
+local mappedChannels = {}
+function firstFreeChannel()
+	for i = 1,2048 do
+		if not mappedChannels[i] then
+			return i
+		end
+	end
+
+	return 0
+end
+
 function defaultTable(source)
 	handleStateBagInitilization(source)
 
@@ -25,15 +36,15 @@ function handleStateBagInitilization(source)
 		plyState:set("voiceIntent","speech",true)
 		plyState:set("pmaVoiceInit",true,false)
 	end
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- ONCLIENTRESOURCESTART
------------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("onClientResourceStart",function(Resource)
-	if (GetCurrentResourceName() ~= Resource) then
-		return
-	end
 
+	local assignedChannel = firstFreeChannel()
+	plyState:set("assignedChannel",assignedChannel,true)
+	if assignedChannel ~= 0 then
+		mappedChannels[assignedChannel] = source
+	end
+end
+
+CreateThread(function()
 	local plyTbl = GetPlayers()
 	for i = 1,#plyTbl do
 		local ply = tonumber(plyTbl[i])
@@ -49,6 +60,8 @@ end)
 
 AddEventHandler("playerDropped",function()
 	local source = source
+	local mappedChannel = Player(source).state.assignedChannel
+
 	if voiceData[source] then
 		local plyData = voiceData[source]
 
@@ -62,22 +75,16 @@ AddEventHandler("playerDropped",function()
 
 		voiceData[source] = nil
 	end
+
+	if mappedChannel then
+		mappedChannels[mappedChannel] = nil
+	end
 end)
 
-RegisterServerEvent("pma-voice:Megaphone")
-AddEventHandler("pma-voice:Megaphone",function(Status)
-	local source = source
-	TriggerClientEvent("pma-voice:syncMegaphone",-1,source,Status)
-end)
-
-RegisterServerEvent("pma-voice:Megaserver")
-AddEventHandler("pma-voice:Megaserver",function(source,Status)
-	TriggerClientEvent("pma-voice:syncMegaphone",-1,source,Status)
-end)
-
-exports("isValidPlayer",function(source)
+function isValidPlayer(source)
 	return voiceData[source]
-end)
+end
+exports("isValidPlayer",isValidPlayer)
 
 function getPlayersInRadioChannel(channel)
 	local returnChannel = radioData[channel]

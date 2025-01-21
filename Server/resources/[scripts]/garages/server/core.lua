@@ -375,8 +375,9 @@ function Hensa.Sell(Name)
 				local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = Passport, Vehicle = Name })
 				if Consult[1] then
 					vRP.GiveBank(Passport, Price)
+
 					vRP.Query("vehicles/removeVehicles",{ Passport = Passport, Vehicle = Name })
-					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
+					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..Consult[1]["id"] })
 					vRP.Query("entitydata/RemoveData",{ Name = "Chest:"..Passport..":"..Name })
 				end
 			end
@@ -395,9 +396,9 @@ function Hensa.Transfer(Name)
 			return
 		end
 
-		local MyVehicle = vRP.Query("vehicles/selectVehicles", { Passport = Passport, Vehicle = Name })
-		if MyVehicle[1] then
-			if MyVehicle[1]["Mode"] == "dismantle" then
+		local TheVehicle = vRP.Query("vehicles/selectVehicles", { Passport = Passport, Vehicle = Name })
+		if TheVehicle[1] then
+			if TheVehicle[1]["Mode"] == "dismantle" then
 				TriggerClientEvent("Notify", source, "Atenção", "Jimmy Jango contratou você para o resgate, você não pode transferir o veículo dele.", "amarelo", 5000)
 				return
 			end
@@ -419,10 +420,10 @@ function Hensa.Transfer(Name)
 							else
 								vRP.Query("vehicles/moveVehicles", { Passport = Passport, OtherPassport = parseInt(OtherPassport), Vehicle = Name })
 
-								local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name })
+								local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..TheVehicle[1]["id"] })
 								if parseInt(#Datatable) > 0 then
-									vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..OtherPassport..":"..Name, Information = Datatable[1]["Information"] })
-									vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
+									vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..OtherPassport..":"..Name..":"..TheVehicle[1]["id"], Information = Datatable[1]["Information"] })
+									vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..TheVehicle[1]["id"] })
 								end
 
 								local Datatable = vRP.GetServerData("Chest:" .. Passport .. ":" .. Name)
@@ -566,7 +567,7 @@ function Hensa.Spawn(Name, Number)
 					local Coords = vCLIENT.SpawnPosition(source, Number)
 					if Coords then
 						local LsCustoms = nil
-						local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name })
+						local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..vehicle[1]["id"] })
 						if parseInt(#Datatable) > 0 then
 							LsCustoms = Datatable[1]["Information"]
 						end
@@ -1004,34 +1005,6 @@ function Spawned(plate)
 
 	return false
 end
------------------------------------------------------------------------------------------------------------------------------------------
--- VEHSPAWNED
------------------------------------------------------------------------------------------------------------------------------------------
-exports("VehSpawned", Spawned)
------------------------------------------------------------------------------------------------------------------------------------------
--- SPAWNVEH
------------------------------------------------------------------------------------------------------------------------------------------
-function SpawnVeh(data, network)
-	local LsCustoms = nil
-	local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..data["passport"]..":"..data["model"] })
-	if parseInt(#Datatable) > 0 then
-		LsCustoms = Datatable[1]["Information"]
-	end
-
-	vCLIENT.CreateVehicle(-1, data["model"], network, data["engine"], data["health"], LsCustoms, data["windows"], data["tyres"], data["brakes"], false)
-	TriggerEvent("engine:tryFuel", data["plate"], data["fuel"])
-	TriggerEvent("engine:insertBrakes", network, data["brakes"])
-	Spawn[data["plate"]] = { data["passport"], data["model"], network }
-
-	local Plates = GlobalState["Plates"]
-	Plates[data["plate"]] = data["passport"]
-
-	GlobalState:set("Plates", Plates, true)
-end
------------------------------------------------------------------------------------------------------------------------------------------
--- SPAWNVEH
------------------------------------------------------------------------------------------------------------------------------------------
-exports("SpawnVeh", SpawnVeh)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SIGNAL
 -----------------------------------------------------------------------------------------------------------------------------------------

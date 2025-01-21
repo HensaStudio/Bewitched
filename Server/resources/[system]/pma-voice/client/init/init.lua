@@ -1,7 +1,7 @@
------------------------------------------------------------------------------------------------------------------------------------------
--- GLOBALTHREAD
------------------------------------------------------------------------------------------------------------------------------------------
-CreateThread(function()
+AddEventHandler("onClientResourceStart",function(resource)
+	if resource ~= GetCurrentResourceName() then
+		return
+	end
 
 	local success = pcall(function()
 		local micClicksKvp = GetResourceKvpString("pma-voice_enableMicClicks")
@@ -19,11 +19,18 @@ CreateThread(function()
 
 	sendUIMessage({ uiEnabled = true, voiceModes = json.encode(Cfg.voiceModes), voiceMode = mode - 1 })
 
-	if LocalPlayer.state.radioChannel ~= 0 then
-		setRadioChannel(LocalPlayer.state.radioChannel)
+	local radioChannel = LocalPlayer.state.radioChannel or 0
+	local callChannel = LocalPlayer.state.callChannel or 0
+
+	if radioChannel ~= 0 then
+		setRadioChannel(radioChannel)
 	end
 
-	if LocalPlayer.state.callChannel ~= 0 then
-		setCallChannel(LocalPlayer.state.callChannel)
+	if callChannel ~= 0 then
+		setCallChannel(callChannel)
+	end
+
+	if not LocalPlayer.state.disableRadio then
+		LocalPlayer.state:set("disableRadio",0,true)
 	end
 end)

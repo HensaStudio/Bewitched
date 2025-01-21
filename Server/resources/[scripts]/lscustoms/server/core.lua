@@ -43,9 +43,21 @@ function Hensa.Save(Model,Plate,Mods,Price)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if vRP.PaymentFull(Passport,Price) then
-			local Identifier = vRP.PassportPlate(Plate) or Passport
-			vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..Identifier..":"..Model, Information = json.encode(Mods) })
-			vRP.UpgradeStress(Passport,math.random(5))
+			local TheVehicle = vRP.Query("vehicles/plateVehicles", { Plate = Plate })
+			if TheVehicle[1] then
+				vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..TheVehicle[1]["Passport"]..":"..Model..":"..TheVehicle[1]["id"], Information = json.encode(Mods) })
+				vRP.UpgradeStress(Passport, math.random(5))
+
+				TriggerClientEvent("Notify", source, "Sucesso", "Você modificou um veículo registrado.", "verde", 5000)
+			else
+				if CallPolices then
+					TriggerClientEvent("Notify", source, "Atenção", "Você modificou um veículo sem registro e a polícia foi acionada.", "amarelo", 5000)
+
+					exports["vrp"]:CallPolice({ ["Source"] = source, ["Passport"] = Passport, ["Permission"] = "Policia", ["Name"] = "Possível veículo roubado", ["Code"] = 20, ["Color"] = 16 })
+				else
+					TriggerClientEvent("Notify", source, "Atenção", "Você modificou um veículo sem registro.", "amarelo", 5000)
+				end
+			end
 
 			return true
 		end

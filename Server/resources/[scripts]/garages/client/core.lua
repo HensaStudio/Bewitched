@@ -48,7 +48,7 @@ function Hensa.SpawnPosition(Select)
 	until not DoesEntityExist(Position) or not GaragesCoords[Select][Slot]
 
 	if not GaragesCoords[Select][tostring(Checks)] then
-		TriggerEvent("Notify", "amarelo", "Vagas estão ocupadas.", "Atenção", 5000)
+		TriggerEvent("Notify","Atenção","Todas as vagas estão ocupadas.","default",5000)
 
 		return false
 	end

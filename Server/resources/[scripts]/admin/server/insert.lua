@@ -28,30 +28,6 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
 			end
-		elseif Mode == "ugroups" then
-			if vRP.HasGroup(Passport, "Admin") then
-				local Keyboard = vKEYBOARD.Primary(source, "Passaporte:")
-				if Keyboard then
-					local Result = ""
-					local Groups = vRP.Groups()
-					local OtherPassport = Keyboard[1]
-					for Permission, _ in pairs(Groups) do
-						local Data = vRP.DataGroups(Permission)
-						if Data[OtherPassport] then
-							local Hierarchy = vRP.Hierarchy(Permission)[vRP.GetUserHierarchy(OtherPassport, Permission)]
-							Result = Result .. "<br><b>Permissão:</b> " .. Permission .. "<br><b>Hierarquia:</b> " .. Hierarchy .. " [" .. Data[OtherPassport] .. "]<br>"
-						end
-					end
-
-					if Result ~= "" then
-						TriggerClientEvent("Notify", source, "Grupos Pertencentes", Result, "azul", 10000)
-					else
-						TriggerClientEvent("Notify", source, "Aviso", "O usuário não possui nenhum grupo.", "vermelho", 5000)
-					end
-				end
-			else
-				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
-			end
 		elseif Mode == "clearinv" then
 			if vRP.HasGroup(Passport,"Admin") then
 				local Keyboard = vKEYBOARD.Primary(source,"Passaporte:")
@@ -366,10 +342,15 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "group" then
 			if vRP.HasGroup(Passport, "Admin", 1) then
-				local Keyboard = vKEYBOARD.Tertiary(source, "Passaporte:", "Grupo:", "Hierarquia:")
+				local List = {}
+				for Index, _ in pairs(GroupsList()) do
+					table.insert(List, Index)
+				end
+
+				local Keyboard = vKEYBOARD.GiveGroup(source, "Passaporte:", "Hierarquia:", List)
 				if Keyboard and Keyboard[1] and Keyboard[2] and Keyboard[3] then
-					local Level = Keyboard[3]
-					local Permission = Keyboard[2]
+					local Level = Keyboard[2]
+					local Permission = Keyboard[3]
 					local OtherPassport = Keyboard[1]
 					local OtherSource = vRP.Source(Keyboard[1])
 
@@ -398,11 +379,40 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "ungroup" then
 			if vRP.HasGroup(Passport,"Admin",1) then
-				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Grupo:")
+				local List = {}
+				for Index, _ in pairs(GroupsList()) do
+					table.insert(List, Index)
+				end
+
+				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:",List)
 				if Keyboard then
 					TriggerClientEvent("Notify",source,"Sucesso","Removido <b>"..Keyboard[2].."</b> ao passaporte <b>"..Keyboard[1].."</b>.","verde",5000)
 					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** ungroup "..Keyboard[1].." "..Keyboard[2],0xa3c846)
 					vRP.RemovePermission(Keyboard[1],Keyboard[2])
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+			end
+		elseif Mode == "ugroups" then
+			if vRP.HasGroup(Passport, "Admin") then
+				local Keyboard = vKEYBOARD.Primary(source, "Passaporte:")
+				if Keyboard then
+					local Result = ""
+					local Groups = vRP.Groups()
+					local OtherPassport = Keyboard[1]
+					for Permission, _ in pairs(Groups) do
+						local Data = vRP.DataGroups(Permission)
+						if Data[OtherPassport] then
+							local Hierarchy = vRP.Hierarchy(Permission)[vRP.GetUserHierarchy(OtherPassport, Permission)]
+							Result = Result..Permission.." - "..Hierarchy.."["..Data[OtherPassport].."]\n"
+						end
+					end
+
+					if Result ~= "" then
+						vKEYBOARD.Area(source,Result)
+					else
+						TriggerClientEvent("Notify", source, "Aviso", "O usuário não possui nenhum grupo.", "vermelho", 5000)
+					end
 				end
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)

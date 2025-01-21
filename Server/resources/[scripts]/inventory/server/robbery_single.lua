@@ -151,6 +151,7 @@ AddEventHandler("inventory:RobberySingle",function(Number,Mode)
 								if math.random(0, 100) <= reward["Chance"] then
 									local amount = math.random(reward["Min"], reward["Max"])
 									vRP.GenerateItem(Passport, reward["Item"], amount, true)
+									vRP.UpgradeStress(Passport, math.random(2, 4))
 									return
 								end
 							end

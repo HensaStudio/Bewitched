@@ -3,12 +3,13 @@ game "gta5"
 lua54 "yes"
 
 ui_page "ui/index.html"
-
 shared_script "shared.lua"
 
 client_scripts {
 	"@vrp/config/Native.lua",
+	"@PolyZone/client.lua",
 	"@vrp/lib/Utils.lua",
+	"client/utils/*",
 	"client/init/proximity.lua",
 	"client/init/init.lua",
 	"client/init/main.lua",
@@ -27,5 +28,3 @@ files {
 	"ui/js/*.js",
 	"ui/index.html"
 }
-
-export "Mute"

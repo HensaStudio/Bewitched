@@ -156,18 +156,10 @@ RegisterCommand("PlayerFunctions",function()
 			exports["dynamic"]:AddButton("Capô", "Abrir capô.", "player:Doors", "6", "doors", true)
 		end
 
-		if MumbleIsConnected() then
-			-- exports["dynamic"]:AddMenu("Experiência", "Todas as suas habilidades.", "Experience")
-			-- local Experience = vSERVER.Experience()
-			-- for Name,Exp in pairs(Experience) do
-				-- exports["dynamic"]:AddButton(Name, "Você possuí <rare>"..Exp.." pontos</rare> no nível <rare>"..ClassCategory(Exp).."</rare>.", "", "", "Experience", false)
-			-- end
-
-			exports["dynamic"]:AddMenu("Estatísticas", "Estatísticas do seu personagem.", "Stats")
-			local Stats = vSERVER.PedStats()
-			for Name,Points in pairs(Stats) do
-				exports["dynamic"]:AddButton(Name, "Você possuí um total de <rare>"..Points.." "..Name.."</rare>.", "", "", "Stats", false)
-			end
+		exports["dynamic"]:AddMenu("Estatísticas", "Estatísticas do seu personagem.", "Stats")
+		local Stats = vSERVER.PedStats()
+		for Name,Points in pairs(Stats) do
+			exports["dynamic"]:AddButton(Name, "Você possuí um total de <rare>"..Points.." "..Name.."</rare>.", "", "", "Stats", false)
 		end
 
 		exports["dynamic"]:AddMenu("Outros", "Todas as funções do personagem.", "others")
@@ -287,6 +279,7 @@ RegisterCommand("AdminFunctions", function()
 				exports["dynamic"]:AddButton("Remove Group", "Remover o grupo de um ID.", "admin:Dynamic", "ungroup", "groups", true)
 
 				exports["dynamic"]:AddMenu("Personagens", "Clique para mais informações.", "peds")
+				exports["dynamic"]:AddButton("Barbershop", "Abra a Barbearia.", "barbershop:Open", "", "peds", false)
 				exports["dynamic"]:AddButton("Reset Skin", "Resete a Skin do ID.", "admin:Dynamic", "resetskin", "peds", true)
 				exports["dynamic"]:AddButton("Skin", "Mude a Skin do ID.", "admin:Dynamic", "skin", "peds", true)
 				exports["dynamic"]:AddButton("Delete", "Delete a conta do ID.", "admin:Dynamic", "delete", "peds", true)

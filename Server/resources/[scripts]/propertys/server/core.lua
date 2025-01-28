@@ -208,14 +208,14 @@ function Hensa.Toggle(Name,Mode)
 	if Passport then
 		if Mode == "Exit" then
 			Inside[Passport] = nil
-			TriggerEvent("vRP:BucketServer",source,"Exit")
+			exports["vrp"]:Bucket(source,"Exit")
 		else
 			Inside[Passport] = Propertys[Name]["Coords"]
 
 			if Name == "Hotel" then
-				TriggerEvent("vRP:BucketServer",source,"Enter",200000 + Passport)
+				exports["vrp"]:Bucket(source,"Enter",200000 + Passport)
 			else
-				TriggerEvent("vRP:BucketServer",source,"Enter",100000 + RouteNumber(Name))
+				exports["vrp"]:Bucket(source,"Enter",100000 + RouteNumber(Name))
 			end
 		end
 	end

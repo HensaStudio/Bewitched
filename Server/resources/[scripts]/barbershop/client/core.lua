@@ -109,7 +109,11 @@ exports("Apply",function(Data,Ped)
 
 	for Number = 1,46 do
 		if not Barbershop[Number] then
-			Barbershop[Number] = 0
+			if Number >= 6 and Number <= 9 then
+				Barbershop[Number] = -1
+			else
+				Barbershop[Number] = 0
+			end
 		end
 	end
 
@@ -174,7 +178,11 @@ end)
 function OpenBarbershop(Mode)
 	for Number = 1,46 do
 		if not Barbershop[Number] then
-			Barbershop[Number] = 0
+			if Number >= 6 and Number <= 9 then
+				Barbershop[Number] = -1
+			else
+				Barbershop[Number] = 0
+			end
 		end
 	end
 
@@ -245,7 +253,7 @@ CreateThread(function()
 					TimeDistance = 1
 
 					if IsControlJustPressed(1,38) and not exports["hud"]:Wanted() then
-						OpenBarbershop(false)
+						OpenBarbershop(vSERVER.Mode())
 					end
 				end
 			end
@@ -269,6 +277,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("barbershop:Open")
 AddEventHandler("barbershop:Open",function()
+	TriggerEvent("dynamic:Close")
 	OpenBarbershop(true)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

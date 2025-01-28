@@ -146,7 +146,7 @@ Use = {
 	["gemstone"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vRP.TakeItem(Passport,Full,Amount,false,Slot) then
 			TriggerClientEvent("inventory:Update",source)
-			vRP.UpgradeGemstone(Passport,Amount,false)
+			vRP.UpgradeGemstone(Passport,Amount)
 		end
 	end,
 

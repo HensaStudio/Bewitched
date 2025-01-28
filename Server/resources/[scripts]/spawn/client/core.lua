@@ -150,7 +150,6 @@ RegisterNUICallback("Spawn", function(Data, Callback)
 
 	SetEntityVisible(PlayerPedId(), true, 0)
 	LocalPlayer["state"]:set("Invisible", false, false)
-	TriggerServerEvent("vRP:BucketClient", "Exit")
 	SendNUIMessage({ Action = "Close" })
 	TriggerEvent("hud:Active", true)
 	SetNuiFocus(false, false)

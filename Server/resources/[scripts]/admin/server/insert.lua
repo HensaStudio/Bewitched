@@ -7,12 +7,19 @@ AddEventHandler("admin:Dynamic", function(Mode)
 	if Passport then
 		if Mode == "wl" then
 			if vRP.HasGroup(Passport,"Admin",1) then
-				local Keyboard = vKEYBOARD.Secondary(source,"ID da Whitelist:","Status: (0 inativa, 1 ativa)")
+				local Keyboard = vKEYBOARD.Options(source,"ID da Whitelist:",{ "Liberar", "Negar" })
 				if Keyboard then
-					TriggerClientEvent("Notify",source,"Sucesso","Whitelist editada.","verde",5000)
-					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** wl "..Keyboard[1].." "..Keyboard[2],0xa3c846)
+					local WhitelistResult = 0
+					if Keyboard[2] == "Liberar" then
+						WhitelistResult = 1
+					elseif Keyboard[2] == "Negar" then
+						WhitelistResult = 0
+					end
 
-					vRP.Query("accounts/SetWhitelist",{ Whitelist = Keyboard[2], id = Keyboard[1] })
+					TriggerClientEvent("Notify",source,"Sucesso","Whitelist editada.","verde",5000)
+					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** wl "..Keyboard[1].." "..WhitelistResult,0xa3c846)
+
+					vRP.Query("accounts/SetWhitelist",{ Whitelist = WhitelistResult, id = Keyboard[1] })
 				end
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
@@ -310,12 +317,18 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "weatherset" then
 			if vRP.HasGroup(Passport,"Admin",1) then
-				local Options = { "EXTRASUNNY", "CLEAR", "CLOUDS", "SMOG", "FOGGY", "OVERCAST", "RAIN", "THUNDER", "CLEARING", "NEUTRAL", "SNOW", "BLIZZARD", "SNOWLIGHT", "XMAS", "HALLOWEEN" }
+				local Location = { "Sul", "Norte" }
+				local Weathers = { "EXTRASUNNY", "CLEAR", "CLOUDS", "SMOG", "FOGGY", "OVERCAST", "RAIN", "THUNDER", "CLEARING", "NEUTRAL", "SNOW", "BLIZZARD", "SNOWLIGHT", "XMAS", "HALLOWEEN" }
 
-				local Keyboard = vKEYBOARD.Weather(source,Options)
+				local Keyboard = vKEYBOARD.Weather(source,Location,Weathers)
 				if Keyboard then
-					GlobalState["Weather"] = Keyboard[1]
-					TriggerClientEvent("Notify",source,"Sucesso","Você alterou o <b>Clima</b>.","verde",5000)
+					if Keyboard[1] == "Sul" then
+						GlobalState["WeatherS"] = Keyboard[2]
+						TriggerClientEvent("Notify",source,"Atenção","Você mudou o clima do <b>Sul</b>.","amarelo",5000)
+					elseif Keyboard[1] == "Norte" then
+						GlobalState["WeatherN"] = Keyboard[2]
+						TriggerClientEvent("Notify",source,"Atenção","Você mudou o clima do <b>Norte</b>.","amarelo",5000)
+					end
 				end
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
@@ -499,16 +512,29 @@ AddEventHandler("admin:Dynamic", function(Mode)
 				if vRPC.InsideVehicle(source) then
 					local Vehicle,Network,Plate = vRPC.VehicleList(source,10)
 					if Vehicle then
-						local Keyboard = vKEYBOARD.Primary(source, "Litros:")
+						local NitroList = { "Remover" ,"50%", "100%", "Admin" }
+						local NitroValue = 0
+
+						local Keyboard = vKEYBOARD.Nitro(source, NitroList)
 						if Keyboard then
+							if Keyboard[1] == "Remover" then
+								NitroValue = 0
+							elseif Keyboard[1] == "50%" then
+								NitroValue = 1000
+							elseif Keyboard[1] == "100%" then
+								NitroValue = 2000
+							elseif Keyboard[1] == "Admin" then
+								NitroValue = 100000
+							end
+
 							local Networked = NetworkGetEntityFromNetworkId(Network)
 							if DoesEntityExist(Networked) then
 								local Nitro = GlobalState["Nitro"]
-								Nitro[Plate] = parseInt(Keyboard[1])
+								Nitro[Plate] = NitroValue
 								GlobalState:set("Nitro", Nitro, true)
 							end
 
-							TriggerClientEvent("Notify",source,"Sucesso","Veículo com <b>"..parseInt(Keyboard[1]).."% de Nitro</b>.","verde",5000)
+							TriggerClientEvent("Notify",source,"Sucesso","Nitro atualizado.","verde",5000)
 						end
 					end
 				end
@@ -606,7 +632,9 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "announce" then
 			if vRP.HasGroup(Passport,"Admin") then
-				local Keyboard = vKEYBOARD.Quaternary(source,"Tema:","Anúncio:","Título:","Segundos:")
+				local Themes = { "amarelo", "announcement", "roxo", "blood", "default", "vermelho", "fome", "hospital", "azul", "mechanic", "money", "phone", "policia", "server", "verde", "sede" }
+
+				local Keyboard = vKEYBOARD.Announce(source,Themes,"Anúncio:","Título:","Segundos:")
 				if Keyboard then
 					TriggerClientEvent("Notify", -1, Keyboard[3], Keyboard[2], Keyboard[1], Keyboard[4] * 1000)
 					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** announce "..Keyboard[1].." "..Keyboard[2].." "..Keyboard[3].." "..Keyboard[4] * 1000,0xa3c846)
@@ -632,8 +660,9 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = Keyboard[1], Vehicle = Keyboard[2] })
 					if Consult[1] then
 						TriggerClientEvent("Notify",source,"Atenção","O veículo <b>"..Keyboard[2].."</b> já está adicionado.","amarelo",5000)
-						return
 					else
+						TriggerClientEvent("Notify",source,"Sucesso","Veículo adicionado com sucesso.","verde",5000)
+
 						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** setcar "..Keyboard[1].." "..Keyboard[2],0xa3c846)
 						vRP.Query("vehicles/addVehicles",{ Passport = Keyboard[1], Vehicle = Keyboard[2], Plate = vRP.GeneratePlate(), Weight = VehicleWeight(Keyboard[2]), Work = "false" })
 					end
@@ -645,9 +674,10 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			if vRP.HasGroup(Passport,"Admin") then
 				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Veículo:")
 				if Keyboard then
+					TriggerClientEvent("Notify",source,"Sucesso","Veículo removido com sucesso.","verde",5000)
+
 					vRP.Query("vehicles/removeVehicles",{ Passport = Keyboard[1], Vehicle = Keyboard[2] })
 					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** remcar "..Keyboard[1].." "..Keyboard[2],0xa3c846)
-					TriggerClientEvent("Notify",source,"Sucesso","Veículo removido com sucesso.","verde",5000)
 				end
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
@@ -719,21 +749,6 @@ AddEventHandler("admin:Dynamic", function(Mode)
 						if OtherSource then
 							TriggerClientEvent("admin:LightningThunder", OtherSource, tonumber(Keyboard[1]))
 						end
-					end
-				end
-			else
-				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
-			end
-		elseif Mode == "commands" then
-			if vRP.HasGroup(Passport,"Admin",1) then
-				local Keyboard = vKEYBOARD.Primary(source,"Número: (0 = desativado / 1 = ativado)")
-				if Keyboard then
-					if tonumber(Keyboard[1]) == 1 then
-						GlobalState["Commands"] = true
-						TriggerClientEvent("Notify",source,"Sucesso","Comandos ativados.","verde",5000)
-					elseif tonumber(Keyboard[1]) == 0 then
-						GlobalState["Commands"] = false
-						TriggerClientEvent("Notify",source,"Atenção","Comandos desativados.","amarelo",5000)
 					end
 				end
 			else

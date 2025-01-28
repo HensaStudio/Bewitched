@@ -107,6 +107,30 @@ function Instagram(First)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- NITRO
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Nitro(First)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Selecione o campo abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "options",
+				placeholder = "Selecione uma opção",
+				options = First,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" then
+		return { Array["1"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- OPTIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Options(First,Second)
@@ -138,7 +162,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WEATHER
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Weather(First)
+function Weather(First,Second)
 	local Array = Keyboard({
 		title = "Formulário",
 		subtitle = "Preencha os campos abaixo",
@@ -146,15 +170,21 @@ function Weather(First)
 			{
 				id = 1,
 				mode = "options",
-				placeholder = "Selecione um Clima",
+				placeholder = "Selecione uma Região",
 				options = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "options",
+				placeholder = "Selecione um Clima",
+				options = Second,
 				value = ""
 			}
 		}
 	})
 
-	if Array and Array["1"] and Array["1"]["input"] ~= "" then
-		return { Array["1"]["input"] }
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"] }
 	end
 
 	return false
@@ -419,6 +449,45 @@ function Quaternary(First,Second,Third,Fourth)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ANNOUNCE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Announce(First,Second,Third,Fourth)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "options",
+				placeholder = "Selecione um Tema",
+				options = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "area",
+				placeholder = Second,
+				value = ""
+			},{
+				id = 3,
+				mode = "text",
+				placeholder = Third,
+				value = ""
+			},{
+				id = 4,
+				mode = "text",
+				placeholder = Fourth,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" and Array["3"] and Array["3"]["input"] ~= "" and Array["4"] and Array["4"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"],Array["3"]["input"],Array["4"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- COPY
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Copy(First,Second)
@@ -516,6 +585,12 @@ function Hensa.Options(First,Secondary)
 	return Options(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- NITRO
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Nitro(First)
+	return Nitro(First)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- GIVEGROUP
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.GiveGroup(First,Secondary,Third)
@@ -530,8 +605,8 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WEATHER
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Weather(First)
-	return Weather(First)
+function Hensa.Weather(First,Secondary)
+	return Weather(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TIMESET
@@ -546,19 +621,27 @@ function Hensa.Item(First,Secondary,Third,Fourth,Fifty)
 	return Item(First,Secondary,Third,Fourth,Fifty)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ANNOUNCE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Announce(First,Secondary,Third,Fourth)
+	return Announce(First,Secondary,Third,Fourth)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("Item",Item)
 exports("Area",Area)
 exports("Copy",Copy)
+exports("Nitro",Nitro)
 exports("Options",Options)
 exports("Weather",Weather)
 exports("Timeset",Timeset)
 exports("Primary",Primary)
 exports("Password",Password)
 exports("Tertiary",Tertiary)
+exports("Announce",Announce)
 exports("Secondary",Secondary)
 exports("Instagram",Instagram)
 exports("GiveGroup",GiveGroup)
-exports("RemoveGroup",RemoveGroup)
 exports("Quaternary",Quaternary)
+exports("RemoveGroup",RemoveGroup)

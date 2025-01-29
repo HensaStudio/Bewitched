@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `banneds` (
   `License` varchar(50) NOT NULL,
   `Token` varchar(255) NOT NULL,
   `Time` int(20) NOT NULL DEFAULT 0,
+  `Reason` longtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

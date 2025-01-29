@@ -264,22 +264,30 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "ban" then
 			if vRP.HasGroup(Passport,"Admin",2) then
-				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Dias:")
+				local Keyboard = vKEYBOARD.Ban(source,"Passaporte:","Dias:","Motivo:")
 				if Keyboard then
-					local Days = parseInt(Keyboard[2])
+					local Days = parseInt(Keyboard[2],true)
 					local OtherPassport = parseInt(Keyboard[1])
-					local Identity = vRP.Identity(OtherPassport)
-					if Identity then
-						local OtherSource = vRP.Source(OtherPassport)
-						if OtherSource then
-							local Token = GetPlayerTokens(OtherSource)
-							for k,v in pairs(Token) do
-								vRP.Kick(OtherPassport,"Banido.")
-								vRP.Query("banneds/InsertBanned",{ License = Identity["License"], Token = v, Time = Days })
-							end
+					if OtherPassport == Passport then
+						TriggerClientEvent("Notify",source,"Aviso","Você não pode banir você mesmo.","vermelho",5000)
+					else
+						local Identity = vRP.Identity(OtherPassport)
+						if Identity then
+							local OtherSource = vRP.Source(OtherPassport)
+							if OtherSource then
+								if Days > 999 then
+									Days = 999
+								end
 
-							exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** ban "..Keyboard[1].." "..Keyboard[2],0xa3c846)
-							TriggerClientEvent("Notify",source,"Atenção","Passaporte <b>"..OtherPassport.."</b> banido por <b>"..Days.."</b> dias.","amarelo",5000)
+								local Token = GetPlayerTokens(OtherSource)
+								for k,v in pairs(Token) do
+									vRP.Kick(OtherPassport,"Banido.")
+									vRP.Query("banneds/InsertBanned",{ License = Identity["License"], Token = v, Time = Days, Reason = Keyboard[3] })
+								end
+
+								exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** ban "..Keyboard[1].." "..Keyboard[2],0xa3c846)
+								TriggerClientEvent("Notify",source,"Sucesso","Passaporte <b>"..OtherPassport.."</b> banido por <b>"..Days.."</b> dias.","verde",5000)
+							end
 						end
 					end
 				end
@@ -397,7 +405,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					table.insert(List, Index)
 				end
 
-				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:",List)
+				local Keyboard = vKEYBOARD.RemoveGroup(source,"Passaporte:",List)
 				if Keyboard then
 					TriggerClientEvent("Notify",source,"Sucesso","Removido <b>"..Keyboard[2].."</b> ao passaporte <b>"..Keyboard[1].."</b>.","verde",5000)
 					exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** ungroup "..Keyboard[1].." "..Keyboard[2],0xa3c846)

@@ -314,7 +314,7 @@ function RemoveGroup(First,Second)
 				id = 2,
 				mode = "options",
 				placeholder = "Selecione uma Permissão",
-				options = Third,
+				options = Second,
 				value = ""
 			}
 		}
@@ -322,6 +322,40 @@ function RemoveGroup(First,Second)
 
 	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
 		return { Array["1"]["input"],Array["2"]["input"] }
+	end
+
+	return false
+end
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BAN
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Ban(First,Second,Third)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "text",
+				placeholder = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "text",
+				placeholder = Second,
+				value = ""
+			},{
+				id = 3,
+				mode = "area",
+				placeholder = Third,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" and Array["3"] and Array["3"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"],Array["3"]["input"] }
 	end
 
 	return false
@@ -448,6 +482,30 @@ function Quaternary(First,Second,Third,Fourth)
 
 	return false
 end
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PERIMETERS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Perimeters(First)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "text",
+				placeholder = "Escolha um Nome",
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" then
+		return { Array["1"]["input"] }
+	end
+
+	return false
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ANNOUNCE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -535,6 +593,12 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Password(First)
 	return Password(First)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BAN
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Ban(First,Second,Third)
+	return Ban(First,Second,Third)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PRIMARY
@@ -627,8 +691,15 @@ function Hensa.Announce(First,Secondary,Third,Fourth)
 	return Announce(First,Secondary,Third,Fourth)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PERIMETERS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Perimeters(First)
+	return Perimeters(First)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
+exports("Ban",Ban)
 exports("Item",Item)
 exports("Area",Area)
 exports("Copy",Copy)
@@ -644,4 +715,5 @@ exports("Secondary",Secondary)
 exports("Instagram",Instagram)
 exports("GiveGroup",GiveGroup)
 exports("Quaternary",Quaternary)
+exports("Perimeters",Perimeters)
 exports("RemoveGroup",RemoveGroup)

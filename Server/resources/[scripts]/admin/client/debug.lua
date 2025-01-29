@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Debug = false
 local Actived = false
+local inFreeze = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TOGGLEDEBUG
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -34,7 +35,7 @@ function GetVehicle()
 	repeat
 		local pos = GetEntityCoords(ped)
 		local distance = GetDistanceBetweenCoords(playerCoords, pos, true)
-		if canPedBeUsed(ped) and distance < 3.0 and (distanceFrom == nil or distance < distanceFrom) then
+		if canPedBeUsed(ped) and distance < 30.0 and (distanceFrom == nil or distance < distanceFrom) then
 			distanceFrom = distance
 			rped = ped
 
@@ -98,7 +99,7 @@ function GetNPC()
 	repeat
 		local pos = GetEntityCoords(ped)
 		local distance = GetDistanceBetweenCoords(playerCoords, pos, true)
-		if canPedBeUsed(ped) and distance < 3.0 and (distanceFrom == nil or distance < distanceFrom) then
+		if canPedBeUsed(ped) and distance < 30.0 and (distanceFrom == nil or distance < distanceFrom) then
 			distanceFrom = distance
 			rped = ped
 
@@ -107,6 +108,8 @@ function GetNPC()
 			else
 				DebugDrawText3D(pos["x"],pos["y"],pos["z"], "Ped: " .. ped .. " Model: " .. GetEntityModel(ped) .. " Relationship HASH: " .. GetPedRelationshipGroupHash(ped) )
 			end
+
+            FreezeEntityPosition(ped, inFreeze)
 		end
 
 		success, ped = FindNextPed(handle)
@@ -169,7 +172,16 @@ function EnableDebug()
 				local nearped = GetNPC()
 				local veh = GetVehicle()
 				local nearobj = GetObject()
+
+                if IsControlJustReleased(0, 38) then
+                    if inFreeze then
+                        inFreeze = false
+                    else
+                        inFreeze = true             
+                    end
+                end
 			else
+                break
 				Wait(5000)
 			end
 		end

@@ -187,7 +187,11 @@ end)
 -- ADDSTATEBAGCHANGEHANDLER
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddStateBagChangeHandler("Quake",nil,function(Name,Key,Value)
-	ShakeGameplayCam("SKY_DIVING_SHAKE",1.0)
+	if Value then
+		ShakeGameplayCam("SKY_DIVING_SHAKE",1.0)
+	else
+		ShakeGameplayCam("SKY_DIVING_SHAKE",0.0)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LIMPAREA
@@ -197,6 +201,7 @@ function Hensa.Limparea(Coords)
 	ClearAreaOfCops(Coords["x"],Coords["y"],Coords["z"],100.0,0)
 	ClearAreaOfObjects(Coords["x"],Coords["y"],Coords["z"],100.0,0)
 	ClearAreaOfProjectiles(Coords["x"],Coords["y"],Coords["z"],100.0,0)
+	ClearArea(Coords["x"],Coords["y"],Coords["z"],100.0,true,false,false,false)
 	ClearAreaOfVehicles(Coords["x"],Coords["y"],Coords["z"],100.0,false,false,false,false,false)
 	ClearAreaLeaveVehicleHealth(Coords["x"],Coords["y"],Coords["z"],100.0,false,false,false,false)
 end

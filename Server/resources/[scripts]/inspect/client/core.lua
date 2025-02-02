@@ -20,6 +20,7 @@ RegisterNetEvent("inventory:Close")
 AddEventHandler("inventory:Close",function()
 	if Opened then
 		vSERVER.Reset()
+
 		Opened = false
 	end
 end)
@@ -57,9 +58,12 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("inspect:Open")
 AddEventHandler("inspect:Open",function()
-	Opened = true
-	TriggerEvent("inventory:Open",{
-		Type = "Inspect",
-		Resource = "inspect"
-	})
+	if not Opened then
+		Opened = true
+
+		TriggerEvent("inventory:Open",{
+			Type = "Inspect",
+			Resource = "inspect"
+		})
+	end
 end)

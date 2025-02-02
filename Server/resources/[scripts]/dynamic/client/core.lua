@@ -3,13 +3,11 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Tunnel = module("vrp","lib/Tunnel")
 local Proxy = module("vrp","lib/Proxy")
-vRPS = Tunnel.getInterface("vRP")
 vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
 vSERVER = Tunnel.getInterface("dynamic")
-vINVENTORY = Tunnel.getInterface("inventory")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -20,15 +18,15 @@ local Dynamic = false
 local Services = {
 	{
 		["Permission"] = "Policia",
-		["Coords"] = vec3(442.67, -981.89, 30.68),
+		["Coords"] = vec3(445.05, -982.08, 30.68),
 		["Distance"] = 2.0
 	}, {
 		["Permission"] = "Paramedico",
-		["Coords"] = vec3(311.48, -594.09, 43.29),
+		["Coords"] = vec3(312.35, -597.52, 43.29),
 		["Distance"] = 2.0
 	}, {
 		["Permission"] = "Mecanico",
-		["Coords"] = vec3(724.15, -1071.79, 23.12),
+		["Coords"] = vec3(949.69, -957.4, 39.83),
 		["Distance"] = 2.0
 	}
 }
@@ -109,15 +107,17 @@ end)
 RegisterCommand("PlayerFunctions",function()
 	local Ped = PlayerPedId()
 	if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not LocalPlayer["state"]["Prison"] and not Dynamic and not IsPauseMenuActive() and GetEntityHealth(Ped) > 100 then
-		if LocalPlayer["state"]["Premium"] then
-			exports["dynamic"]:AddMenu("Armário Premium", "Colocar/Retirar roupas.", "warpremium")
-			exports["dynamic"]:AddButton("Vestir", "Vestir-se com as vestimentas guardadas.", "player:Outfit", "aplicarpre", "warpremium", true)
-			exports["dynamic"]:AddButton("Guardar", "Salvar suas vestimentas do corpo.", "player:Outfit", "salvarpre", "warpremium", true)
-		end
+		exports["dynamic"]:AddMenu("Armário","Abrir lista com todas as vestimentas.","wardrobe")
+		exports["dynamic"]:AddButton("Guardar","Salvar vestimentas do corpo.","dynamic:Clothes","Save","wardrobe",true)
 
-		exports["dynamic"]:AddMenu("Armário", "Colocar/Retirar roupas.", "wardrobe")
-		exports["dynamic"]:AddButton("Vestir", "Vestir-se com as vestimentas guardadas.", "player:Outfit", "aplicar", "wardrobe", true)
-		exports["dynamic"]:AddButton("Guardar", "Salvar suas vestimentas do corpo.", "player:Outfit", "salvar", "wardrobe", true)
+		local Clothes = vSERVER.Clothes()
+		if parseInt(#Clothes) > 0 then
+			for Index,v in pairs(Clothes) do
+				exports["dynamic"]:AddMenu(v, "Informações da vestimenta.", Index, "wardrobe")
+				exports["dynamic"]:AddButton("Aplicar", "Vestir-se com as vestimentas.", "dynamic:Clothes", "Apply-"..v, Index, true)
+				exports["dynamic"]:AddButton("Remover", "Deletar a vestimenta do armário.", "dynamic:Clothes", "Delete-"..v, Index, true, true)
+			end
+		end
 
 		exports["dynamic"]:AddMenu("Roupas", "Colocar/Retirar roupas.", "clothes")
 		exports["dynamic"]:AddButton("Chapéu", "Colocar/Retirar o chapéu.", "player:Outfit", "Hat", "clothes", true)
@@ -156,17 +156,20 @@ RegisterCommand("PlayerFunctions",function()
 			exports["dynamic"]:AddButton("Capô", "Abrir capô.", "player:Doors", "6", "doors", true)
 		end
 
-		exports["dynamic"]:AddMenu("Estatísticas", "Estatísticas do seu personagem.", "Stats")
-		local Stats = vSERVER.PedStats()
-		for Name,Points in pairs(Stats) do
-			exports["dynamic"]:AddButton(Name, "Você possuí um total de <rare>"..Points.." "..Name.."</rare>.", "", "", "Stats", false)
-		end
-
 		exports["dynamic"]:AddMenu("Outros", "Todas as funções do personagem.", "others")
 		exports["dynamic"]:AddButton("Estatísticas da Cidade", "Tudo sobre nossa cidade.", "admin:Dynamic", "stats", "others", true)
 		exports["dynamic"]:AddButton("Propriedades", "Marcar/Desmarcar propriedades no mapa.", "propertys:Blips", "", "others", false)
 		exports["dynamic"]:AddButton("Ferimentos", "Verificar ferimentos no corpo.", "paramedic:Injuries", "", "others", false)
 		exports["dynamic"]:AddButton("Desbugar", "Recarregar o personagem.", "player:Debug", "", "others", true)
+
+		local Stats = vSERVER.PedStats()
+		if Stats then
+			exports["dynamic"]:AddMenu("Estatísticas", "Estatísticas do seu personagem.", "Stats")
+
+			for Name,Points in pairs(Stats) do
+				exports["dynamic"]:AddButton(Name, "Você possuí um total de <rare>"..Points.." "..Name.."</rare>.", "", "", "Stats", false)
+			end
+		end
 
 		exports["dynamic"]:Open()
 	end
@@ -180,8 +183,6 @@ RegisterCommand("EmergencyFunctions",function()
 		local Health = GetEntityHealth(Ped)
 
 		if CheckPolice() then
-			exports["dynamic"]:AddButton("Computador", "Abrir painel da Polícia.", "police:Open", "", false, false)
-
 			exports["dynamic"]:AddButton("Placa", "Verificar emplacamento.", "police:Plate", "", false, true)
 
 			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Policia", false, true)
@@ -233,6 +234,9 @@ RegisterCommand("EmergencyFunctions",function()
 
 				exports["dynamic"]:Open()
 			end
+		elseif LocalPlayer["state"]["Mecanico"] then
+			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Mecanico", false, true)
+			exports["dynamic"]:Open()
 		else
 			local Coords = GetEntityCoords(Ped)
 			for Permission,v in pairs(Services) do

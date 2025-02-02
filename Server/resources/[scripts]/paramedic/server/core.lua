@@ -40,6 +40,32 @@ AddEventHandler("paramedic:Treatment",function(Entitys)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PARAMEDIC:ADRENALINE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("paramedic:Adrenaline")
+AddEventHandler("paramedic:Adrenaline",function(Entitys)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local Adrenaline = vRP.ConsultItem(Passport,"adrenaline")
+		local AdrenalinePlus = vRP.ConsultItem(Passport,"adrenalineplus")
+
+		if not Adrenaline and not AdrenalinePlus then
+			TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName("adrenaline").."</b>.","amarelo",5000)
+		else
+			if AdrenalinePlus and vRP.TakeItem(Passport,"adrenalineplus",1,true) then
+				vSURVIVAL.UpdateCrawl(Entitys,115)
+			elseif Adrenaline and vRP.TakeItem(Passport,"adrenaline",1,true) then
+				if vSURVIVAL.CheckCrawl(Entitys) then
+					vSURVIVAL.UpdateCrawl(Entitys,115)
+				else
+					TriggerClientEvent("Notify",source,"Adrenalina","Os batimentos cardiados não podem ser acelerados no momento.","amarelo",5000)
+				end
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- PARAMEDIC:REVIVE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("paramedic:Revive")
@@ -50,10 +76,10 @@ AddEventHandler("paramedic:Revive",function(Entitys)
 		if vRP.HasService(Passport,"Paramedico") then
 			Player(source)["state"]["Cancel"] = true
 			local OtherPassport = vRP.Passport(Entitys)
-			TriggerClientEvent("Progress",source,"Reanimando",10000)
+			TriggerClientEvent("Progress",source,"Reanimando",30000)
 			vRPC.PlayAnim(source,false,{"mini@cpr@char_a@cpr_str","cpr_pumpchest"},true)
 
-			SetTimeout(10000,function()
+			SetTimeout(30000,function()
 				vRPC.Destroy(source)
 				vRP.Revive(Entitys,101)
 				vRP.UpgradeThirst(OtherPassport,10)

@@ -13,6 +13,10 @@ Tunnel.bindInterface("survival",Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
 LocalPlayer["state"]:set("Crawl",false,true)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- VARIABLES
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Login = false
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- DEATH
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Death = {
@@ -97,11 +101,18 @@ CreateThread(function()
 					local Coords = GetEntityCoords(Ped)
 					NetworkResurrectLocalPlayer(Coords,0.0)
 
-					LocalPlayer["state"]:set("Crawl",true,true)
-					Crawl["Timer"] = Crawl["Default"]
 					SetEntityHealth(Ped,100)
 					Death["Status"] = true
 					Death["Pressed"] = 0
+
+					if not Login then
+						LocalPlayer["state"]:set("Crawl",true,true)
+						Crawl["Timer"] = Crawl["Default"]
+					else
+						Login = false
+						Crawl["Timer"] = 1
+						Death["Cooldown"] = GetGameTimer()
+					end
 
 					SendNUIMessage({ Action = "Open" })
 					TriggerServerEvent("paramedic:bloodDeath")
@@ -151,7 +162,8 @@ CreateThread(function()
 								SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"] } })
 								LocalPlayer["state"]:set("Blastoise",true,false)
 								NetworkSetFriendlyFireOption(false)
-								SetEntityInvincible(Ped,true)
+								SetEntityInvincible(Ped,false)
+								SetLocalPlayerAsGhost(true)
 							end
 						elseif Death["Timer"] > 0 then
 							Death["Timer"] = Death["Timer"] - 1
@@ -191,7 +203,7 @@ CreateThread(function()
 								end
 							end
 						else
-							if not IsEntityPlayingAnim(Ped,"dead","dead_a",3) then
+							if not IsEntityPlayingAnim(Ped,"dead","dead_a",3) and not LocalPlayer["state"]["Carry"] then
 								TaskPlayAnim(Ped,"dead","dead_a",8.0,8.0,-1,1,1,0,0,0)
 							end
 						end
@@ -247,6 +259,7 @@ function FinishSurvival()
 
 	ClearPedTasks(Ped)
 	SetEntityHealth(Ped,160)
+	SetLocalPlayerAsGhost(false)
 	SetEntityInvincible(Ped,false)
 	ClearFacialIdleAnimOverride(Ped)
 	NetworkSetFriendlyFireOption(true)
@@ -291,6 +304,7 @@ exports("Revive",function(Health)
 		Crawl["Timer"] = 0
 
 		ClearPedTasks(Ped)
+		SetLocalPlayerAsGhost(false)
 		ClearFacialIdleAnimOverride(Ped)
 		NetworkSetFriendlyFireOption(true)
 
@@ -307,3 +321,9 @@ end)
 function Hensa.Revive(Health)
 	exports["survival"]:Revive(Health)
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- LOGIN
+-----------------------------------------------------------------------------------------------------------------------------------------
+exports("Login",function()
+	Login = true
+end)

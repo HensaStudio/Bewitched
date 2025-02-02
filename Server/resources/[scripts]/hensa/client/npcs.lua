@@ -512,6 +512,16 @@ local List = {
 		["Coords"] = vec4(341.32,-578.82,28.8,167.25),
 		["Model"] = "s_m_m_paramedic_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Hospital Service
+		["Distance"] = 30,
+		["Coords"] = vec4(312.35,-597.52,43.29,73.71),
+		["Model"] = "s_m_m_paramedic_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Policia Service
+		["Distance"] = 30,
+		["Coords"] = vec4(445.05,-982.08,30.68,90.71),
+		["Model"] = "mp_m_securoguard_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Garagem Prisão
 		["Distance"] = 50,
 		["Coords"] = vec4(1839.86,2545.76,45.66,269.3),

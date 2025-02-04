@@ -303,7 +303,7 @@ end)
 -- WAREHOUSE:OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("warehouse:Open",function(Mode)
-	if not exports["hud"]:Wanted() and vSERVER.Warehouse(Mode) then
+	if vSERVER.Warehouse(Mode) and vSERVER.Check() then
 		Opened = Mode
 
 		TriggerEvent("inventory:Open",{

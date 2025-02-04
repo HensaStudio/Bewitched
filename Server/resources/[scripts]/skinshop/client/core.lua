@@ -127,7 +127,7 @@ CreateThread(function()
 				if #(Coords - Locations[Number]) <= 2.0 then
 					TimeDistance = 1
 
-					if IsControlJustPressed(0,38) and not exports["hud"]:Wanted() and not exports["hud"]:Reposed() then
+					if IsControlJustPressed(0,38) and vSERVER.Check() then
 						OpenSkinshop()
 					end
 				end
@@ -144,7 +144,7 @@ RegisterNetEvent("skinshop:Open")
 AddEventHandler("skinshop:Open",function()
 	TriggerEvent("dynamic:Close")
 
-	if not exports["hud"]:Wanted() and not exports["hud"]:Reposed() then
+	if vSERVER.Check() then
 		OpenSkinshop()
 	end
 end)

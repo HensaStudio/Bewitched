@@ -45,7 +45,7 @@ end)
 -- BANK
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Bank",function()
-	if not exports["hud"]:Wanted() then
+	if vSERVER.Check() then
 		SetNuiFocus(true,true)
 		TransitionToBlurred(1000)
 		TriggerEvent("hud:Active",false)

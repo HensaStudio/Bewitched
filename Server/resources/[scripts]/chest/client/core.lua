@@ -160,7 +160,7 @@ end)
 -- STORE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Store",function(Data,Callback)
-	if MumbleIsConnected() and not exports["hud"]:Wanted() then
+	if MumbleIsConnected() and vSERVER.Check() then
 		vSERVER.Store(Data["item"],Data["slot"],Data["amount"],Data["target"],Block)
 	end
 

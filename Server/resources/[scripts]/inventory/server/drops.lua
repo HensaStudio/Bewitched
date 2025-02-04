@@ -26,7 +26,7 @@ function Hensa.Drops(Item,Slot,Amount)
 	local source = source
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and Amount >= 1 and not Player(source)["state"]["Handcuff"] and not exports["hud"]:Wanted(Passport) and not vRPC.InsideVehicle(source) then
+	if Passport and not Active[Passport] and Amount >= 1 and not Player(source)["state"]["Handcuff"] and not vRPC.InsideVehicle(source) and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
 		if not vRP.CheckDamaged(Item) then
 			if vRP.TakeItem(Passport,Item,Amount,false) then
 				exports["inventory"]:Drops(Passport,source,Item,Amount)

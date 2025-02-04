@@ -34,14 +34,14 @@ local Premium = {
 	[3] = 0.03
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VERIFY
+-- CHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Verify(Number)
+function Hensa.Check(Number)
 	local source = source
 	local Passport = vRP.Passport(source)
 
-	if not Passport then
-		return false
+	if Passport and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
+		return true
 	end
 
 	if BankVerification then
@@ -51,7 +51,7 @@ function Hensa.Verify(Number)
 		end
 	end
 
-	return true
+	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PAYMENTSTORE
@@ -184,7 +184,7 @@ end)
 function Hensa.Vehicles(Number)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports["hud"]:Wanted(Passport) then
+	if Passport and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
 		if Garages[Number]["perm"] then
 			if not vRP.HasGroup(Passport, Garages[Number]["perm"]) then
 				return false

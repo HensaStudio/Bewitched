@@ -555,7 +555,7 @@ function Hensa.Send(Slot,Amount)
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
 	local ClosestPed = vRPC.ClosestPed(source)
-	if Passport and not Active[Passport] and ClosestPed and not exports["hud"]:Wanted(Passport) then
+	if Passport and not Active[Passport] and ClosestPed and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
 		local Inv = vRP.Inventory(Passport)
 		if not Inv[Slot] or not Inv[Slot]["item"] then
 			return false

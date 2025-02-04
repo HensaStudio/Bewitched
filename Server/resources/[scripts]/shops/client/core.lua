@@ -55,7 +55,7 @@ end)
 -- SHOPS:OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("shops:Open",function(Number)
-	if not exports["hud"]:Wanted() then
+	if vSERVER.Check() then
 		if Location[Number] then
 			if vSERVER.Permission(Location[Number]["Mode"]) then
 				Opened = Location[Number]["Mode"]

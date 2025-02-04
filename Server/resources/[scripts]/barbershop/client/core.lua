@@ -252,7 +252,7 @@ CreateThread(function()
 				if #(Coords - Locations[Number]) <= 2.5 then
 					TimeDistance = 1
 
-					if IsControlJustPressed(1,38) and not exports["hud"]:Wanted() then
+					if IsControlJustPressed(1,38) and vSERVER.Check() then
 						OpenBarbershop(vSERVER.Mode())
 					end
 				end

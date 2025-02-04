@@ -35,7 +35,7 @@ exports("Wanted", function(Passport, source)
 			if Call[Passport] <= os.time() and source > 0 then
 				Call[Passport] = os.time() + 60
 
-				TriggerClientEvent("Notify", source, "amarelo", "Você foi denunciado, parece que suas digitais estão no banco de dados do governo como procurado.", "Atenção", 10000)
+				TriggerClientEvent("Notify", source, "Polícia", "Você foi denunciado, parece que suas digitais estão no banco de dados do governo como procurado.", "policia", 10000)
 
 				local Ped = GetPlayerPed(source)
 				local Coords = GetEntityCoords(Ped)

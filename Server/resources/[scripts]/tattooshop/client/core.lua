@@ -1298,7 +1298,7 @@ CreateThread(function()
 				if #(Coords - Locations[Number]) <= 2.0 then
 					TimeDistance = 1
 
-					if IsControlJustPressed(1,38) and not exports["hud"]:Wanted() then
+					if IsControlJustPressed(1,38) and vSERVER.Check() then
 						OpenTattooshop()
 					end
 				end

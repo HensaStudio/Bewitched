@@ -16,7 +16,7 @@ Tunnel.bindInterface("skinshop", Hensa)
 function Hensa.Check()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports["hud"]:Reposed(Passport) and not exports["hud"]:Wanted(Passport, source) then
+	if Passport and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
 		return true
 	end
 

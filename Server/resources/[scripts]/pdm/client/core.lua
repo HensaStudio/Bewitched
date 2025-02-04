@@ -44,7 +44,7 @@ AddEventHandler("pdm:Open",function()
 	end
 
 	local Ped = PlayerPedId()
-	if not LocalPlayer["state"]["Buttons"] and not LocalPlayer["state"]["Commands"] and GetEntityHealth(Ped) > 100 and not exports["hud"]:Wanted() then
+	if not LocalPlayer["state"]["Buttons"] and not LocalPlayer["state"]["Commands"] and GetEntityHealth(Ped) > 100 and vSERVER.Check() then
 		CameraActive()
 		SetNuiFocus(true,true)
 		SetCursorLocation(0.5,0.5)

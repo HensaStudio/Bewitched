@@ -127,8 +127,9 @@ function Hensa.CreateVehicle(Model, Network, Engine, Health, Customize, Windows,
 			SetEntityHealth(Vehicle, Health)
 
 			if Admin then
-				SetVehicleCustomSecondaryColour(Vehicle, 88, 101, 242)
-				SetVehicleCustomPrimaryColour(Vehicle, 88, 101, 242)
+				local r, g, b = HexToRGB(Theme["main"])
+				SetVehicleCustomPrimaryColour(Vehicle, r, g, b)
+				SetVehicleCustomSecondaryColour(Vehicle, r, g, b)
 			end
 
 			if Windows then
@@ -335,7 +336,7 @@ CreateThread(function()
 					DrawSprite("Textures","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 					ClearDrawOrigin()
 
-					if Distance <= 1.25 and IsControlJustPressed(1,38) and not exports["hud"]:Wanted() then
+					if Distance <= 1.25 and IsControlJustPressed(1,38) and vSERVER.Check() then
 						local Vehicles = vSERVER.Vehicles(Number)
 						if Vehicles then
 							Opened = Number

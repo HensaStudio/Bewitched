@@ -12,14 +12,17 @@ vCLIENT = Tunnel.getInterface("player")
 vSKINSHOP = Tunnel.getInterface("skinshop")
 vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PLAYER:RECYCLE
+-- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Recycled = {}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PLAYER:RECYCLE
+-----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("player:Recycle")
 AddEventHandler("player:Recycle",function()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Recycled[Passport] and not exports["hud"]:Wanted(Passport) and vRP.Request(source,"Recicladora","Está apenas com itens que deseja reciclar em sua mochila?") then
+	if Passport and not Recycled[Passport] and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) and vRP.Request(source,"Recicladora","Está apenas com itens que deseja reciclar em sua mochila?") then
 		local Notify = false
 		Recycled[Passport] = true
 		local Inv = vRP.Inventory(Passport)
@@ -401,7 +404,7 @@ RegisterServerEvent("player:Outfit")
 AddEventHandler("player:Outfit",function(Mode)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports["hud"]:Reposed(Passport) and not exports["hud"]:Wanted(Passport) then
+	if Passport and not exports["hud"]:Reposed(Passport,source) and not exports["hud"]:Wanted(Passport,source) then
 		if Mode == "aplicar" then
 			local Result = vRP.GetServerData("Outfit:"..Passport)
 			if Result["pants"] then

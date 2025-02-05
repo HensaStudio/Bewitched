@@ -244,7 +244,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "nc" then
 			if vRP.HasGroup(Passport,"Admin",2) then
-				vRPC.noClip(source)
+				vRPC.NoClip(source)
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
 			end

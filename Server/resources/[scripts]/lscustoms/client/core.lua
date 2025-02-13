@@ -690,6 +690,7 @@ end)
 CreateThread(function()
 	while true do
 		local TimeDistance = 999
+
 		local Ped = PlayerPedId()
 		if not Opened and IsPedInAnyVehicle(Ped) then
 			local Vehicle = GetVehiclePedIsUsing(Ped)
@@ -697,14 +698,15 @@ CreateThread(function()
 				local Coords = GetEntityCoords(Ped)
 
 				for Index,v in pairs(Locations) do
-					if #(Coords - v["Coords"]["xyz"]) <= 2.5 then
+					local Distance = #(Coords - v["Coords"]["xyz"])
+					if Distance <= 3.25 then
 						TimeDistance = 1
 
 						SetDrawOrigin(v["Coords"]["xyz"])
 						DrawSprite("Textures","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 						ClearDrawOrigin()
 
-						if IsControlJustPressed(1,38) and vSERVER.Permission(Index) then
+						if Distance <= 1.25 and IsControlJustPressed(1,38) and vSERVER.Permission(Index) then
 							SetEntityCoords(Vehicle,v["Coords"]["xyz"])
 							SetEntityHeading(Vehicle,v["Coords"]["w"])
 							Open(Vehicle,v["Logo"])

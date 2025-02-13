@@ -224,7 +224,7 @@ RegisterCommand("objects",function(source,Message)
 
 			Objects[Selected] = { Coords = Coords, Object = Hash, Mode = "Store", Bucket = GetPlayerRoutingBucket(source) }
 			TriggerClientEvent("objects:Adicionar",-1,Selected,Objects[Selected])
-			vRP.Archive("coordenadas.txt",json.encode(Objects[Selected]))
+			vRP.Files("coordenadas.txt",json.encode(Objects[Selected]),false)
 		end
 	end
 end)

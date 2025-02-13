@@ -41,14 +41,19 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("admin:Doords")
 AddEventHandler("admin:Doords",function(Coords,Model,Heading)
-	vRP.Archive("coordenadas.txt","Coords = "..Coords..", Hash = "..Model..", Heading = "..Heading)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		vRP.Files("Doors.txt","Coords = "..Coords..", Hash = "..Model..", Heading = "..Heading,false)
+		TriggerClientEvent("Notify", source, "Files", "Novo arquivo de registro gerado.", "server", 5000)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADMIN:COORDS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("admin:Coords")
 AddEventHandler("admin:Coords",function(Coords)
-	vRP.Archive("coordenadas.txt",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"]))
+	vRP.Files("Coords.txt",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"]),false)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADMIN:COPYCOORDS
@@ -73,7 +78,7 @@ function Hensa.buttonTxt()
 			local Coords = GetEntityCoords(Ped)
 			local heading = GetEntityHeading(Ped)
 
-			vRP.Archive(Passport..".txt",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"])..","..Optimize(heading))
+			vRP.Files(Passport..".txt",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"])..","..Optimize(heading))
 		end
 	end
 end
@@ -81,14 +86,14 @@ end
 -- RACECONFIG
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.RaceConfig(Left,Center,Right,Distance,Name)
-	vRP.Archive(Name..".txt","{")
+	vRP.Files(Name..".txt","{",false)
 
-	vRP.Archive(Name..".txt","['Left'] = vec3("..Optimize(Left["x"])..","..Optimize(Left["y"])..","..Optimize(Left["z"]).."),")
-	vRP.Archive(Name..".txt","['Center'] = vec3("..Optimize(Center["x"])..","..Optimize(Center["y"])..","..Optimize(Center["z"]).."),")
-	vRP.Archive(Name..".txt","['Right'] = vec3("..Optimize(Right["x"])..","..Optimize(Right["y"])..","..Optimize(Right["z"]).."),")
-	vRP.Archive(Name..".txt","['Distance'] = "..Distance)
+	vRP.Files(Name..".txt","['Left'] = vec3("..Optimize(Left["x"])..","..Optimize(Left["y"])..","..Optimize(Left["z"]).."),",false)
+	vRP.Files(Name..".txt","['Center'] = vec3("..Optimize(Center["x"])..","..Optimize(Center["y"])..","..Optimize(Center["z"]).."),",false)
+	vRP.Files(Name..".txt","['Right'] = vec3("..Optimize(Right["x"])..","..Optimize(Right["y"])..","..Optimize(Right["z"]).."),",false)
+	vRP.Files(Name..".txt","['Distance'] = "..Distance,false)
 
-	vRP.Archive(Name..".txt","},")
+	vRP.Files(Name..".txt","},",false)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DEVTOOLSKICK

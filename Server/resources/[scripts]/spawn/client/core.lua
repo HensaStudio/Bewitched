@@ -40,18 +40,18 @@ AddEventHandler("spawn:Opened", function()
 
 		Wait(5000)
 
-		SetEntityCoords(Ped,233.85,-1387.59,29.55,false,false,false,false)
+		SetEntityCoords(Ped,-813.97,176.22,76.0,false,false,false,false)
 		LocalPlayer["state"]:set("Blastoise", true, false)
 		FreezeEntityPosition(Ped,true)
 		SetEntityInvincible(Ped,true)
-		SetEntityHeading(Ped,136.07)
+		SetEntityHeading(Ped,-7.5)
 		SetEntityHealth(Ped,100)
 		SetPedArmour(Ped,0)
 
 		Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA",true)
 		RenderScriptCams(true,false,0,false,false)
-		SetCamCoord(Camera,232.0,-1388.64,30.45)
-		SetCamRot(Camera,0.0,0.0,320.0,2)
+		SetCamCoord(Camera,-813.46,178.95,76.85)
+		SetCamRot(Camera,0.0,0.0,174.5,2)
 		SetCamActive(Camera,true)
 
 		Characters = vSERVER.Characters()

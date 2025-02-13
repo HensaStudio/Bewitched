@@ -519,7 +519,11 @@ function Hensa.Mount(Name,Mode)
 				if Split[1] == "vehkey" and Split[2] then
 					v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
 				elseif ItemNamed(Split[1]) and Split[2] then
-					v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					if Split[1] == "identity" then
+						v["desc"] = "Passaporte: <rare>"..Dotted(Split[2]).."</rare><br>Nome: <rare>"..vRP.FullName(Split[2]).."</rare><br>Tipo Sangüineo: <rare>"..Sanguine(vRP.Identity(Split[2])["Blood"]).."</rare>"
+					else
+						v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					end
 				end
 			end
 
@@ -556,7 +560,11 @@ function Hensa.Mount(Name,Mode)
 				if Split[1] == "vehkey" and Split[2] then
 					v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
 				elseif ItemNamed(Split[1]) and Split[2] then
-					v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					if Split[1] == "identity" then
+						v["desc"] = "Passaporte: <rare>"..Dotted(Split[2]).."</rare><br>Nome: <rare>"..vRP.FullName(Split[2]).."</rare><br>Tipo Sangüineo: <rare>"..Sanguine(vRP.Identity(Split[2])["Blood"]).."</rare>"
+					else
+						v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+					end
 				end
 			end
 

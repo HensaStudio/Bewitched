@@ -41,14 +41,14 @@ CreateThread(function()
 			if GlobalState["Evidences"][gridZone] then
 				for k,v in pairs(GlobalState["Evidences"][gridZone]) do
 					local Distance = #(Coords - vec3(v[1]["x"], v[1]["y"], v[1]["z"]))
-					if Distance <= 5 then
+					if Distance <= 3.25 then
 						TimeDistance = 1
 
 						SetDrawOrigin(v[1]["x"],v[1]["y"],v[1]["z"])
 						DrawSprite("Textures","Evidence",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 						ClearDrawOrigin()
 
-						if Distance <= 1.2 and IsControlJustPressed(1,38) then
+						if Distance <= 1.25 and IsControlJustPressed(1,38) then
 							TriggerServerEvent("evidence:Pickup", k, gridZone)
 						end
 					end

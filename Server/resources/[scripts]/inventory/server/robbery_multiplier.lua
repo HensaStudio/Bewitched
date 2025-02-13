@@ -8,6 +8,7 @@ local Config = {
 		["Delay"] = 3600,
 		["Cooldown"] = {},
 		["Percentage"] = 750,
+		["Backpack"] = true,
 		["Name"] = "Roubo a Registradora",
 		["Residual"] = "Resquício de Línter",
 		["Payment"] = {
@@ -15,6 +16,19 @@ local Config = {
 				{ ["Item"] = "dirtydollar", ["Chance"] = 100, ["Min"] = 325, ["Max"] = 375 }
 			}
 		}
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- REGISTERBACKPACK
+-----------------------------------------------------------------------------------------------------------------------------------------
+local RegisterBackpack = {
+	["mp_m_freemode_01"] = {
+		["Model"] = 41,
+		["Texture"] = 0
+	},
+	["mp_f_freemode_01"] = {
+		["Model"] = 41,
+		["Texture"] = 0
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -76,6 +90,11 @@ AddEventHandler("inventory:RobberyMultiplier",function(Number,Mode)
 									local amount = math.random(reward["Min"], reward["Max"])
 									vRP.GenerateItem(Passport, reward["Item"], amount, true)
 									vRP.UpgradeStress(Passport, math.random(2, 4))
+
+									if Config[Mode]["Backpack"] then
+										TriggerClientEvent("skinshop:Backpack", source, RegisterBackpack)
+									end
+
 									return
 								end
 							end

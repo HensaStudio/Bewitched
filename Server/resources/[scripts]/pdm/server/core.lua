@@ -15,6 +15,14 @@ Tunnel.bindInterface("pdm",Hensa)
 local Active = {}
 local VehiclePlate = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PREMIUM
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Premium = {
+	[1] = 25,
+	[2] = 50,
+	[3] = 100
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Check()
@@ -108,17 +116,9 @@ function Hensa.Buy(Name)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PREMIUM
+-- CANTRY
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Premium = {
-	[1] = 25,
-	[2] = 50,
-	[3] = 100
-}
------------------------------------------------------------------------------------------------------------------------------------------
--- CHECK
------------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Check()
+function Hensa.CanTry()
 	local Return = false
 	local source = source
 	local Passport = vRP.Passport(source)
@@ -134,8 +134,7 @@ function Hensa.Check()
 			VehiclePlate[Passport] = "PDMSPORT"
 			TriggerEvent("PlateEveryone", VehiclePlate[Passport])
 
-			Player(source)["state"]["Route"] = Passport
-			SetPlayerRoutingBucket(source, Passport)
+			exports["vrp"]:Bucket(source, "Enter", Passport)
 
 			Return = true
 		else
@@ -154,10 +153,9 @@ function Hensa.Remove()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		TriggerEvent("PlateReveryone",VehiclePlate[Passport])
+		TriggerEvent("PlateReveryone", VehiclePlate[Passport])
 
-		Player(source)["state"]["Route"] = 0
-		SetPlayerRoutingBucket(source, 0)
+		exports["vrp"]:Bucket(source, "Exit")
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

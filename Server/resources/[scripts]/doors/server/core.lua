@@ -99,7 +99,17 @@ GlobalState["Doors"] = {
 	["90"] = { Coords = vec3(317.84, -573.46, 43.43), Hash = -434783486, Disabled = false, Lock = true, Distance = 1.5, Perm = "Paramedico", Other = "91" },
 	["91"] = { Coords = vec3(320.26, -574.34, 43.43), Hash = -1700911976, Disabled = false, Lock = true, Distance = 1.5, Perm = "Paramedico", Other = "90" },
 	["92"] = { Coords = vec3(323.23, -575.42, 43.43), Hash = -434783486, Disabled = false, Lock = true, Distance = 1.5, Perm = "Paramedico", Other = "93" },
-	["93"] = { Coords = vec3(325.65, -576.30, 43.43), Hash = -1700911976, Disabled = false, Lock = true, Distance = 1.5, Perm = "Paramedico", Other = "92" }
+	["93"] = { Coords = vec3(325.65, -576.30, 43.43), Hash = -1700911976, Disabled = false, Lock = true, Distance = 1.5, Perm = "Paramedico", Other = "92" },
+
+	["94"] = { Coords = vec3(325.65, -576.30, 43.43), Hash = -1700911976, Disabled = false, Lock = true, Distance = 1.5, Perm = "Admin" },
+
+	["95"] = { Coords = vec3(170.264130, -1322.677246, 29.519346), Hash = -952356348, Disabled = false, Lock = true, Distance = 1.5, Perm = "Admin" },
+	["96"] = { Coords = vec3(163.831772, -1318.426392, 29.504614), Hash = -538477509, Disabled = false, Lock = true, Distance = 1.5, Perm = "Admin" },
+
+	["97"] = { Coords = vec3(475.890625, -915.471619, 26.559902), Hash = -1937790946, Disabled = false, Lock = true, Distance = 1.5, Perm = "Admin" },
+
+	["98"] = { Coords = vec3(948.528870, -965.351929, 39.643547), Hash = 1289778077, Disabled = false, Lock = true, Distance = 1.5, Perm = "Mecanico" },
+	["99"] = { Coords = vec3(955.358276, -972.445190, 39.647919), Hash = -626684119, Disabled = false, Lock = true, Distance = 1.5, Perm = "Mecanico" }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PERMISSION

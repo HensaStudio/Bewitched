@@ -72,15 +72,19 @@ RegisterNUICallback("Mount",function(Data,Callback)
 			DeleteEntity(Mount)
 		end
 
+		local r, g, b = HexToRGB(Theme["main"])
+
 		Mount = CreateVehicle(Vehicle,VehicleCoords,false,false)
-		SetVehicleCustomSecondaryColour(Mount,88,101,242)
-		SetVehicleCustomPrimaryColour(Mount,88,101,242)
+
+		SetVehicleCustomPrimaryColour(Mount,r,g,b)
+		SetVehicleCustomSecondaryColour(Mount,r,g,b)
 		SetVehicleNumberPlateText(Mount,"PDMSPORT")
 		SetEntityCollision(Mount,false,false)
 		FreezeEntityPosition(Mount,true)
 		SetEntityInvincible(Mount,true)
 		SetVehicleDirtLevel(Mount,0.0)
 		SetModelAsNoLongerNeeded(Vehicle)
+
 		LastModel = Vehicle
 	end
 
@@ -118,7 +122,7 @@ end)
 -- DRIVE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Drive",function(Data,Callback)
-	if vSERVER.Check() then
+	if vSERVER.CanTry() then
 		if IsScreenFadedIn() then
 			DoScreenFadeOut(0)
 		end
@@ -131,6 +135,8 @@ RegisterNUICallback("Drive",function(Data,Callback)
 				DeleteEntity(Mount)
 			end
 
+			local r, g, b = HexToRGB(Theme["main"])
+
 			Mount = CreateVehicle(Data["vehicle"],TestDriveCoords,false,false)
 
 			SetVehicleModKit(Mount,0)
@@ -139,8 +145,8 @@ RegisterNUICallback("Drive",function(Data,Callback)
 			SetEntityInvincible(Mount,true)
 			SetPedIntoVehicle(PlayerPedId(),Mount,-1)
 			SetVehicleNumberPlateText(Mount,"PDMSPORT")
-			SetVehicleCustomPrimaryColour(Mount,88,101,242)
-			SetVehicleCustomSecondaryColour(Mount,88,101,242)
+			SetVehicleCustomPrimaryColour(Mount,r,g,b)
+			SetVehicleCustomSecondaryColour(Mount,r,g,b)
 			SetVehicleMod(Mount,11,GetNumVehicleMods(Mount,11) - 1,false)
 			SetVehicleMod(Mount,12,GetNumVehicleMods(Mount,12) - 1,false)
 			SetVehicleMod(Mount,13,GetNumVehicleMods(Mount,13) - 1,false)

@@ -154,7 +154,8 @@ List = {
 			["GADGET_PARACHUTE"] = 225,
 			["axe"] = 1225,
 			["pickaxe"] = 1225,
-			["fishingrod"] = 1225
+			["fishingrod"] = 1225,
+			["fertilizer"] = 285
 		}
 	},
 	["Clandestine"] = {

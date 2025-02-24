@@ -186,7 +186,7 @@ function Hensa.Vehicles(Number)
 	local Passport = vRP.Passport(source)
 	if Passport and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
 		if Garages[Number]["perm"] then
-			if not vRP.HasGroup(Passport, Garages[Number]["perm"]) then
+			if not vRP.HasService(Passport, Garages[Number]["perm"]) then
 				return false
 			end
 		end

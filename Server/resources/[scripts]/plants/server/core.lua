@@ -39,7 +39,7 @@ exports("Plants",function(Hash,Coords,Route,Item,Amount)
 	until Selected and not Plants[Selected]
 
 	Plants[Selected] = {
-		["Water"] = 0.0,
+		["Fertilizer"] = 0.0,
 		["Hash"] = Hash,
 		["Item"] = Item,
 		["Route"] = Route,
@@ -85,8 +85,8 @@ AddEventHandler("plants:Collect",function(Number)
 
 		SetTimeout(10000,function()
 			local Valuation = Temporary["Amount"]
-			if Temporary["Water"] and Valuation then
-				Valuation = Valuation + (Valuation * Temporary["Water"])
+			if Temporary["Fertilizer"] and Valuation then
+				Valuation = Valuation + (Valuation * Temporary["Fertilizer"])
 			end
 
 			if vRP.CheckWeight(Passport,Temporary["Item"],Temporary["Amount"]) then
@@ -119,13 +119,13 @@ AddEventHandler("plants:Cloning",function(Number)
 		Player(source)["state"]["Cancel"] = true
 		Player(source)["state"]["Buttons"] = true
 		TriggerClientEvent("dynamic:Close",source)
-		TriggerClientEvent("Progress",source,"Coletando",10000)
+		TriggerClientEvent("Progress",source,"Clonando",10000)
 		vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
 		SetTimeout(10000,function()
 			local Valuation = 2
-			if Temporary["Water"] and Valuation then
-				Valuation = Valuation + (Valuation * Temporary["Water"])
+			if Temporary["Fertilizer"] and Valuation then
+				Valuation = Valuation + (Valuation * Temporary["Fertilizer"])
 			end
 
 			if vRP.CheckWeight(Passport,Temporary["Item"].."clone",Valuation) then
@@ -144,32 +144,39 @@ AddEventHandler("plants:Cloning",function(Number)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PLANTS:WATER
+-- PLANTS:FERTILIZER
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("plants:Water")
-AddEventHandler("plants:Water",function(Number)
+RegisterServerEvent("plants:Fertilizer")
+AddEventHandler("plants:Fertilizer",function(Number)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] and Plants[Number] and Plants[Number]["Timer"] and not CheckDeath(source,Number) and Plants[Number]["Timer"] >= os.time() then
-		local Consult = vRP.ConsultItem(Passport,"water",1)
-		if Plants[Number]["Water"] < 1.0 and Consult then
-			Active[Passport] = true
-			Player(source)["state"]["Cancel"] = true
-			Player(source)["state"]["Buttons"] = true
-			TriggerClientEvent("dynamic:Close",source)
-			TriggerClientEvent("Progress",source,"Coletando",10000)
-			vRPC.CreateObjects(source,"weapon@w_sp_jerrycan","fire","prop_wateringcan",1,28422,0.4,0.1,0.0,90.0,180.0,0.0)
+		if Plants[Number]["Fertilizer"] < 1.0 then
+			local Consult = vRP.ConsultItem(Passport,"fertilizer",1)
+			if Consult then
+				Active[Passport] = true
+				Player(source)["state"]["Cancel"] = true
+				Player(source)["state"]["Buttons"] = true
+				TriggerClientEvent("dynamic:Close",source)
+				TriggerClientEvent("Progress",source,"Fertilizando",10000)
+				vRPC.CreateObjects(source,"weapon@w_sp_jerrycan","fire","prop_wateringcan",1,28422,0.4,0.1,0.0,90.0,180.0,0.0)
 
-			SetTimeout(10000,function()
-				if Plants[Number] and Plants[Number]["Water"] < 1.0 and vRP.TakeItem(Passport,Consult["Item"],true) then
-					Plants[Number]["Water"] = Plants[Number]["Water"] + 0.20
-				end
+				SetTimeout(10000,function()
+					if Plants[Number] and Plants[Number]["Fertilizer"] < 1.0 then
+						if vRP.TakeItem(Passport,"fertilizer",1,true) then
+							Plants[Number]["Fertilizer"] = Plants[Number]["Fertilizer"] + 0.20
+							TriggerClientEvent("Notify",source,"Horticultura","Você fertilizou a plantação.","verde",5000)
+						end
+					end
 
-				Player(source)["state"]["Buttons"] = false
-				Player(source)["state"]["Cancel"] = false
-				Active[Passport] = nil
-				vRPC.Destroy(source)
-			end)
+					Player(source)["state"]["Buttons"] = false
+					Player(source)["state"]["Cancel"] = false
+					Active[Passport] = nil
+					vRPC.Destroy(source)
+				end)
+			else
+				TriggerClientEvent("Notify",source,"Horticultura","Você precisa de <b>1x "..ItemName("fertilizer").."</b>.","amarelo",5000)
+			end
 		end
 	end
 end)
@@ -193,7 +200,7 @@ function Hensa.Informations(Number)
 			Cloning = Whole(100 - (Value / 3600) * 100)
 		end
 
-		return { Collect,Cloning,Plants[Number]["Item"],Plants[Number]["Water"] }
+		return { Collect,Cloning,Plants[Number]["Item"],Plants[Number]["Fertilizer"] }
 	end
 
 	return false

@@ -425,6 +425,38 @@ AddEventHandler("onClientResourceStart",function(Resource)
 		}
 	})
 
+	AddTargetModel({ 1281992692, 1158960338, 1511539537, -78626473, -429560270 }, {
+		options = {
+			{
+				event = "target:Call",
+				label = "Ligar para Prefeitura",
+				tunnel = "proserver",
+				service = "Admin"
+			}, {
+				event = "target:Call",
+				label = "Ligar para Taxi",
+				tunnel = "proserver",
+				service = "Taxi"
+			}, {
+				event = "target:Call",
+				label = "Ligar para Delegacia",
+				tunnel = "proserver",
+				service = "Policia"
+			}, {
+				event = "target:Call",
+				label = "Ligar para Hospital",
+				tunnel = "proserver",
+				service = "Paramedico"
+			}, {
+				event = "target:Call",
+				label = "Ligar para Mecânica",
+				tunnel = "proserver",
+				service = "Mecanico"
+			}
+		},
+		Distance = 1.0
+	})
+
 	AddTargetModel({ -832573324,-1430839454,1457690978,1682622302,402729631,-664053099,1794449327,307287994,-1323586730,111281960,-541762431,-745300483,-417505688 },{
 		options = {
 			{

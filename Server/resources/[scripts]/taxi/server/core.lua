@@ -15,6 +15,26 @@ Tunnel.bindInterface("taxi",Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Active = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- SERVICE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Service(Result)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local TaxiPermission, TaxiHierarchy = "Taxi", 1
+
+		if Result then
+			if not vRP.HasPermission(Passport, TaxiPermission) then
+				vRP.SetPermission(Passport, TaxiPermission, TaxiHierarchy)
+			end
+		else
+			if vRP.HasPermission(Passport, TaxiPermission) then
+				vRP.RemovePermission(Passport, TaxiPermission)
+			end
+		end
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- PAYMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Payment(Selected)
@@ -38,7 +58,7 @@ function Hensa.Payment(Selected)
 		end
 
 		if vRP.UserPremium(Passport) then
-			local Hierarchy = vRP.LevelPremium(source)
+			local Hierarchy = vRP.LevelPremium(Passport)
 			local Bonification = (Hierarchy == 1 and 0.100) or (Hierarchy == 2 and 0.075) or (Hierarchy >= 3 and 0.050)
 
 			Valuation = Valuation + (Valuation * Bonification)
@@ -58,5 +78,9 @@ end
 AddEventHandler("Disconnect",function(Passport,source)
 	if Active[Passport] then
 		Active[Passport] = nil
+	end
+
+	if Passport and vRP.HasPermission(Passport, "Taxi") then
+		vRP.RemovePermission(Passport, "Taxi")
 	end
 end)

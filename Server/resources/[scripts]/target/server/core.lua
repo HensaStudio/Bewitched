@@ -127,7 +127,7 @@ AddEventHandler("target:Call", function(Service)
 		if os.time() >= Calls[Service] then
 			local Group,Total = vRP.NumPermission(Service)
 			if Total == 0 then
-				TriggerClientEvent("Notify",source,"amarelo","O serviço selecionado no momento está inativo.","Atenção",5000)
+				TriggerClientEvent("Notify",source,"Atenção","O serviço selecionado no momento está inativo.","amarelo",5000)
 			else
 				if vRP.Request(source, "Emergência", "Você realmente deseja ligar para <b>" .. Service .. "</b> por <b>$45</b>?") then
 					TriggerClientEvent("emotes", source, "ligar")
@@ -154,7 +154,7 @@ AddEventHandler("target:Call", function(Service)
 			end
 		else
 			local Cooldown = CompleteTimers(Calls[Service] - os.time())
-			TriggerClientEvent("Notify", source, "azul", "Aguarde <b>"..Cooldown.."</b> segundos.", false, 5000)
+			TriggerClientEvent("Notify", source, "Prefeitura", "Aguarde <b>"..Cooldown.."</b> segundos.", "azul", 5000)
 		end
 	end
 end)

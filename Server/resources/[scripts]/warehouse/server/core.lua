@@ -115,7 +115,7 @@ function Hensa.Warehouse(Name)
 								Warehouses[Name] = true
 								GlobalState:set("Warehouses",Warehouses,true)
 
-								exports["bank"]:AddTaxs(Passport,source,"Armazém",100000,"Compra de armazém.")
+								exports["bank"]:AddTaxs(Passport,source,"Armazém",50000,"Compra de armazém.")
 								vRP.Query("warehouse/Buy",{ Name = Name, Passport = Passport, Password = Password })
 
 								return true

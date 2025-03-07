@@ -242,28 +242,14 @@ function Hensa.Prison(Table)
 		local Fines = parseInt(Table["fines"])
 		local Services = parseInt(Table["services"])
 		local OtherPassport = parseInt(Table["passport"])
-		local Daily = exports["races"]:Cooldown(OtherPassport)
-
-		if Daily and Daily >= 1 then
-			vRP.GiveBank(Passport,425 * Daily)
-			TriggerClientEvent("Notify",source,"Aviso","A pessoa já foi presa hoje <b>"..Daily.." vezes</b> e você recebeu <b>$"..(600 * Daily).."</b> como bonificação por efetuar a prisão do mesmo.","amarelo",10000)
-		end
 
 		vRP.Query("police/prisons/Insert",{ Passport = OtherPassport, Police = Passport, Crimes = Table["crimes"], Notes = Table["notes"], Fines = Fines, Services = Services, Date = os.date("%d/%m/%Y").." | "..os.date("%H:%M") })
 
 		if Fines > 0 then
-			if Daily and Daily >= 1 then
-				Fines = Fines + (125 * Daily)
-			end
-
 			exports["bank"]:AddFines(OtherPassport,Passport,Fines,Table["crimes"])
 		end
 
 		if Services > 0 then
-			if Daily and Daily >= 1 then
-				Services = Services + (5 * Daily)
-			end
-
 			vRP.InsertPrison(OtherPassport,Services)
 
 			local OtherSource = vRP.Source(OtherPassport)

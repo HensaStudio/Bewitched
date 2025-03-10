@@ -90,12 +90,6 @@ function Hensa.Invite(OtherPassport)
 	local Identity = vRP.Identity(OtherPassport)
 	local OtherSource = vRP.Source(OtherPassport)
 	if Passport and Identity and OtherSource and Information[Passport] and Passport ~= OtherPassport and vRP.HasGroup(Passport,Information[Passport],HierarchyButtons) then
-		if vRP.AmountGroups(Information[Passport]) >= vRP.GroupLimit(Information[Passport]) then
-			TriggerClientEvent("Notify",source,"Atenção","Limite de membros atingido.","amarelo",5000)
-
-			return false
-		end
-
 		local Permission = Information[Passport]
 		local GroupType = vRP.GroupType(Permission)
 

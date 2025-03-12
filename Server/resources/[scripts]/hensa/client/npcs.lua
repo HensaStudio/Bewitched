@@ -567,6 +567,11 @@ local List = {
 		["Coords"] = vec4(235.36,-1761.56,29.0,311.82),
 		["Model"] = "g_m_m_armlieut_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Prefeitura
+		["Distance"] = 50,
+		["Coords"] = vec4(-545.31,-203.74,38.22,212.6),
+		["Model"] = "u_m_m_jewelsec_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------

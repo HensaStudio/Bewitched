@@ -150,6 +150,16 @@ function MakeBlips()
 					label = "Entregar "..Currency.."5.000",
 					tunnel = "client",
 					service = 5000
+				},{
+					event = "moneywash:Send",
+					label = "Entregar "..Currency.."25.000",
+					tunnel = "client",
+					service = 25000
+				},{
+					event = "moneywash:Send",
+					label = "Entregar "..Currency.."50.000",
+					tunnel = "client",
+					service = 50000
 				}
 			}
 		})

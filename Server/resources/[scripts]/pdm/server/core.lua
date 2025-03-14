@@ -79,7 +79,7 @@ function Hensa.Buy(Name)
 			else
 				if VehicleClass(Name) == "Exclusivos" then
 					local VehiclePrice = VehicleGemstone(Name)
-					if vRP.Request(source,"Concessionária","Alugar o veículo <b>"..VehicleName(Name).."</b> por <b>$"..Dotted(VehiclePrice).."</b> Platinas?") then
+					if vRP.Request(source,"Concessionária","Alugar o veículo <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(VehiclePrice).."</b> Platinas?") then
 						if vRP.TakeItem(Passport,"platinum",VehiclePrice) then
 							local Plate = vRP.GeneratePlate()
 
@@ -93,7 +93,7 @@ function Hensa.Buy(Name)
 				else
 					if not exports["bank"]:CheckFines(Passport) then
 						local VehiclePrice = VehiclePrice(Name)
-						if vRP.Request(source,"Concessionária","Comprar o veículo <b>"..VehicleName(Name).."</b> por <b>$"..Dotted(VehiclePrice).."</b> dólares?") then
+						if vRP.Request(source,"Concessionária","Comprar o veículo <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(VehiclePrice).."</b> dólares?") then
 							if vRP.PaymentFull(Passport,VehiclePrice) then
 								local Plate = vRP.GeneratePlate()
 

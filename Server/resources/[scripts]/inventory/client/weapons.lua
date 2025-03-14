@@ -293,8 +293,8 @@ CreateThread(function()
 
 	while true do
 		local TimeDistance = 999
-		if Actived and Weapon ~= "" then
-			TimeDistance = 10
+		if Weapon ~= "" and Actived then
+			TimeDistance = 100
 
 			local Ped = PlayerPedId()
 			local Ammo = GetAmmoInPedWeapon(Ped,Weapon)
@@ -334,11 +334,11 @@ AddEventHandler("inventory:verifyWeapon",function(Item)
 
 	if Weapon ~= "" then
 		local Ped = PlayerPedId()
-		local TypeAmmo01 = WeaponAmmo(Item)
-		local TypeAmmo02 = WeaponAmmo(Weapon)
+		local AmmoItem = WeaponAmmo(Item)
+		local AmmoHand = WeaponAmmo(Weapon)
 
-		if TypeAmmo01 and TypeAmmo02 then
-			if TypeAmmo01 ~= TypeAmmo02 then
+		if AmmoItem and AmmoHand then
+			if AmmoItem ~= AmmoHand then
 				local Ammo = GetAmmoInPedWeapon(Ped,Name)
 				if not vSERVER.VerifyWeapon(Name,Ammo) then
 					TriggerEvent("inventory:CleanWeapons")
@@ -368,6 +368,7 @@ AddEventHandler("inventory:CleanWeapons",function()
 			TriggerEvent("inventory:CreateWeapon",Weapon)
 		end
 
+		TriggerEvent("Weapon","")
 		TriggerEvent("hud:Weapon",false)
 		RemoveAllPedWeapons(Ped,true)
 
@@ -423,7 +424,7 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 
 			if Components then
 				for Item,_ in pairs(Components) do
-					local Comp = WeaponAttach(Item,Weapon)
+					local Comp = WeaponAttach(SplitOne(Item),Weapon)
 					GiveWeaponComponentToPed(Ped,Weapon,Comp)
 				end
 			end
@@ -439,7 +440,7 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 
 			if Components then
 				for Item,_ in pairs(Components) do
-					local Comp = WeaponAttach(Item,Weapon)
+					local Comp = WeaponAttach(SplitOne(Item),Weapon)
 					GiveWeaponComponentToPed(Ped,Weapon,Comp)
 				end
 			end

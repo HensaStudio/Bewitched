@@ -325,7 +325,7 @@ function Hensa.MakeInvoice(OtherPassport,Valuation,Reason)
 
 		local OtherSource = vRP.Source(OtherPassport)
 		if OtherSource then
-			if vRP.Request(OtherSource,"Banco","<b>"..vRP.FullName(Passport).."</b> lhe enviou uma fatura de <b>R$"..Dotted(Valuation).."</b>, deseja aceita-la?") then
+			if vRP.Request(OtherSource,"Banco","<b>"..vRP.FullName(Passport).."</b> lhe enviou uma fatura de <b>"..Currency..""..Dotted(Valuation).."</b>, deseja aceita-la?") then
 				vRP.Query("invoices/Add",{ Passport = OtherPassport, Received = Passport, Type = "received", Reason = Reason, Holder = vRP.FullName(Passport), Price = Valuation })
 				vRP.Query("invoices/Add",{ Passport = Passport, Received = OtherPassport, Type = "sent", Reason = Reason, Holder = "Você", Price = Valuation })
 				Active[Passport] = nil

@@ -131,9 +131,13 @@ RegisterCommand("PlayerFunctions",function()
 		exports["dynamic"]:AddButton("Sapatos", "Colocar/Retirar o sapato.", "player:Outfit", "Shoes", "clothes", true)
 		exports["dynamic"]:AddButton("Acessórios", "Colocar/Retirar os acessórios.", "player:Outfit", "Accessory", "clothes", true)
 
-		local Vehicle = vRP.ClosestVehicle(7)
-		if IsEntityAVehicle(Vehicle) then
+		if vRP.ClosestVehicle(7) then
 			if not IsPedInAnyVehicle(Ped) then
+				local Vehicle = GetPlayersLastVehicle()
+				if Vehicle and IsThisModelABoat(GetEntityModel(Vehicle)) then
+					exports["dynamic"]:AddButton("Ancorar", "Prender/Desprender a embarcação.", "player:Anchor", Vehicle, false, false)
+				end
+
 				if vRP.ClosestPed(3) then
 					exports["dynamic"]:AddMenu("Jogador", "Pessoa mais próxima de você.", "closestpeds")
 					exports["dynamic"]:AddButton("Colocar no Veículo", "Colocar no veículo mais próximo.", "player:cvFunctions", "cv", "closestpeds", true)
@@ -183,14 +187,20 @@ RegisterCommand("EmergencyFunctions",function()
 		local Health = GetEntityHealth(Ped)
 
 		if CheckPolice() then
-			exports["dynamic"]:AddButton("Placa", "Verificar emplacamento.", "police:Plate", "", false, true)
-
 			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Policia", false, true)
 
-			exports["dynamic"]:AddButton("Companheiros", "Verifique seus companheiros em serviço.", "admin:Dynamic", "statsPolicia", false, true)
+			exports["dynamic"]:AddMenu("Ações", "Clique para mais informações.", "actions")
+			exports["dynamic"]:AddButton("Placa", "Verificar <rare>Emplacamento</rare>.", "police:Plate", "", "actions", true)
+			exports["dynamic"]:AddButton("Multar", "Adicionar uma <rare>Multa</rare>.", "police:Fines", "", "actions", true)
+			exports["dynamic"]:AddButton("Procurados", "Atualizar a <rare>Lista de Procurados</rare>.", "police:Wanted", "", "actions", true)
+			exports["dynamic"]:AddButton("Companheiros", "Verifique seus <rare>Companheiros em Serviço</rare>.", "admin:Dynamic", "statsPolicia", "actions", true)
 
 			exports["dynamic"]:AddMenu("Emergência", "Avisos emergenciais.", "tencode")
-			exports["dynamic"]:AddButton("10-13", "Oficial desmaiado/ferido.", "dynamic:Tencode", "13", "tencode", true)
+
+			if GetEntityHealth(Ped) > 100 then
+				exports["dynamic"]:AddButton("10-13", "Oficial desmaiado/ferido.", "dynamic:Tencode", "13", "tencode", true)
+			end
+
 			exports["dynamic"]:AddButton("10-20", "Localização.", "dynamic:Tencode", "20", "tencode", true)
 			exports["dynamic"]:AddButton("10-38", "Abordagem de trânsito.", "dynamic:Tencode", "38", "tencode", true)
 			exports["dynamic"]:AddButton("10-78", "Apoio com prioridade.", "dynamic:Tencode", "78", "tencode", true)

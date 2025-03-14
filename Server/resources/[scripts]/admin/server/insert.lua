@@ -42,7 +42,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					TriggerClientEvent("dynamic:Close",source)
 
 					local FullName = vRP.Identity(Keyboard[1])["Name"].." "..vRP.Identity(Keyboard[1])["Lastname"]
-					if vRP.Request(Passport, "Inventário", "Você realmente deseja limpar o inventário de <b>"..FullName.."</b>?") then
+					if vRP.Request(source, "Inventário", "Você realmente deseja limpar o inventário de <b>"..FullName.."</b>?") then
 						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** clearinv "..Keyboard[1],0xa3c846)
 						TriggerClientEvent("Notify",source,"Sucesso","Limpeza concluída.","verde",5000)
 						vRP.ClearInventory(Keyboard[1])

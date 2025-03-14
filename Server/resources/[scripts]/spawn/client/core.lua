@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Tunnel = module("vrp", "lib/Tunnel")
+local Tunnel = module("vrp","lib/Tunnel")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -10,18 +10,19 @@ vSERVER = Tunnel.getInterface("spawn")
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Camera = nil
-local Opened = false
+local Characters = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LOCATE
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Locate = {
-	{ ["Coords"] = vec3(-206.9,-1015.09,30.13), ["Name"] = "" },
-	{ ["Coords"] = vec3(-206.9,-1015.09,30.13), ["Name"] = "" },
-	{ ["Coords"] = vec3(-537.04,-1277.97,26.89), ["Name"] = "" },
-	{ ["Coords"] = vec3(-853.34,-126.61,37.68), ["Name"] = "" },
-	{ ["Coords"] = vec3(-1040.43,-2742.4,13.92), ["Name"] = "" },
-	{ ["Coords"] = vec3(343.1,2636.34,44.48), ["Name"] = "" },
-	{ ["Coords"] = vec3(-83.81,6316.94,31.49), ["Name"] = "" }
+	{ ["Coords"] = vec3(-2205.92,-370.48,13.29), ["Name"] = "" },
+	{ ["Coords"] = vec3(-2205.92,-370.48,13.29), ["Name"] = "" },
+	{ ["Coords"] = vec3(-250.35,6209.71,31.49), ["Name"] = "" },
+	{ ["Coords"] = vec3(1694.37,4794.66,41.92), ["Name"] = "" },
+	{ ["Coords"] = vec3(1858.94,3741.78,33.09), ["Name"] = "" },
+	{ ["Coords"] = vec3(328.0,2617.89,44.48), ["Name"] = "" },
+	{ ["Coords"] = vec3(308.33,-232.25,54.07), ["Name"] = "" },
+	{ ["Coords"] = vec3(449.71,-659.27,28.48), ["Name"] = "" }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ANIMS
@@ -30,52 +31,55 @@ local Anims = {
 	{ ["Dict"] = "rcmbarry", ["Name"] = "base" }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- SPAWN:OPENED
+-- CHARACTERS
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("spawn:Opened", function()
+RegisterNUICallback("Characters",function(Data,Callback)
 	local Pid = PlayerId()
+	local Model = 1885233650
 	local Ped = PlayerPedId()
-	if Ped and Ped ~= -1 and Pid and NetworkIsPlayerActive(Pid) and not Opened then
-		Opened = true
 
-		Wait(5000)
-
-		SetEntityCoords(Ped,-813.97,176.22,76.0,false,false,false,false)
-		LocalPlayer["state"]:set("Blastoise", true, false)
-		FreezeEntityPosition(Ped,true)
-		SetEntityInvincible(Ped,true)
-		SetEntityHeading(Ped,-7.5)
-		SetEntityHealth(Ped,100)
-		SetPedArmour(Ped,0)
-
-		Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA",true)
-		RenderScriptCams(true,false,0,false,false)
-		SetCamCoord(Camera,-813.46,178.95,76.85)
-		SetCamRot(Camera,0.0,0.0,174.5,2)
-		SetCamActive(Camera,true)
-
-		Characters = vSERVER.Characters()
-		if parseInt(#Characters) > 0 then
-			Customization(Characters[1])
-		else
-			LocalPlayer["state"]:set("Invisible",true,false)
-			SetEntityVisible(Ped,false,0)
-		end
-
-		SetTimeout(5000,function()
-			SendNUIMessage({ Action = "Spawn", Payload = Characters })
-			SetNuiFocus(true,true)
-
-			if IsScreenFadedOut() then
-				DoScreenFadeIn(2500)
-			end
-		end)
+	RequestModel(Model)
+	while not HasModelLoaded(Model) do
+		Wait(100)
 	end
+
+	SetPlayerModel(Pid,Model)
+	ClearPedTasksImmediately(Ped)
+	SetModelAsNoLongerNeeded(Model)
+
+	local Ped = PlayerPedId()
+	SetEntityCoords(Ped,-813.97,176.22,76.0,false,false,false,false)
+	TriggerEvent("EntityInvincible",true)
+	FreezeEntityPosition(Ped,true)
+	SetEntityInvincible(Ped,true)
+	SetEntityHeading(Ped,-7.5)
+	SetEntityVisible(Ped,false)
+	SetEntityHealth(Ped,100)
+	SetPedArmour(Ped,0)
+	DisplayRadar(false)
+	DoScreenFadeIn(0)
+
+	Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA",true)
+	RenderScriptCams(true,false,0,false,false)
+	SetCamCoord(Camera,-813.46,178.95,76.85)
+	SetCamRot(Camera,0.0,0.0,174.5,2)
+	SetCamActive(Camera,true)
+
+	Characters = vSERVER.Characters()
+	if CountTable(Characters) > 0 then
+		Customization(Characters[1])
+	end
+
+	ShutdownLoadingScreen()
+	ShutdownLoadingScreenNui()
+	SetNuiFocus(true,true)
+
+	Callback(Characters)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHARACTERCHOSEN
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("CharacterChosen", function(Data, Callback)
+RegisterNUICallback("CharacterChosen",function(Data,Callback)
 	if vSERVER.ChosenCharacter(Data["Passport"]) then
 		SendNUIMessage({ Action = "Close" })
 	end
@@ -85,16 +89,17 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- NEWCHARACTER
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("NewCharacter", function(Data, Callback)
-	Callback(vSERVER.NewCharacter(Data["name"], Data["lastname"], Data["gender"]))
+RegisterNUICallback("NewCharacter",function(Data,Callback)
+	Callback(vSERVER.NewCharacter(Data["name"],Data["lastname"],Data["gender"]))
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SWITCHCHARACTER
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("SwitchCharacter", function(Data, Callback)
-	for _, v in pairs(Characters) do
+RegisterNUICallback("SwitchCharacter",function(Data,Callback)
+	for _,v in pairs(Characters) do
 		if v["Passport"] == Data["Passport"] then
-			Customization(v, true)
+			Customization(v,true)
+
 			break
 		end
 	end
@@ -119,9 +124,7 @@ AddEventHandler("spawn:Finish",function(Coords,Creation)
 		SetCamRot(Camera,0.0,0.0,0.0,2)
 	else
 		if Creation then
-			SetEntityVisible(PlayerPedId(),true,0)
 			exports["barbershop"]:Creation(Creation)
-			LocalPlayer["state"]:set("Invisible",false,false)
 		else
 			TriggerEvent("hud:Active",true)
 		end
@@ -140,70 +143,70 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SPAWN
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("Spawn", function(Data, Callback)
+RegisterNUICallback("Spawn",function(Data,Callback)
 	if DoesCamExist(Camera) then
-		RenderScriptCams(false, false, 0, false, false)
-		SetCamActive(Camera, false)
-		DestroyCam(Camera, false)
+		RenderScriptCams(false,false,0,false,false)
+		SetCamActive(Camera,false)
+		DestroyCam(Camera,false)
 		Camera = nil
 	end
 
-	SetEntityVisible(PlayerPedId(), true, 0)
-	LocalPlayer["state"]:set("Invisible", false, false)
 	SendNUIMessage({ Action = "Close" })
-	TriggerEvent("hud:Active", true)
-	SetNuiFocus(false, false)
+	TriggerEvent("hud:Active",true)
+	SetNuiFocus(false,false)
 
 	Callback("Ok")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHOSEN
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("Chosen", function(Data, Callback)
+RegisterNUICallback("Chosen",function(Data,Callback)
 	local Ped = PlayerPedId()
 	local Index = Data["index"]
 
-	SetEntityCoords(Ped, Locate[Index]["Coords"]["x"], Locate[Index]["Coords"]["y"], Locate[Index]["Coords"]["z"] - 1)
-	SetCamCoord(Camera, Locate[Index]["Coords"]["x"], Locate[Index]["Coords"]["y"], Locate[Index]["Coords"]["z"] + 1)
-	SetCamRot(Camera, 0.0, 0.0, 0.0, 2)
+	SetEntityCoords(Ped,Locate[Index]["Coords"]["x"],Locate[Index]["Coords"]["y"],Locate[Index]["Coords"]["z"] - 1)
+	SetCamCoord(Camera,Locate[Index]["Coords"]["x"],Locate[Index]["Coords"]["y"],Locate[Index]["Coords"]["z"] + 1)
+	SetCamRot(Camera,0.0,0.0,0.0,2)
 
 	Callback("Ok")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CUSTOMIZATION
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Customization(Table, Check)
-	if LoadModel(Table["Skin"]) then
-		if Check then
-			if GetEntityModel(PlayerPedId()) ~= GetHashKey(Table["Skin"]) then
-				SetPlayerModel(PlayerId(), Table["Skin"])
-				SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 1)
-			end
-		else
-			SetPlayerModel(PlayerId(), Table["Skin"])
-			SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 1)
-		end
+function Customization(Table,Check)
+	local Pid = PlayerId()
+	local Ped = PlayerPedId()
+	local Model = GetHashKey(Table["Skin"])
 
-		local Ped = PlayerPedId()
-		local Random = math.random(#Anims)
-		if LoadAnim(Anims[Random]["Dict"]) then
-			TaskPlayAnim(Ped, Anims[Random]["Dict"], Anims[Random]["Name"], 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		end
-
-		exports["skinshop"]:Apply(Table["Clothes"], Ped)
-		exports["barbershop"]:Apply(Table["Barber"], Ped)
-		exports["tattooshop"]:Apply(Table["Tattoos"], Ped)
-
-		SetEntityVisible(Ped, true, 0)
-		LocalPlayer["state"]:set("Invisible", false, false)
+	RequestModel(Model)
+	while not HasModelLoaded(Model) do
+		Wait(100)
 	end
+
+	if not Check or (Check and GetEntityModel(Ped) ~= Model) then
+		SetPlayerModel(Pid,Model)
+		SetModelAsNoLongerNeeded(Model)
+	end
+
+	local Ped = PlayerPedId()
+	local Random = math.random(#Anims)
+	if LoadAnim(Anims[Random]["Dict"]) then
+		TaskPlayAnim(Ped,Anims[Random]["Dict"],Anims[Random]["Name"],8.0,8.0,-1,1,1,0,0,0)
+	end
+
+	exports["skinshop"]:Apply(Table["Clothes"],Ped)
+	exports["barbershop"]:Apply(Table["Barber"],Ped)
+	exports["tattooshop"]:Apply(Table["Tattoos"],Ped)
+
+	ClearPedTasksImmediately(Ped)
+	SetEntityVisible(Ped,true)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SPAWN:INCREMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("spawn:Increment")
 AddEventHandler("spawn:Increment",function(Tables)
-	for Name,v in pairs(Tables) do
+	for _,v in pairs(Tables) do
 		Locate[#Locate + 1] = { ["Coords"] = v, ["Name"] = "" }
 	end
 end)

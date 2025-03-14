@@ -326,7 +326,39 @@ function RemoveGroup(First,Second)
 
 	return false
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- FINES
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Fines(First,Second,Third)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "text",
+				placeholder = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "text",
+				placeholder = Second,
+				value = ""
+			},{
+				id = 3,
+				mode = "area",
+				placeholder = Third,
+				value = ""
+			}
+		}
+	})
 
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" and Array["3"] and Array["3"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"],Array["3"]["input"] }
+	end
+
+	return false
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BAN
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -595,6 +627,12 @@ function Hensa.Password(First)
 	return Password(First)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- FINES
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Fines(First,Second,Third)
+	return Fines(First,Second,Third)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- BAN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Ban(First,Second,Third)
@@ -703,6 +741,7 @@ exports("Ban",Ban)
 exports("Item",Item)
 exports("Area",Area)
 exports("Copy",Copy)
+exports("Fines",Fines)
 exports("Nitro",Nitro)
 exports("Options",Options)
 exports("Weather",Weather)

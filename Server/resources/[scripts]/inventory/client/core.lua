@@ -71,9 +71,10 @@ AddEventHandler("inventory:RepairBoosts",function(Index,Plate)
 
 			local Fuel = GetVehicleFuelLevel(Vehicle)
 
+			SetVehicleUndriveable(Vehicle,false)
 			SetVehicleFixed(Vehicle)
+			SetVehicleDirtLevel(Vehicle,0.0)
 			SetVehicleDeformationFixed(Vehicle)
-
 			SetVehicleFuelLevel(Vehicle,Fuel)
 
 			for Tyre,Burst in pairs(Tyres) do
@@ -134,9 +135,10 @@ AddEventHandler("inventory:RepairAdmin",function(Index,Plate)
 		if DoesEntityExist(Vehicle) and GetVehicleNumberPlateText(Vehicle) == Plate then
 			local Fuel = GetVehicleFuelLevel(Vehicle)
 
+			SetVehicleUndriveable(Vehicle,false)
 			SetVehicleFixed(Vehicle)
+			SetVehicleDirtLevel(Vehicle,0.0)
 			SetVehicleDeformationFixed(Vehicle)
-
 			SetVehicleFuelLevel(Vehicle,Fuel)
 		end
 	end

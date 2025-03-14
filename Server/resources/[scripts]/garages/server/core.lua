@@ -305,7 +305,7 @@ AddEventHandler("garages:Impound", function(Name)
 		local VehiclePrice = VehiclePrice(Name) * PercentageArrest
 		TriggerClientEvent("dynamic:Close", source)
 
-		local Message = "A liberação do veículo <b>"..VehicleName(Name).."</b> tem o custo de <b>$"..Dotted(VehiclePrice).." dólares</b>, deseja prosseguir com a liberação do mesmo?"
+		local Message = "A liberação do veículo <b>"..VehicleName(Name).."</b> tem o custo de <b>"..Currency..""..Dotted(VehiclePrice).." dólares</b>, deseja prosseguir com a liberação do mesmo?"
 		if vRP.Request(source, "Garagem", Message) then
 			if vRP.PaymentFull(Passport, VehiclePrice) then
 				vRP.Query("vehicles/paymentArrest", { Passport = Passport, Vehicle = Name })
@@ -333,7 +333,7 @@ function Hensa.Tax(Name)
 					Price = VehiclePrice(Name) * Premium[vRP.GetUserHierarchy(Passport, "Premium")]
 				end
 
-				local Message = "As taxas do veículo <b>"..VehicleName(Name).."</b> estão em <b>$"..Dotted(Price).." "..ItemName(DefaultMoneyOne).."</b>, deseja prosseguir com a liberação do mesmo?"
+				local Message = "As taxas do veículo <b>"..VehicleName(Name).."</b> estão em <b>"..Currency..""..Dotted(Price).." "..ItemName(DefaultMoneyOne).."</b>, deseja prosseguir com a liberação do mesmo?"
 				if vRP.Request(source, "Garagem", Message) then
 					if vRP.PaymentFull(Passport, Price) then
 						vRP.Query("vehicles/updateVehiclesTax", { Passport = Passport, Vehicle = Name })
@@ -370,7 +370,7 @@ function Hensa.Sell(Name)
 			TriggerClientEvent("garages:Close", source)
 
 			local Price = VehiclePrice(Name) * PercetageSelling
-			local Message = "Vender o veículo <b>"..VehicleName(Name).."</b> por <b>$"..Dotted(Price).." "..ItemName(DefaultMoneyOne).."</b>?"
+			local Message = "Vender o veículo <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(Price).." "..ItemName(DefaultMoneyOne).."</b>?"
 			if vRP.Request(source, "Garagem", Message) then
 				local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = Passport, Vehicle = Name })
 				if Consult[1] then
@@ -484,7 +484,7 @@ function Hensa.Spawn(Name, Number)
 
 				local VehiclePrice = VehiclePrice(Name)
 				if parseInt(VehiclePrice) > 0 then
-					local Message = "Comprar <b>"..VehicleName(Name).."</b> por <b>$"..Dotted(VehiclePrice).." "..ItemName(DefaultMoneyOne).."</b>?"
+					local Message = "Comprar <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(VehiclePrice).." "..ItemName(DefaultMoneyOne).."</b>?"
 					if vRP.Request(source, "Garagem", Message) then
 						if vRP.PaymentFull(Passport, VehiclePrice) then
 							vRP.Query("vehicles/addVehicles", { Passport = Passport, Vehicle = Name, Plate = vRP.GeneratePlate(), Work = "true" })
@@ -642,7 +642,7 @@ function Hensa.Spawn(Name, Number)
 											end
 										end
 									else
-										if vRP.Request(source, "Garagem", "Retirar o veículo por <b>$" .. Dotted(VehiclePrice * 0.05) .. "</b> dólares?") then
+										if vRP.Request(source, "Garagem", "Retirar o veículo por <b>".. Currency .."" .. Dotted(VehiclePrice * 0.05) .. "</b> dólares?") then
 											if vRP.PaymentFull(Passport, VehiclePrice * 0.05) then
 												TriggerClientEvent("dynamic:Close", source)
 												local Exist, Network = Hensa.ServerVehicle(Name, Coords[1], Coords[2], Coords[3], Coords[4], Plate, vehicle[1]["Nitro"], vehicle[1] ["Doors"], vehicle[1]["Body"])

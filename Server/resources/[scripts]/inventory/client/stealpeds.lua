@@ -11,7 +11,7 @@ CreateThread(function()
 		local TimeDistance = 999
 		local Ped = PlayerPedId()
 
-		if not IsPedInAnyVehicle(Ped) and IsPedArmed(Ped,6) and IsPlayerFreeAiming(Pid) then
+		if not IsPedInAnyVehicle(Ped) and IsPedArmed(Ped,7) and IsPlayerFreeAiming(Pid) then
 			local Progress = 1000
 			local Entitys = ClosestPed(2)
 			if Entitys and GetGameTimer() >= Timer and GetVehiclePedIsIn(Entitys,true) == 0 and not Entity(Entitys)["state"]["Steal"] then

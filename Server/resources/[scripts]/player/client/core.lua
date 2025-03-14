@@ -9,6 +9,7 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 Hensa = {}
 Tunnel.bindInterface("player",Hensa)
+vSERVER = Tunnel.getInterface("player")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -540,22 +541,36 @@ AddStateBagChangeHandler("Policia",("player:%s"):format(LocalPlayer["state"]["Pl
 	SetRelationshipBetweenGroups(1,GetHashKey("PLAYER"),GetHashKey("PRISONER"))
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ANCORAR
+-- PLAYER:WANTEDLIST
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("ancorar",function()
+RegisterNetEvent("player:WantedList")
+AddEventHandler("player:WantedList", function()
 	local Ped = PlayerPedId()
-	if IsPedInAnyBoat(Ped) then
-		local Vehicle = GetVehiclePedIsUsing(Ped)
-		if CanAnchorBoatHere(Vehicle) then
-			SetBoatAnchor(Vehicle,false)
-			SetBoatFrozenWhenAnchored(Vehicle,false)
-			SetForcedBoatLocationWhenAnchored(Vehicle,false)
-			TriggerEvent("Notify","Sucesso","Embarcação desancorada.","verde",5000)
-		else
-			SetBoatAnchor(Vehicle,true)
-			SetBoatFrozenWhenAnchored(Vehicle,true)
-			SetForcedBoatLocationWhenAnchored(Vehicle,true)
-			TriggerEvent("Notify","Sucesso","Embarcação ancorada.","verde",5000)
+	if not IsPauseMenuActive() and GetEntityHealth(Ped) > 100 then
+		exports["dynamic"]:AddButton("Procurar","Verificar status por <rare>Passaporte</rare>.","player:SearchWanted","", false, true)
+
+		local WantedList = vSERVER.WantedList()
+		if WantedList and type(WantedList) == "table" then
+			for _, v in pairs(WantedList) do
+				local FullName = v["Name"] .. " " .. v["Lastname"]
+				local Stars = v["Wanted"] > 0 and string.rep("⭐", v["Wanted"]) or "Nenhum"
+
+				exports["dynamic"]:AddButton(FullName, "Nível de procura: <rare>" .. Stars .. "</rare>", "", v["id"], false, false)
+			end
+
+			exports["dynamic"]:Open()
 		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ANCHOR
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("player:Anchor",function(Vehicle)
+	if CanAnchorBoatHere(Vehicle) then
+		SetBoatAnchor(Vehicle,false)
+		TriggerEvent("Notify","Sucesso","Embarcação desancorada.","verde",5000)
+	else
+		SetBoatAnchor(Vehicle,true)
+		TriggerEvent("Notify","Sucesso","Embarcação ancorada.","verde",5000)
 	end
 end)

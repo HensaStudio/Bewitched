@@ -16,32 +16,6 @@ vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Active = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DASHBOARD
------------------------------------------------------------------------------------------------------------------------------------------
-vRP.Prepare("police/dashboard/All","SELECT * FROM police_messages ORDER BY id DESC")
-vRP.Prepare("police/dashboard/Select","SELECT * FROM police_messages WHERE id = @id")
-vRP.Prepare("police/dashboard/RemoveMessage","DELETE FROM police_messages WHERE id = @id")
-vRP.Prepare("police/dashboard/Message","INSERT INTO police_messages(Name,Message) VALUES(@Name,@Message)")
-vRP.Prepare("police/dashboard/Fines","SELECT COUNT(Fines) as Amount FROM police_prisons WHERE Fines NOT LIKE 0")
-vRP.Prepare("police/dashboard/Services","SELECT COUNT(Services) as Amount FROM police_prisons WHERE Services NOT LIKE 0")
------------------------------------------------------------------------------------------------------------------------------------------
--- WANTED
------------------------------------------------------------------------------------------------------------------------------------------
-vRP.Prepare("police/wanted/All","SELECT * FROM police_wanted ORDER BY id DESC")
-vRP.Prepare("police/wanted/Limit","SELECT * FROM police_wanted ORDER BY id DESC LIMIT @Limit")
------------------------------------------------------------------------------------------------------------------------------------------
--- PRISONS
------------------------------------------------------------------------------------------------------------------------------------------
-vRP.Prepare("police/prisons/All","SELECT * FROM police_prisons ORDER BY id DESC")
-vRP.Prepare("police/prisons/Limit","SELECT * FROM police_prisons ORDER BY id DESC LIMIT @Limit")
-vRP.Prepare("police/prisons/User","SELECT * FROM police_prisons WHERE Passport = @Passport ORDER BY id DESC")
-vRP.Prepare("police/prisons/Insert","INSERT INTO police_prisons(Passport,Police,Crimes,Notes,Fines,Services,Date) VALUES(@Passport,@Police,@Crimes,@Notes,@Fines,@Services,@Date)")
------------------------------------------------------------------------------------------------------------------------------------------
--- COURSES
------------------------------------------------------------------------------------------------------------------------------------------
-vRP.Prepare("police/courses/All","SELECT * FROM police_courses WHERE Passport = @Passport ORDER BY id DESC")
-vRP.Prepare("police/courses/Insert","INSERT INTO police_courses(Passport,Police,Type,Date) VALUES(@Passport,@Police,@Type,@Date)")
------------------------------------------------------------------------------------------------------------------------------------------
 -- REQUEST
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Request()
@@ -246,7 +220,7 @@ function Hensa.Prison(Table)
 		vRP.Query("police/prisons/Insert",{ Passport = OtherPassport, Police = Passport, Crimes = Table["crimes"], Notes = Table["notes"], Fines = Fines, Services = Services, Date = os.date("%d/%m/%Y").." | "..os.date("%H:%M") })
 
 		if Fines > 0 then
-			exports["bank"]:AddFines(OtherPassport,Passport,Fines,Table["crimes"])
+			exports["bank"]:AddFines(OtherPassport,OtherPassport,Fines,Table["crimes"])
 		end
 
 		if Services > 0 then

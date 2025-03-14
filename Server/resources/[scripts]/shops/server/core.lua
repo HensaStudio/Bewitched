@@ -105,10 +105,14 @@ function Hensa.Take(Item,Amount,Target,Name)
 		if not vRP.MaxItens(Passport,Item,Amount) and vRP.CheckWeight(Passport,Item,Amount) and (not Inventory[Target] or (Inventory[Target] and Inventory[Target]["item"] == Item)) then
 			if List[Name]["Type"] == "Cash" then
 				if vRP.PaymentFull(Passport,List[Name]["List"][Item] * Amount) then
-					vRP.GenerateItem(Passport,Item,Amount,false,Target)
+					if Item == "identity" then
+						vRP.GenerateItem(Passport,Item.."-"..Passport,Amount,false,Target)
+					else
+						vRP.GenerateItem(Passport,Item,Amount,false,Target)
 
-					if Item == "WEAPON_PETROLCAN" then
-						vRP.GenerateItem(Passport,"WEAPON_PETROLCAN_AMMO",4500)
+						if Item == "WEAPON_PETROLCAN" then
+							vRP.GenerateItem(Passport,"WEAPON_PETROLCAN_AMMO",4500)
+						end
 					end
 				else
 					TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)

@@ -12,7 +12,6 @@ client_scripts {
 }
 
 server_scripts {
-	"@vrp/config/Global.lua",
 	"@vrp/lib/Utils.lua",
 	"server/*"
 }
@@ -21,6 +20,7 @@ files {
 	"web/*",
 	"web/**/*"
 }
+
 
 shared_scripts {
 	"@vrp/config/Item.lua",

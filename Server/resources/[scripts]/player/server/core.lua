@@ -8,6 +8,8 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
+Hensa = {}
+Tunnel.bindInterface("player", Hensa)
 vCLIENT = Tunnel.getInterface("player")
 vSKINSHOP = Tunnel.getInterface("skinshop")
 vKEYBOARD = Tunnel.getInterface("keyboard")
@@ -90,7 +92,7 @@ AddEventHandler("player:Demand",function(OtherSource)
 	if Passport and OtherPassport and not exports["bank"]:CheckFines(OtherPassport) then
 		local Keyboard = vKEYBOARD.Primary(source,"Valor da Cobrança.")
 		if Keyboard and vRP.Passport(OtherSource) then
-			if vRP.Request(OtherSource,"Cobrança","Aceitar a cobrança de <b>$"..Dotted(Keyboard[1]).."</b> feita por <b>"..vRP.FullName(Passport).."</b>.") then
+			if vRP.Request(OtherSource,"Cobrança","Aceitar a cobrança de <b>"..Currency..""..Dotted(Keyboard[1]).."</b> feita por <b>"..vRP.FullName(Passport).."</b>.") then
 				if vRP.PaymentBank(OtherPassport,Keyboard[1],true) then
 					vRP.GiveBank(Passport,Keyboard[1],true)
 				end
@@ -454,6 +456,46 @@ AddEventHandler("player:Death",function(OtherSource)
 	local OtherPassport = vRP.Passport(OtherSource)
 	if Passport and OtherPassport and Passport ~= OtherPassport and vRP.DoesEntityExist(source) and vRP.DoesEntityExist(OtherSource) then
 		exports["discord"]:Embed("Deaths","**Passaporte do Assassino:** "..OtherPassport.."\n**Localização do Assassino:** "..vRP.GetEntityCoords(OtherSource).."\n\n**Passaporte da Vítima:** "..Passport.."\n**Localização da Vítima:** "..vRP.GetEntityCoords(source).."\n\n**Data & Hora:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"),0xa3c846)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- WANTEDLIST
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.WantedList()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local Result = vRP.Query("characters/Wanted")
+		if Result and #Result > 0 then
+			return Result
+		else
+			TriggerClientEvent("Notify",source,"Lista de Procurados","A lista se encontra vázia.","policia",5000)
+		end
+
+		return false
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PLAYER:SEARCHWANTED
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("player:SearchWanted")
+AddEventHandler("player:SearchWanted",function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local Keyboard = vKEYBOARD.Primary(source,"Passaporte:")
+		if Keyboard then
+			local Identity = vRP.Identity(Keyboard[1])
+			if Identity then
+				if Identity["Wanted"] >= 1 then
+					TriggerClientEvent("Notify",source,"Lista de Procurados","<b>"..Identity["Name"].." "..Identity["Lastname"].."</b> está com nível: <b>"..Identity["Wanted"].."</b>.","vermelho",5000)
+				else
+					TriggerClientEvent("Notify",source,"Lista de Procurados","<b>"..Identity["Name"].." "..Identity["Lastname"].."</b> está com a ficha limpa.","verde",5000)
+				end
+			else
+				TriggerClientEvent("Notify",source,"Lista de Procurados","Nada encontrado com esse passaporte.","amarelo",5000)
+			end
+		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ AddEventHandler("police:Escape",function()
 			local Amount = Identity["Prison"]
 			local EscapePrice = Amount * 475
 
-			if vRP.Request(source,"Prisioneiro","Parece que você quer escapar da prisão, mas para isso acontecer você vai ter que deixar comigo o custeio de <b>$"..Dotted(EscapePrice).."</b> dólares, ta afim?") then
+			if vRP.Request(source,"Prisioneiro","Parece que você quer escapar da prisão, mas para isso acontecer você vai ter que deixar comigo o custeio de <b>"..Currency..""..Dotted(EscapePrice).."</b> dólares, ta afim?") then
 				if vRP.PaymentFull(Passport,EscapePrice) then
 					if Locations[Passport] then
 						Locations[Passport] = nil

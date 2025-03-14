@@ -177,7 +177,7 @@ function Hensa.Propertys(Name)
 					if os.time() > Consult[1]["Tax"] then
 						Tax = "Efetue o pagamento da <b>Hipoteca</b>."
 
-						if vRP.Request(source,"Propriedades","Deseja pagar a hipoteca de <b>$"..Dotted(Price).."</b>?") and vRP.PaymentFull(Passport,Price) then
+						if vRP.Request(source,"Propriedades","Deseja pagar a hipoteca de <b>"..Currency..""..Dotted(Price).."</b>?") and vRP.PaymentFull(Passport,Price) then
 							TriggerClientEvent("Notify",source,"Propriedades","Pagamento concluído.","verde",5000)
 							vRP.Query("propertys/Tax",{ Name = Name })
 							Tax = CompleteTimers(2592000)
@@ -313,7 +313,7 @@ AddEventHandler("propertys:Sell",function(Name)
 
 			local Interior = Consult[1]["Interior"]
 			local Price = Informations[Interior]["Price"] * 0.25
-			if vRP.Request(source,"Propriedades","Vender por <b>$"..Dotted(Price).."</b>?") then
+			if vRP.Request(source,"Propriedades","Vender por <b>"..Currency..""..Dotted(Price).."</b>?") then
 				if GlobalState["Markers"][Name] then
 					local Markers = GlobalState["Markers"]
 					Markers[Name] = nil

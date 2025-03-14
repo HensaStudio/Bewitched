@@ -103,7 +103,7 @@ AddEventHandler("police:Plate",function()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and vRP.HasService(Passport,"Policia") then
-		local Keyboard = vKEYBOARD.Primary(source,"Placa")
+		local Keyboard = vKEYBOARD.Primary(source,"Placa:")
 		if Keyboard and Keyboard[1] then
 			local OtherPassport = vRP.PassportPlate(Keyboard[1])
 			if OtherPassport then
@@ -113,6 +113,74 @@ AddEventHandler("police:Plate",function()
 				end
 			else
 				TriggerClientEvent("Notify", source, "Emplacamento", "Nada encontrado.", "policia", 5000)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- POLICE:FINES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("police:Fines")
+AddEventHandler("police:Fines", function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasService(Passport, "Policia") then
+		local Keyboard = vKEYBOARD.Fines(source, "Passaporte:", "Valor da multa:", "Motivo da multa:")
+		if Keyboard and Keyboard[1] and Keyboard[2] and Keyboard[3] then
+			TriggerClientEvent("dynamic:Close", source)
+
+			local targetPassport = tonumber(Keyboard[1])
+			local fineAmount = tonumber(Keyboard[2])
+			local fineReason = Keyboard[3]
+
+			if targetPassport and fineAmount and fineAmount > 0 then
+				local Identity = vRP.Identity(targetPassport)
+				if Identity then
+					local FullName = Identity["Name"] .. " " .. Identity["Lastname"]
+
+					if vRP.Request(source, "Multar", "Você realmente deseja multar <b>" .. FullName .. "</b> no valor de <b>".. Currency .."" .. Dotted(fineAmount) .. "</b>?") then
+						exports["bank"]:AddFines(targetPassport, targetPassport, fineAmount, fineReason)
+
+						TriggerClientEvent("Notify", source, "Sucesso", "Você adicionou uma nova multa para <b>" .. FullName .. "</b>.", "verde", 5000)
+					end
+				else
+					TriggerClientEvent("Notify", source, "Aviso", "Passaporte inválido.", "vermelho", 5000)
+				end
+			else
+				TriggerClientEvent("Notify", source, "Aviso", "Os dados estão inválidos.", "vermelho", 5000)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- POLICE:WANTED
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("police:Wanted")
+AddEventHandler("police:Wanted", function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasService(Passport, "Policia") then
+		local WantedValues = { "0", "1", "2", "3", "4", "5", "6" }
+		local Keyboard = vKEYBOARD.Options(source, "Passaporte:", WantedValues)
+		if Keyboard and Keyboard[1] and Keyboard[2] then
+			TriggerClientEvent("dynamic:Close", source)
+
+			local targetPassport = tonumber(Keyboard[1])
+			local wantedLevel = tonumber(Keyboard[2])
+
+			if targetPassport and wantedLevel and wantedLevel >= 0 and wantedLevel <= 6 then
+				local Identity = vRP.Identity(targetPassport)
+				if Identity then
+					local FullName = Identity["Name"] .. " " .. Identity["Lastname"]
+
+					vRP.UpdateWanted(targetPassport, wantedLevel, "Add")
+
+					TriggerClientEvent("Notify", source, "Sucesso", "Você atualizou o status de procurado de <b>" .. FullName .. "</b>.", "verde", 5000)
+				else
+					TriggerClientEvent("Notify", source, "Aviso", "Passaporte inválido.", "vermelho", 5000)
+				end
+			else
+				TriggerClientEvent("Notify", source, "Aviso", "Os dados estão inválidos.", "vermelho", 5000)
 			end
 		end
 	end

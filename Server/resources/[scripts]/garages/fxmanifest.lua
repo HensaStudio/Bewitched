@@ -12,9 +12,6 @@ client_scripts {
 }
 
 server_scripts {
-	"@vrp/config/License.lua",
-	"@vrp/config/Vehicle.lua",
-	"@vrp/config/Global.lua",
 	"@vrp/lib/Utils.lua",
 	"server/*"
 }

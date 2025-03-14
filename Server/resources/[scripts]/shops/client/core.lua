@@ -106,6 +106,27 @@ CreateThread(function()
 					}
 				}
 			})
+		elseif v["CityHall"] then
+			exports["target"]:AddBoxZone("Shops:"..Number,v["Coords"],0.75,0.75,{
+				name = "Shops:"..Number,
+				heading = 0.0,
+				minZ = v["Coords"]["z"] - 1.0,
+				maxZ = v["Coords"]["z"] + 1.0
+			},{
+				shop = Number,
+				Distance = 2.0,
+				options = {
+					{
+						event = "shops:Open",
+						label = "Comprar Passaporte",
+						tunnel = "client"
+					}, {
+						event = "player:WantedList",
+						label = "Lista de Procurados",
+						tunnel = "client"
+					}
+				}
+			})
 		else
 			exports["target"]:AddBoxZone("Shops:"..Number,v["Coords"],0.75,0.75,{
 				name = "Shops:"..Number,

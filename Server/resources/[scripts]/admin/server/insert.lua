@@ -51,7 +51,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
 			end
-		elseif Mode == "gem" then
+		elseif Mode == "addgem" then
 			if vRP.HasGroup(Passport,"Admin") then
 				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Quantidade:")
 				if Keyboard then
@@ -60,9 +60,26 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					local Identity = vRP.Identity(OtherPassport)
 					if Identity then
 						TriggerClientEvent("Notify",source,"Sucesso",""..ItemName(DefaultMoneySpecial).." entregue.","verde",5000)
-						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** gem "..Keyboard[1].." "..Keyboard[2],0xa3c846)
+						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** addgem "..Keyboard[1].." "..Keyboard[2],0xa3c846)
 
 						vRP.UpgradeGemstone(OtherPassport,Amount)
+					end
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+			end
+		elseif Mode == "remgem" then
+			if vRP.HasGroup(Passport,"Admin") then
+				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Quantidade:")
+				if Keyboard then
+					local Amount = parseInt(Keyboard[2])
+					local OtherPassport = parseInt(Keyboard[1])
+					local Identity = vRP.Identity(OtherPassport)
+					if Identity then
+						TriggerClientEvent("Notify",source,"Sucesso",""..ItemName(DefaultMoneySpecial).." removidos.","verde",5000)
+						exports["discord"]:Embed("Admin","**Passaporte:** "..Passport.."\n**Comando:** remgem "..Keyboard[1].." "..Keyboard[2],0xa3c846)
+
+						vRP.DowngradeGemstone(OtherPassport,Amount)
 					end
 				end
 			else

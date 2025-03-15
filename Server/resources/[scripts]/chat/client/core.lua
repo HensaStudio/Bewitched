@@ -11,6 +11,7 @@ Tunnel.bindInterface("chat",Hensa)
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Actived = {}
+local Executive = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -29,6 +30,8 @@ end
 RegisterCommand("ChatEvent",function()
 	if LocalPlayer["state"]["Active"] and not IsPauseMenuActive() and not LocalPlayer["state"]["Handcuff"] and not LocalPlayer["state"]["Carry"] and not IsPedReloading(Ped) then
 		local Tags = {}
+		Tags[#Tags + 1] = "AÇÃO"
+
 		for Permission,_ in pairs(Actived) do
 			if LocalPlayer["state"][Permission] then
 				Tags[#Tags + 1] = Permission
@@ -37,6 +40,7 @@ RegisterCommand("ChatEvent",function()
 
 		SendNUIMessage({ Action = "Chat", Payload = { Tags,Block } })
 		SetNuiFocus(true,true)
+		Executive = true
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -50,7 +54,7 @@ end)
 -- CHATSUBMIT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("ChatSubmit",function(Data,Callback)
-	if LocalPlayer["state"]["Active"] and Data["message"] ~= "" then
+	if LocalPlayer["state"]["Active"] and Data["message"] ~= "" and Executive then
 		if Data["message"]:sub(1,1) == "/" then
 			ExecuteCommand(Data["message"]:sub(2))
 			SetNuiFocus(false,false)
@@ -60,6 +64,13 @@ RegisterNUICallback("ChatSubmit",function(Data,Callback)
 	end
 
 	Callback("Ok")
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SERVERPRINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("__cfx_internal:serverPrint")
+AddEventHandler("__cfx_internal:serverPrint",function()
+	Executive = false
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CLOSE
@@ -73,3 +84,15 @@ end)
 -- KEYMAPPING
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterKeyMapping("ChatEvent","Abrir o chat.","keyboard","T")
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- OPEN
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Open()
+	return Executive
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- EXPORTS
+-----------------------------------------------------------------------------------------------------------------------------------------
+exports("Open",function()
+	return Executive
+end)

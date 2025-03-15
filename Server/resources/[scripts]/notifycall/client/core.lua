@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
+local Amount = 10
 local Display = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- NOTIFYCALL
@@ -51,7 +52,7 @@ AddEventHandler("NotifyPush",function(Data)
 	Data["street"] = GetStreetNameFromHashKey(Road)
 	Display = true
 
-	SendNUIMessage({ Action = "New", Payload = Data })
+	SendNUIMessage({ Action = "New", Payload = { Data,Amount } })
 
 	SetBlipSprite(Blip,161)
 	SetBlipDisplay(Blip,4)

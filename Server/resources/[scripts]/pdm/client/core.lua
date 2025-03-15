@@ -12,6 +12,7 @@ vSERVER = Tunnel.getInterface("pdm")
 local Mount = nil
 local Camera = nil
 local LastModel = ""
+local NuiOpened = false
 local CamRoration = 294.81
 local CamCoords = vec3(-49.14,-1099.56,26.92)
 local TestDriveReturn = vec3(-58.03,-1096.94,26.42)
@@ -39,6 +40,10 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("pdm:Open")
 AddEventHandler("pdm:Open",function()
+	if not NuiOpened then
+		NuiOpened = true
+	end
+
 	if DoesEntityExist(Mount) then
 		DeleteEntity(Mount)
 	end
@@ -59,6 +64,10 @@ end)
 RegisterNUICallback("Close",function(Data,Callback)
 	TriggerEvent("hud:Active",true)
 	TriggerEvent("pdm:Close")
+
+	if NuiOpened then
+		NuiOpened = false
+	end
 
 	Callback("Ok")
 end)
@@ -199,7 +208,14 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PDM:CLOSE
 -----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("pdm:Close")
 AddEventHandler("pdm:Close",function()
+	if NuiOpened then
+		SendNUIMessage({ Action = "Close" })
+		TriggerEvent("hud:Active",true)
+		NuiOpened = false
+	end
+
 	SetNuiFocus(false,false)
 	SetCursorLocation(0.5,0.5)
 

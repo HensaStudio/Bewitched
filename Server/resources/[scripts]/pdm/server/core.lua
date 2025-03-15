@@ -44,76 +44,72 @@ end
 -- BUY
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Buy(Name)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and Name then
-		Active[Passport] = true
+	local Source = source
+	local Passport = vRP.Passport(Source)
 
-		local Vehicle = vRP.Query("vehicles/selectVehicles",{ Passport = Passport, Vehicle = Name })
-		if Vehicle[1] then
-			TriggerClientEvent("Notify",source,"Aviso","Já possui um <b>"..VehicleName(Name).."</b>.","amarelo",5000)
+	if not Passport or Active[Passport] or not Name then return end
+	Active[Passport] = true
+
+	local Vehicle = vRP.Query("vehicles/selectVehicles", { Passport = Passport, Vehicle = Name })
+	if Vehicle[1] then
+		TriggerClientEvent("pdm:Close", Source)
+
+		TriggerClientEvent("Notify", Source, "Aviso", "Já possui um <b>"..VehicleName(Name).."</b>.", "amarelo", 5000)
+		Active[Passport] = nil
+		return
+	end
+
+	local Result = vRP.Query("vehicles/Count", { Vehicle = Name })
+	local StockLimit = VehicleStock(Name)
+	local CurrentStock = Result[1] and Result[1]["COUNT(Vehicle)"] or 0
+
+	if StockLimit and CurrentStock >= StockLimit then
+		TriggerClientEvent("Notify", Source, "Aviso", "Estoque insuficiente.", "amarelo", 5000)
+		Active[Passport] = nil
+		return
+	end
+
+	TriggerClientEvent("pdm:Close", Source)
+
+	if VehicleMode(Name) == "Rental" then
+		local VehiclePrice = VehicleGemstone(Name)
+		if vRP.PaymentGemstone(Passport, VehiclePrice) then
+			local Plate = vRP.GeneratePlate()
+			TriggerEvent("garages:Pdm", Passport, Source, Name, Plate)
+			TriggerClientEvent("Notify", Source, "Sucesso", "Aluguel do veículo <b>"..VehicleName(Name).."</b> concluído.", "verde", 5000)
+			vRP.Query("vehicles/rentalVehicles", { Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
 		else
-			local Result = vRP.Query("vehicles/Count",{ Vehicle = Name })
-			if Result[1] then
-				if VehicleStock(Name) and Result[1]["COUNT(Vehicle)"] >= VehicleStock(Name) then
-					TriggerClientEvent("Notify",source,"Aviso","Estoque insuficiente.","amarelo",5000)
-					Active[Passport] = nil
-
-					return false
-				end
-			end
-
-			if VehicleMode(Name) == "Rental" then
-				local VehiclePrice = VehicleGemstone(Name)
-				if vRP.Request(source,"Concessionária","Alugar o veículo <b>"..VehicleName(Name).."</b> por <b>"..Dotted(VehiclePrice).."</b> diamantes?") then
-					if vRP.PaymentGemstone(Passport,VehiclePrice) then
-						local Plate = vRP.GeneratePlate()
-
-						TriggerEvent("garages:Pdm",Passport,source,Name,Plate)
-						TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Name).."</b> concluído.","verde",5000)
-						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
-					else
-						TriggerClientEvent("Notify",source,"Aviso","<b>Diamantes</b> insuficientes.","amarelo",5000)
-					end
-				end
-			else
-				if VehicleClass(Name) == "Exclusivos" then
-					local VehiclePrice = VehicleGemstone(Name)
-					if vRP.Request(source,"Concessionária","Alugar o veículo <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(VehiclePrice).."</b> Platinas?") then
-						if vRP.TakeItem(Passport,"platinum",VehiclePrice) then
-							local Plate = vRP.GeneratePlate()
-
-							TriggerEvent("garages:Pdm",Passport,source,Name,Plate)
-							TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Name).."</b> concluído.","verde",5000)
-							vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
-						else
-							TriggerClientEvent("Notify",source,"Aviso","<b>Platinas</b> insuficientes.","amarelo",5000)
-						end
-					end
-				else
-					if not exports["bank"]:CheckFines(Passport) then
-						local VehiclePrice = VehiclePrice(Name)
-						if vRP.Request(source,"Concessionária","Comprar o veículo <b>"..VehicleName(Name).."</b> por <b>"..Currency..""..Dotted(VehiclePrice).."</b> dólares?") then
-							if vRP.PaymentFull(Passport,VehiclePrice) then
-								local Plate = vRP.GeneratePlate()
-
-								TriggerEvent("garages:Pdm",Passport,source,Name,Plate)
-								TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.","verde",5000)
-								exports["bank"]:AddTaxs(Passport,source,"Concessionária",VehiclePrice,"Compra do veículo "..VehicleName(Name)..".")
-								vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
-							else
-								TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)
-							end
-						end
-					else
-						TriggerClientEvent("Notify",source,"Aviso","Você possui débitos bancários.","amarelo",5000)
-					end
-				end
-			end
+			TriggerClientEvent("Notify", Source, "Aviso", "<b>Diamantes</b> insuficientes.", "amarelo", 5000)
 		end
 
-		Active[Passport] = nil
+	elseif VehicleClass(Name) == "Exclusivos" then
+		local VehiclePrice = VehicleGemstone(Name)
+		if vRP.TakeItem(Passport, "platinum", VehiclePrice) then
+			local Plate = vRP.GeneratePlate()
+			TriggerEvent("garages:Pdm", Passport, Source, Name, Plate)
+			TriggerClientEvent("Notify", Source, "Sucesso", "Aluguel do veículo <b>"..VehicleName(Name).."</b> concluído.", "verde", 5000)
+			vRP.Query("vehicles/rentalVehicles", { Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
+		else
+			TriggerClientEvent("Notify", Source, "Aviso", "<b>"..ItemName("platinum").."</b> insuficiente.", "vermelho", 5000)
+		end
+
+	elseif not exports["bank"]:CheckFines(Passport) then
+		local VehiclePrice = VehiclePrice(Name)
+		if vRP.PaymentFull(Passport, VehiclePrice) then
+			local Plate = vRP.GeneratePlate()
+			TriggerEvent("garages:Pdm", Passport, Source, Name, Plate)
+			TriggerClientEvent("Notify", Source, "Sucesso", "Compra concluída.", "verde", 5000)
+			exports["bank"]:AddTaxs(Passport, Source, "Concessionária", VehiclePrice, "Compra do veículo "..VehicleName(Name)..".")
+			vRP.Query("vehicles/addVehicles", { Passport = Passport, Vehicle = Name, Plate = Plate, Weight = VehicleWeight(Name), Work = "false" })
+		else
+			TriggerClientEvent("Notify", Source, "Aviso", "<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.", "vermelho", 5000)
+		end
+
+	else
+		TriggerClientEvent("Notify", Source, "Aviso", "Você possui débitos bancários.", "amarelo", 5000)
 	end
+
+	Active[Passport] = nil
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CANTRY

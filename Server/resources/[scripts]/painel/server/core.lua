@@ -22,7 +22,7 @@ local HierarchyButtons = 2
 RegisterCommand("painel",function(source,Message)
 	local Passport = vRP.Passport(source)
 	if Passport and not Player(source)["state"]["Buttons"] then
-		local Permission = vRP.GetUserType(Passport,"Work")
+		local Permission = vRP.GetUserGroup(Passport,"Work")
 
 		if Message[1] then
 			Permission = Message[1]
@@ -99,7 +99,7 @@ function Hensa.Invite(OtherPassport)
 			return false
 		end
 
-		if not GroupType or GroupType ~= "Work" or (GroupType == "Work" and not vRP.GetUserType(OtherPassport,"Work")) then
+		if not GroupType or GroupType ~= "Work" or (GroupType == "Work" and not vRP.UserHasGroups(OtherPassport,"Work")) then
 			if vRP.Request(OtherSource,"Grupos","Você foi convidado(a) para participar do grupo <b>"..Permission.."</b>, gostaria de estar entrando do mesmo?") then
 				vRP.SetPermission(OtherPassport,Permission)
 				TriggerClientEvent("Notify",source,"Sucesso","Passaporte adicionado.","verde",5000)

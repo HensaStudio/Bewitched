@@ -392,9 +392,9 @@ AddEventHandler("admin:Dynamic", function(Mode)
 					local OtherPassport = Keyboard[1]
 					local OtherSource = vRP.Source(Keyboard[1])
 
-					if tonumber(Level) then
-						if vRP.GroupType(Permission) then
-							if not vRP.GetUserType(OtherPassport, "Work") then
+					if tonumber(OtherPassport) and tonumber(Level) then
+						if vRP.GroupType(Permission) == "Work" then
+							if not vRP.UserHasGroups(OtherPassport, "Work") then
 								exports["discord"]:Embed("Admin", "**Passaporte:** "..Passport.."\n**Comando:** group "..OtherPassport.." "..Permission.." "..Level, 0xa3c846)
 								TriggerClientEvent("Notify", source, "Sucesso", "Adicionado a permissão <b>"..Permission.."</b> ao passaporte <b>"..OtherPassport.."</b>.", "verde", 5000)
 								TriggerClientEvent("Notify", OtherSource, "Sucesso", "Você recebeu a permissão de <b>"..Permission.."</b>.", "verde", 5000)
@@ -409,7 +409,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 							vRP.SetPermission(OtherPassport, Permission, Level)
 						end
 					else
-						TriggerClientEvent("Notify", source, "Aviso", "Campo <b>Hierarquia</b> deve conter apenas números.", "vermelho", 5000)
+						TriggerClientEvent("Notify", source, "Aviso", "Os campos devem conter apenas números.", "vermelho", 5000)
 					end
 				end
 			else

@@ -88,7 +88,7 @@ end)
 AddEventHandler("Disconnect",function(Passport)
 	if InVehicle[Passport] then
 		SetTimeout(1000,function()
-			TriggerEvent("garages:deleteVehicle",InVehicle[Passport][1],InVehicle[Passport][2])
+			TriggerEvent("garages:DeleteVehicle",InVehicle[Passport][1],InVehicle[Passport][2])
 			InVehicle[Passport] = nil
 		end)
 	end

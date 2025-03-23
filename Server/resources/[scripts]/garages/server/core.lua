@@ -72,7 +72,7 @@ function Hensa.PaymentStore(Number)
 		else
 			local Price = StoreVehiclePrice
 			if vRP.HasPermission(Passport, "Premium") then
-				Price = Premium[vRP.GetUserHierarchy(Passport, "Premium")]
+				Price = StoreVehiclePrice * Premium[vRP.GetUserHierarchy(Passport, "Premium")]
 			end
 
 			if vRP.Request(source, "Garagem", "Guardar um veículo por <b>$"..Price.."</b> dólares?") then

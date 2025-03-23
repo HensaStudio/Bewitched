@@ -10,9 +10,6 @@ client_scripts {
 }
 
 server_scripts {
-	"@vrp/config/Global.lua",
-	"@vrp/config/Groups.lua",
-	"@vrp/config/Item.lua",
 	"@vrp/lib/Utils.lua",
 	"server/*"
 }

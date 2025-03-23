@@ -134,7 +134,7 @@ function Hensa.Pickup(Number,Route,Target,Amount)
 			TriggerClientEvent("inventory:Update",source)
 		else
 			TriggerClientEvent("inventory:Update",source)
-			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","vermelho",5000)
 		end
 
 		Active[Passport] = nil

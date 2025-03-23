@@ -536,19 +536,24 @@ function Hensa.Blueprint()
 
 		local Secondary = {}
 		for Item,v in pairs(Users["Blueprints"][Passport]) do
-			local Number = tostring(CountTable(Secondary) + 1)
+			if (not ItemExist(Item) or not ItemExist("blueprint_"..Item)) and Users["Blueprints"][Passport][Item] then
+				Users["Blueprints"][Passport][Item] = nil
+			else
+				local Calculated = CountTable(Secondary) + 1
+				local Number = tostring(Calculated)
 
-			Secondary[Number] = {
-				["name"] = ItemName(Item),
-				["weight"] = ItemWeight(Item),
-				["index"] = ItemIndex(Item),
-				["rarity"] = ItemRarity(Item),
-				["economy"] = ItemEconomy(Item),
-				["desc"] = ItemDescription(Item),
-				["slot"] = Number,
-				["key"] = Item,
-				["amount"] = 1
-			}
+				Secondary[Number] = {
+					["name"] = ItemName(Item),
+					["weight"] = ItemWeight(Item),
+					["index"] = ItemIndex(Item),
+					["rarity"] = ItemRarity(Item),
+					["economy"] = ItemEconomy(Item),
+					["desc"] = ItemDescription(Item),
+					["slot"] = Number,
+					["key"] = Item,
+					["amount"] = 1
+				}
+			end
 		end
 
 		return Primary,vRP.GetWeight(Passport),Secondary
@@ -827,7 +832,7 @@ function Hensa.Use(Slot,Amount)
 						end
 					end
 
-					TriggerClientEvent("NotifyItem",source,{ "-",ItemIndex(Weapon),1,ItemName(Weapon) })
+					TriggerClientEvent("NotifyItem",source,{ "-",ItemIndex(Weapon),1,ItemName(Weapon),ItemRarity(Weapon) })
 				end
 			else
 				local Skin = nil
@@ -847,7 +852,7 @@ function Hensa.Use(Slot,Amount)
 				end
 
 				if vCLIENT.TakeWeapon(source,Item,AmmoClip,Attach,false,Skin) then
-					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full) })
+					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full),ItemRarity(Full) })
 				end
 			end
 		elseif ItemTypeCheck(Full,"Munição") then
@@ -871,7 +876,7 @@ function Hensa.Use(Slot,Amount)
 
 					Users["Ammos"][Passport][Item] = AmmoClip + Amount
 
-					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),Amount,ItemName(Full) })
+					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),Amount,ItemName(Full),ItemRarity(Full) })
 					TriggerClientEvent("inventory:Update",source)
 					vCLIENT.Reloading(source,Weapon,Amount)
 				end
@@ -896,11 +901,11 @@ function Hensa.Use(Slot,Amount)
 						end
 					end
 
-					TriggerClientEvent("NotifyItem",source,{ "-",ItemIndex(Weapon),1,ItemName(Weapon) })
+					TriggerClientEvent("NotifyItem",source,{ "-",ItemIndex(Weapon),1,ItemName(Weapon),ItemRarity(Weapon) })
 				end
 			else
 				if vCLIENT.TakeWeapon(source,Item,1,nil,Full) then
-					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full) })
+					TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full),ItemRarity(Full) })
 				end
 			end
 		elseif ItemTypeCheck(Full,"Attachs") then
@@ -918,7 +923,7 @@ function Hensa.Use(Slot,Amount)
 
 					if not Users["Attachs"][Passport][Weapon][Item] then
 						if vRP.TakeItem(Passport,Full,1,false,Slot) then
-							TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full) })
+							TriggerClientEvent("NotifyItem",source,{ "+",ItemIndex(Full),1,ItemName(Full),ItemRarity(Full) })
 							TriggerClientEvent("inventory:Update",source)
 							Users["Attachs"][Passport][Weapon][Item] = true
 							vCLIENT.GiveComponent(source,Component)
@@ -979,7 +984,6 @@ AddEventHandler("inventory:Cancel",function()
 			RobberyActive[Passport] = nil
 		end
 
-		vRP.FreezePlayer(source,false)
 		vRPC.Destroy(source)
 	end
 end)
@@ -989,7 +993,7 @@ end)
 function Hensa.VerifyWeapon(Item,Ammo)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not vRP.ConsultItem(Passport,Item,1) then
+	if Passport and not vRP.ConsultItem(Passport,Item) then
 		local Ammunation = WeaponAmmo(Item)
 		if Ammunation and Users["Ammos"][Passport] and Users["Ammos"][Passport][Ammunation] then
 			if Ammo and Ammo > 0 then
@@ -1010,7 +1014,6 @@ function Hensa.VerifyWeapon(Item,Ammo)
 			Users["Attachs"][Passport][Item] = nil
 		end
 
-		TriggerClientEvent("inventory:RemoveWeapon",source,Item)
 		TriggerClientEvent("inventory:Update",source)
 
 		return false
@@ -1024,7 +1027,7 @@ end
 function Hensa.CheckExistWeapons(Item)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and Item ~= "" and Item and not vRP.ConsultItem(Passport,Item,1) then
+	if Passport and Item ~= "" and Item and not vRP.ConsultItem(Passport,Item) then
 		return true
 	end
 
@@ -1182,7 +1185,7 @@ AddEventHandler("inventory:Loot",function(Number,Box)
 		end
 
 		if Loots[Box]["Item"] then
-			Consult = vRP.ConsultItem(Passport,Loots[Box]["Item"],1)
+			Consult = vRP.ConsultItem(Passport,Loots[Box]["Item"])
 			if not Consult then
 				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName(Loots[Box]["Item"]).."</b>.","amarelo",5000)
 

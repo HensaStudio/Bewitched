@@ -167,7 +167,7 @@ function Hensa.Store(Item,Slot,Amount,Target)
 				TriggerClientEvent("inventory:Update",Sourcers[Passport])
 			end
 		else
-			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","vermelho",5000)
 			TriggerClientEvent("inventory:Update",source)
 		end
 	end
@@ -193,7 +193,7 @@ function Hensa.Take(Item,Slot,Target,Amount)
 				TriggerClientEvent("inventory:Update",Sourcers[Passport])
 			end
 		else
-			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Aviso","Mochila cheia.","vermelho",5000)
 			TriggerClientEvent("inventory:Update",source)
 		end
 	end

@@ -20,15 +20,17 @@ local Brakes = {}
 function Hensa.RechargeFuel(Price)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not vRP.PaymentFull(Passport,Price) then
-		exports["bank"]:AddTaxs(Passport,source,"Posto de Gasolina",Price,"Gastos com combustível.")
+	if Passport and Price then
+		if vRP.PaymentFull(Passport,Price) then
+			exports["bank"]:AddTaxs(Passport,source,"Posto de Gasolina",Price,"Gastos com combustível.")
 
-		return false
-	else
-		TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","amarelo",5000)
+			return true
+		else
+			TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)
+		end
 	end
 
-	return true
+	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VEHICLEBRAKES

@@ -8,283 +8,6 @@ TakeWeapon = false
 StoreWeapon = false
 local Reloaded = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VARIABLES
------------------------------------------------------------------------------------------------------------------------------------------
-local Config = {
-	["WEAPON_KATANA"] = {
-		["Bone"] = 24818,
-		["x"] = 0.27,
-		["y"] = -0.15,
-		["z"] = 0.22,
-		["RotX"] = 0.0,
-		["RotY"] = 220.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_me_katana"
-	},
-	["WEAPON_CARBINERIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_carbinerifle"
-	},
-	["WEAPON_M4A4"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_m4a4"
-	},
-	["WEAPON_CARBINERIFLE_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_carbineriflemk2"
-	},
-	["WEAPON_ADVANCEDRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.02,
-		["y"] = -0.14,
-		["z"] = -0.04,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_advancedrifle"
-	},
-	["WEAPON_BULLPUPRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.02,
-		["y"] = -0.14,
-		["z"] = -0.04,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_bullpuprifle"
-	},
-	["WEAPON_BULLPUPRIFLE_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.02,
-		["y"] = -0.14,
-		["z"] = -0.04,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_bullpupriflemk2"
-	},
-	["WEAPON_SPECIALCARBINE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_specialcarbine"
-	},
-	["WEAPON_SPECIALCARBINE_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_specialcarbinemk2"
-	},
-	["WEAPON_MUSKET"] = {
-		["Bone"] = 24818,
-		["x"] = -0.1,
-		["y"] = -0.14,
-		["z"] = 0.0,
-		["RotX"] = 0.0,
-		["RotY"] = 0.8,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_musket"
-	},
-	["WEAPON_BAT"] = {
-		["Bone"] = 24818,
-		["x"] = -0.18,
-		["y"] = -0.18,
-		["z"] = 0.0,
-		["RotX"] = 0.0,
-		["RotY"] = 90.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_me_bat"
-	},
-	["WEAPON_PUMPSHOTGUN"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sg_pumpshotgun"
-	},
-	["WEAPON_RPG"] = {
-		["Bone"] = 24818,
-		["x"] = -0.20,
-		["y"] = -0.22,
-		["z"] = 0.0,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,2.5,
-		["Model"] = "w_lr_rpg"
-	},
-	["WEAPON_PUMPSHOTGUN_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sg_pumpshotgunmk2"
-	},
-	["WEAPON_SMG"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sb_smg"
-	},
-	["WEAPON_SMG_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.22,
-		["y"] = -0.14,
-		["z"] = 0.12,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sb_smgmk2"
-	},
-	["WEAPON_COMPACTRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.22,
-		["y"] = -0.14,
-		["z"] = 0.12,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_assaultrifle_smg"
-	},
-	["WEAPON_ASSAULTSMG"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.07,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sb_assaultsmg"
-	},
-	["WEAPON_HEAVYRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.08,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_heavyrifleh"
-	},
-	["WEAPON_TACTICALRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.08,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_carbinerifle_reh"
-	},
-	["WEAPON_ASSAULTRIFLE"] = {
-		["Bone"] = 24818,
-		["x"] = 0.08,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_assaultrifle"
-	},
-	["WEAPON_ASSAULTRIFLE_MK2"] = {
-		["Bone"] = 24818,
-		["x"] = 0.08,
-		["y"] = -0.14,
-		["z"] = 0.08,
-		["RotX"] = 0.0,
-		["RotY"] = 135.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_ar_assaultrifle"
-	},
-	["WEAPON_GUSENBERG"] = {
-		["Bone"] = 24818,
-		["x"] = 0.12,
-		["y"] = -0.14,
-		["z"] = -0.10,
-		["RotX"] = 0.0,
-		["RotY"] = 180.0,
-		["RotZ"] = 2.5,
-		["Model"] = "w_sb_gusenberg"
-	}
-}
------------------------------------------------------------------------------------------------------------------------------------------
--- INVENTORY:REMOVEWEAPON
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("inventory:RemoveWeapon")
-AddEventHandler("inventory:RemoveWeapon",function(Name)
-	local Name = SplitOne(Name)
-
-	if Objects[Name] then
-		TriggerServerEvent("DeleteObject",0,Name)
-		Objects[Name] = nil
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- INVENTORY:CREATEWEAPON
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("inventory:CreateWeapon")
-AddEventHandler("inventory:CreateWeapon",function(Name)
-	local Name = SplitOne(Name)
-	if CheckPolice() and Config[Name] and not Objects[Name] then
-		local Weapon = false
-		local Ped = PlayerPedId()
-		local Config = Config[Name]
-		local Coords = GetEntityCoords(Ped)
-		local Bone = GetPedBoneIndex(Ped,Config["Bone"])
-
-		if Skins[Name] then
-			local Hash = GetHashKey(Skins[Name])
-			Weapon = GetWeaponComponentTypeModel(Hash)
-		end
-
-		local Network = vRPS.CreateObject(Config["Model"],Coords["x"],Coords["y"],Coords["z"],Name,Weapon)
-		if Network then
-			Objects[Name] = LoadNetwork(Network)
-			if Objects[Name] then
-				AttachEntityToEntity(Objects[Name],Ped,Bone,Config["x"],Config["y"],Config["z"],Config["RotX"],Config["RotY"],Config["RotZ"],true,true,false,true,2,true)
-				SetEntityCompletelyDisableCollision(Objects[Name],false,true)
-				SetModelAsNoLongerNeeded(Config["Model"])
-				SetEntityLodDist(Objects[Name],0xFFFF)
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSTOREWEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
@@ -328,8 +51,8 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:VERIFYWEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("inventory:verifyWeapon")
-AddEventHandler("inventory:verifyWeapon",function(Item)
+RegisterNetEvent("inventory:VerifyWeapon")
+AddEventHandler("inventory:VerifyWeapon",function(Item)
 	local Name = SplitOne(Item)
 
 	if Weapon ~= "" then
@@ -348,8 +71,6 @@ AddEventHandler("inventory:verifyWeapon",function(Item)
 				if not vSERVER.VerifyWeapon(Weapon,Ammo) then
 					TriggerEvent("inventory:CleanWeapons")
 				end
-			else
-				TriggerEvent("inventory:RemoveWeapon",Item)
 			end
 		end
 	else
@@ -363,10 +84,6 @@ AddEventHandler("inventory:CleanWeapons",function()
 	if Weapon ~= "" then
 		local Ped = PlayerPedId()
 		local Ammo = GetAmmoInPedWeapon(Ped,Weapon)
-
-		if vSERVER.PreventWeapons(Weapon,Ammo) then
-			TriggerEvent("inventory:CreateWeapon",Weapon)
-		end
 
 		TriggerEvent("Weapon","")
 		TriggerEvent("hud:Weapon",false)
@@ -419,7 +136,6 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 
 			Weapon = Name
 			TriggerEvent("Weapon",Weapon)
-			TriggerEvent("inventory:RemoveWeapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
 
 			if Components then
@@ -435,7 +151,6 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 		else
 			Weapon = Name
 			TriggerEvent("Weapon",Weapon)
-			TriggerEvent("inventory:RemoveWeapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
 
 			if Components then

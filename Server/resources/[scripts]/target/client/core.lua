@@ -784,6 +784,8 @@ function TargetEnable()
 									Menu[#Menu + 1] = { event = "inventory:ChangePlate", label = "Trocar Placa", tunnel = "server" }
 									Menu[#Menu + 1] = { event = "garages:Key", label = "Chave Veícular", tunnel = "server" }
 								end
+
+								Menu[#Menu + 1] = { event = "engine:Vehrify", label = "Verificar", tunnel = "client" }
 							else
 								if GetEntityBoneIndexByName(Entitys,"boot") ~= -1 then
 									if GetSelectedPedWeapon(Ped) == GetHashKey("WEAPON_CROWBAR") then

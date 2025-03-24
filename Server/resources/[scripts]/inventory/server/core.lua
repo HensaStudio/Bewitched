@@ -1106,7 +1106,6 @@ AddEventHandler("inventory:Trasher",function(Entity)
 				Player(source)["state"]["Buttons"] = false
 
 				if Trashs[Number]["Passport"] == Passport then
-					local GainExperience = 1
 					local Result = RandPercentage(TrashItens)
 					local Experience = vRP.GetExperience(Passport,"Garbageman")
 					local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
@@ -1125,7 +1124,6 @@ AddEventHandler("inventory:Trasher",function(Entity)
 							Bonification = 0.075
 						end
 
-						GainExperience = GainExperience + 1
 						Valuation = Valuation + (Valuation * Bonification)
 					end
 
@@ -1142,7 +1140,6 @@ AddEventHandler("inventory:Trasher",function(Entity)
 									exports["inventory"]:Drops(Consult[Number]["Passport"],Consult[Number]["Source"],Result["Item"],Valuation)
 								end
 
-								vRP.PutExperience(Consult[Number]["Passport"],"Garbageman",GainExperience)
 								vRP.UpgradeStress(Consult[Number]["Passport"],1)
 							end
 						end
@@ -1154,7 +1151,6 @@ AddEventHandler("inventory:Trasher",function(Entity)
 							exports["inventory"]:Drops(Passport,source,Result["Item"],Valuation)
 						end
 
-						vRP.PutExperience(Passport,"Garbageman",GainExperience)
 						vRP.UpgradeStress(Passport,1)
 					end
 				end

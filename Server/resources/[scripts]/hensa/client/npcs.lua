@@ -199,7 +199,7 @@ local List = {
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Lixeiro
 		["Distance"] = 50,
-		["Coords"] = vec4(-322.25,-1545.87,31.02,272.13),
+		["Coords"] = vec4(-345.38,-1555.59,25.22,184.26),
 		["Model"] = "s_m_y_winclean_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Transporter Garagem

@@ -1079,13 +1079,6 @@ AddEventHandler("inventory:Trasher",function(Entity)
 	if Passport and not Active[Passport] and Coords then
 		Active[Passport] = os.time() + 10
 
-		if not vRPC.LastVehicle(source,"trash") then
-			TriggerClientEvent("Notify",source,"Atenção","Necessário a utilização do veículo <b>Trash</b>.","amarelo",5000)
-			Active[Passport] = nil
-
-			return false
-		end
-
 		for Index = 1,#Trashs do
 			if #(Trashs[Index]["Coords"] - Coords) <= 0.5 then
 				if Trashs[Index]["Timer"] and os.time() <= Trashs[Index]["Timer"] then
@@ -1115,7 +1108,7 @@ AddEventHandler("inventory:Trasher",function(Entity)
 				if Trashs[Number]["Passport"] == Passport then
 					local GainExperience = 1
 					local Result = RandPercentage(TrashItens)
-					local Experience = vRP.GetExperience(Passport,"Driver")
+					local Experience = vRP.GetExperience(Passport,"Garbageman")
 					local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
 
 					if exports["inventory"]:Buffs("Luck",Passport) then
@@ -1124,7 +1117,7 @@ AddEventHandler("inventory:Trasher",function(Entity)
 
 					if vRP.UserPremium(Passport) then
 						local Bonification = 0.050
-					local Hierarchy = vRP.GetUserHierarchy(Passport, "Premium")
+						local Hierarchy = vRP.GetUserHierarchy(Passport, "Premium")
 
 						if Hierarchy == 1 then
 							Bonification = 0.100

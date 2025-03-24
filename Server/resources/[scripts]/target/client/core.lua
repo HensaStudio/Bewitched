@@ -195,6 +195,20 @@ AddEventHandler("onClientResourceStart",function(Resource)
 	RegisterCommand("-entityTarget",TargetDisable)
 	RegisterKeyMapping("+entityTarget","Interação auricular.","keyboard","LMENU")
 
+	AddCircleZone("Trash01", vec3(-345.38,-1555.59,25.22), 0.5, {
+		name = "Trash01",
+		heading = 0.0
+	}, {
+		Distance = 1.25,
+		options = {
+			{
+				event = "farmer:Blips",
+				label = "Marcações",
+				tunnel = "client"
+			}
+		}
+	})
+
 	AddCircleZone("Impound01", vec3(392.47,-1645.03,29.6), 0.5, {
 		name = "Impound01",
 		heading = 0.0

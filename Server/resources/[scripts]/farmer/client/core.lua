@@ -11,6 +11,7 @@ Tunnel.bindInterface("farmer",Hensa)
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Poly = {}
+local Blips = {}
 local Display = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INPUTTARGETPOSITION
@@ -64,9 +65,17 @@ CreateThread(function()
 				if #(Coords - v["Coords"]["xyz"]) <= (v["Show"] or 100.0) and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
 					if not Display[Number] and LoadModel(v["Model"]) then
 						Display[Number] = CreateObjectNoOffset(v["Model"],v["Coords"]["x"],v["Coords"]["y"],v["Coords"]["z"] - (v["Height"] or 0.0),false,false,false)
+
+						if v["Model"] == "prop_rub_binbag_06" then
+							PlaceObjectOnGroundProperly(Display[Number])
+						end
+
 						SetEntityHeading(Display[Number],v["Coords"]["w"])
 						FreezeEntityPosition(Display[Number],true)
 						SetModelAsNoLongerNeeded(v["Model"])
+
+						v["Coords"] = GetEntityCoords(Display[Number])
+
 						InputTargetPosition(Number,v)
 						TimerDistance = 1000
 					end
@@ -80,10 +89,43 @@ CreateThread(function()
 						Display[Number] = nil
 					end
 				end
+
+				if #Blips > 0 and v["Model"] == "prop_rub_binbag_06" and not Blips[Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
+					Blips[Number] = AddBlipForRadius(v["Coords"]["xyz"],5.0)
+					SetBlipAlpha(Blips[Number],150)
+					SetBlipColour(Blips[Number],4)
+				end
 			end
 		end
 
 		Wait(TimerDistance)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- FARMER:BLIPS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("farmer:Blips")
+AddEventHandler("farmer:Blips",function()
+	if #Blips > 0 then
+		for _,v in pairs(Blips) do
+			if DoesBlipExist(v) then
+				RemoveBlip(v)
+			end
+		end
+
+		Blips = {}
+
+		TriggerEvent("Notify","Catador de Reciclagem","Marcações desativadas.","amarelo",5000)
+	else
+		for Number,v in pairs(Objects) do
+			if not Blips[Number] and v["Model"] == "prop_rub_binbag_06" and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
+				Blips[Number] = AddBlipForRadius(v["Coords"]["xyz"],5.0)
+				SetBlipAlpha(Blips[Number],150)
+				SetBlipColour(Blips[Number],85)
+			end
+		end
+
+		TriggerEvent("Notify","Catador de Reciclagem","Marcações ativadas.","verde",5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -98,6 +140,14 @@ for Number = 1,#Objects do
 
 			exports["target"]:RemCircleZone("Farmer:"..Number)
 			Display[Number] = nil
+		end
+
+		if Blips[Number] then
+			if DoesBlipExist(Blips[Number]) then
+				RemoveBlip(Blips[Number])
+			end
+
+			Blips[Number] = nil
 		end
 	end)
 end

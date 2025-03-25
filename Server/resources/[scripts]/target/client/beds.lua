@@ -3,22 +3,59 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Previous = nil
 local Treatment = false
-local TreatmentTimer = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
--- THREADSTART
+-- BEDS
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("onClientResourceStart",function(Resource)
-	if (GetCurrentResourceName() ~= Resource) then
-		return
-	end
-
+local Beds = {
+	-- Medical Center Sul
+	{ ["Coords"] = vec4(307.72, -581.74, 43.2, 340.16), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(311.06, -582.96, 43.2, 340.16), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(314.46, -584.2, 43.2, 340.16), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(317.68, -585.37, 43.2, 340.16), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(322.62, -587.16, 43.2, 340.16), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(324.26, -582.8, 43.2, 158.75), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(319.42, -581.05, 43.2, 158.75), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(313.93, -579.04, 43.2, 158.75), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(309.35, -577.38, 43.2, 158.75), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(363.8, -589.12, 43.21, 68.04), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(364.96, -585.94, 43.21, 68.04), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(366.52, -581.67, 43.21, 68.04), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(354.44, -600.19, 43.21, 68.04), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(359.53, -586.23, 43.2, 68.04), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(361.36, -581.3, 43.2, 68.04), ["Invert"] = 0.0 },
+	-- Medical Center Norte
+	{ ["Coords"] = vec4(-252.15, 6323.11, 32.35, 133.23), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-250.5, 6321.87, 32.35, 133.23), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-246.98, 6317.95, 32.33, 133.23), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-245.27, 6316.22, 32.35, 133.23), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-251.03, 6310.51, 32.35, 317.49), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-252.63, 6312.12, 32.35, 317.49), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-254.39, 6313.88, 32.35, 317.49), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-256.1, 6315.58, 32.35, 317.49), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(-258.03, 6317.12, 32.35, 317.49), ["Invert"] = 0.0 },
+	-- Boolingbroke
+	{ ["Coords"] = vec4(1761.87,2591.56,45.50,272.13), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1761.87,2594.64,45.50,272.13), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1761.87,2597.73,45.50,272.13), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1771.98,2597.95,45.50,87.88), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1771.98,2594.88,45.50,87.88), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1771.98,2591.79,45.50,87.88), ["Invert"] = 0.0 },
+	-- Clandestine
+	{ ["Coords"] = vec4(1591.3,3592.51,38.68,28.35), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1593.61,3593.72,38.68,28.35), ["Invert"] = 0.0 },
+	{ ["Coords"] = vec4(1592.05,3585.92,38.68,119.06), ["Invert"] = 0.0 }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADSERVERSTART
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
 	for Number,v in pairs(Beds) do
-		AddBoxZone("Beds:"..Number, v["Coords"], 2.0, 1.0, {
+		AddBoxZone("Beds:"..Number,v["Coords"]["xyz"],2.0,1.0,{
 			name = "Beds:"..Number,
-			heading = v["Heading"],
-			minZ = v["Coords"]["z"] - 0.10,
+			heading = v["Coords"]["w"],
+			minZ = v["Coords"]["z"] - 0.25,
 			maxZ = v["Coords"]["z"] + 0.50
-		}, {
+		},{
 			shop = Number,
 			Distance = 1.50,
 			options = {
@@ -26,7 +63,7 @@ AddEventHandler("onClientResourceStart",function(Resource)
 					event = "target:PutBed",
 					label = "Deitar",
 					tunnel = "client"
-				}, {
+				},{
 					event = "target:Treatment",
 					label = "Tratamento",
 					tunnel = "client"
@@ -38,79 +75,63 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:PUTBED
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("target:PutBed")
-AddEventHandler("target:PutBed", function(Number)
+AddEventHandler("target:PutBed",function(Number)
 	if not Previous then
 		local Ped = PlayerPedId()
 		Previous = GetEntityCoords(Ped)
-		SetEntityCoords(Ped, Beds[Number]["Coords"]["x"], Beds[Number]["Coords"]["y"], Beds[Number]["Coords"]["z"] - 1, false, false, false, false)
-		vRP.PlayAnim(false, { "amb@world_human_sunbathe@female@back@idle_a", "idle_a" }, true)
-		SetEntityHeading(Ped, Beds[Number]["Heading"] - 180.0)
+		SetEntityCoords(Ped,Beds[Number]["Coords"]["x"],Beds[Number]["Coords"]["y"],Beds[Number]["Coords"]["z"] - 0.5)
+		vRP.PlayAnim(false,{"amb@world_human_sunbathe@female@back@idle_a","idle_a"},true)
+		SetEntityHeading(Ped,Beds[Number]["Coords"]["w"] - Beds[Number]["Invert"])
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:UPBED
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("target:UpBed")
-AddEventHandler("target:UpBed", function()
+AddEventHandler("target:UpBed",function()
 	if Previous then
 		local Ped = PlayerPedId()
-		SetEntityCoords(Ped, Previous["x"], Previous["y"], Previous["z"] - 1, false, false, false, false)
+		SetEntityCoords(Ped,Previous["x"],Previous["y"],Previous["z"] - 0.5)
 		Previous = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:TREATMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("target:Treatment")
-AddEventHandler("target:Treatment", function(Number)
-	if not Previous and vSERVER.CheckIn() then
+AddEventHandler("target:Treatment",function(Number,Ignore)
+	if not Previous and Beds[Number] and (Ignore or vSERVER.CheckIn()) then
 		local Ped = PlayerPedId()
 		Previous = GetEntityCoords(Ped)
-		SetEntityCoords(Ped, Beds[Number]["Coords"]["x"], Beds[Number]["Coords"]["y"], Beds[Number]["Coords"]["z"] - 1, false, false, false, false)
-		vRP.PlayAnim(false, { "amb@world_human_sunbathe@female@back@idle_a", "idle_a" }, true)
-		SetEntityHeading(Ped, Beds[Number]["Heading"] - 180.0)
+		SetEntityCoords(Ped,Beds[Number]["Coords"]["x"],Beds[Number]["Coords"]["y"],Beds[Number]["Coords"]["z"] - 0.5)
+		vRP.PlayAnim(false,{"amb@world_human_sunbathe@female@back@idle_a","idle_a"},true)
+		SetEntityHeading(Ped,Beds[Number]["Coords"]["w"] - Beds[Number]["Invert"])
 
-		TriggerEvent("inventory:PreventWeapon")
-		LocalPlayer["state"]:set("Commands", true, true)
-		LocalPlayer["state"]:set("Buttons", true, true)
-		LocalPlayer["state"]:set("Cancel", true, true)
+		LocalPlayer["state"]:set("Commands",true,true)
+		LocalPlayer["state"]:set("Buttons",true,true)
+		LocalPlayer["state"]:set("Cancel",true,true)
 		NetworkSetFriendlyFireOption(false)
 		TriggerEvent("paramedic:Reset")
+		SetEntityInvincible(Ped,false)
 
 		if GetEntityHealth(Ped) <= 100 then
 			exports["survival"]:Revive(101)
 		end
 
-		Treatment = true
+		Treatment = GetGameTimer() + 1000
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- STARTTREATMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("target:StartTreatment")
-AddEventHandler("target:StartTreatment", function()
+AddEventHandler("target:StartTreatment",function()
 	if not Treatment then
-		LocalPlayer["state"]:set("Commands", true, true)
-		LocalPlayer["state"]:set("Buttons", true, true)
-		LocalPlayer["state"]:set("Cancel", true, true)
+		LocalPlayer["state"]:set("Commands",true,true)
+		LocalPlayer["state"]:set("Buttons",true,true)
+		LocalPlayer["state"]:set("Cancel",true,true)
+		SetEntityInvincible(PlayerPedId(),false)
 		NetworkSetFriendlyFireOption(false)
+		Treatment = GetGameTimer() + 1000
 		TriggerEvent("paramedic:Reset")
-		Treatment = true
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- THREADBEDS
------------------------------------------------------------------------------------------------------------------------------------------
-CreateThread(function()
-	while true do
-		local Ped = PlayerPedId()
-		if Previous and not IsEntityPlayingAnim(Ped, "amb@world_human_sunbathe@female@back@idle_a", "idle_a", 3) then
-			SetEntityCoords(Ped, Previous["x"], Previous["y"], Previous["z"] - 1, false, false, false, false)
-			Previous = nil
-		end
-
-		Citizen.Wait(10000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -118,25 +139,32 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
 	while true do
-		if Treatment then
-			if GetGameTimer() >= TreatmentTimer then
-				local Ped = PlayerPedId()
-				local Health = GetEntityHealth(Ped)
-				TreatmentTimer = GetGameTimer() + 1000
+		local TimeDistance = 999
+		local Ped = PlayerPedId()
+		if Treatment and GetGameTimer() >= Treatment then
+			TimeDistance = 100
+			Treatment = GetGameTimer() + 1000
+			local Health = GetEntityHealth(Ped)
 
-				if Health < 200 then
-					SetEntityHealth(Ped, Health + 1)
-				else
-					Treatment = false
-					NetworkSetFriendlyFireOption(true)
-					LocalPlayer["state"]:set("Cancel", false, true)
-					LocalPlayer["state"]:set("Buttons", false, true)
-					LocalPlayer["state"]:set("Commands", false, true)
-					TriggerEvent("Notify", "verde", "Tratamento concluido.", "Sucesso", 5000)
-				end
+			if Health < 200 then
+				SetEntityHealth(Ped,Health + 1)
+			else
+				Treatment = false
+				SetEntityInvincible(Ped,false)
+				NetworkSetFriendlyFireOption(true)
+				LocalPlayer["state"]:set("Cancel",false,true)
+				LocalPlayer["state"]:set("Buttons",false,true)
+				LocalPlayer["state"]:set("Commands",false,true)
+				TriggerEvent("Notify","Centro Médico","Tratamento concluido.","hospital",5000)
 			end
 		end
 
-		Wait(1000)
+		if Previous and not IsEntityPlayingAnim(Ped,"amb@world_human_sunbathe@female@back@idle_a","idle_a",3) then
+			SetEntityCoords(Ped,Previous["x"],Previous["y"],Previous["z"] - 0.5)
+			TimeDistance = 100
+			Previous = nil
+		end
+
+		Wait(TimeDistance)
 	end
 end)

@@ -28,7 +28,13 @@ local Locate = {
 -- ANIMS
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Anims = {
-	{ ["Dict"] = "rcmbarry", ["Name"] = "base" }
+	{ ["Dict"] = "mp_player_inteat@burger", ["Name"] = "mp_player_int_eat_burger" },
+	{ ["Dict"] = "anim@amb@nightclub@mini@dance@dance_solo@male@var_b@", ["Name"] = "high_center_down" },
+	{ ["Dict"] = "anim@mp_player_intupperwave", ["Name"] = "idle_a" },
+	{ ["Dict"] = "anim@mp_player_intcelebrationmale@salute", ["Name"] = "salute" },
+	{ ["Dict"] = "anim@mp_player_intcelebrationmale@thumb_on_ears", ["Name"] = "thumb_on_ears" },
+	{ ["Dict"] = "anim@mp_player_intcelebrationmale@face_palm", ["Name"] = "face_palm" },
+	{ ["Dict"] = "anim@mp_player_intcelebrationmale@air_guitar", ["Name"] = "air_guitar" }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHARACTERS
@@ -189,16 +195,15 @@ function Customization(Table,Check)
 	end
 
 	local Ped = PlayerPedId()
-	local Random = math.random(#Anims)
-	if LoadAnim(Anims[Random]["Dict"]) then
-		TaskPlayAnim(Ped,Anims[Random]["Dict"],Anims[Random]["Name"],8.0,8.0,-1,1,1,0,0,0)
+	local RandomAnim = Anims[math.random(#Anims)]
+	if LoadAnim(RandomAnim["Dict"]) then
+		TaskPlayAnim(Ped, RandomAnim["Dict"], RandomAnim["Name"], 8.0, 8.0, -1, 1, 1, 0, 0, 0)
 	end
 
 	exports["skinshop"]:Apply(Table["Clothes"],Ped)
 	exports["barbershop"]:Apply(Table["Barber"],Ped)
 	exports["tattooshop"]:Apply(Table["Tattoos"],Ped)
 
-	ClearPedTasksImmediately(Ped)
 	SetEntityVisible(Ped,true)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------

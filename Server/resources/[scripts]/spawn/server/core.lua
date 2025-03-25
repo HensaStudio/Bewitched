@@ -88,8 +88,7 @@ function Hensa.NewCharacter(Name, Lastname, Sex)
 			AmountCharactersPremium = AmountCharactersPremium + 2
 		end
 
-		local Consult = vRP.Query("characters/Count",{ License = License })
-		if Account["Characters"] <= parseInt(Consult[1]["qtd"]) then
+		if Account["Characters"] <= vRP.Scalar("characters/Count",{ License = License }) then
 			TriggerClientEvent("Notify",source,"Atenção","Limite de personagem atingido.","amarelo",5000)
 		else
 			local Sexo = "M"

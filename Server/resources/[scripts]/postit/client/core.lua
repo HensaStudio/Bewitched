@@ -40,11 +40,7 @@ AddEventHandler("postit:initPostit",function()
 				DrawMarker(28,Coords["x"],Coords["y"],Coords["z"],0.0,0.0,0.0,0.0,0.0,0.0,0.05,0.05,0.05,88,101,242,175,0,0,0,0)
 
 				if IsControlJustPressed(1,38) then
-					if GetCoords then
-						exports["keyboard"]:Copy("Cordenadas",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"]))
-					else
-						vSERVER.Add(Coords)
-					end
+					vSERVER.Add(Coords)
 
 					Active = false
 
@@ -54,6 +50,43 @@ AddEventHandler("postit:initPostit",function()
 				Wait(1)
 			end
 		end)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- POSTIT:INITADMINPOSTIT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("postit:initAdminPostit")
+AddEventHandler("postit:initAdminPostit",function()
+	if LocalPlayer["state"]["Admin"] then
+		if not Active then
+			Active = true
+
+			TriggerEvent("dynamic:Close")
+			TriggerEvent("Notify","Informação","Pressione <b>E</b> quando achar o ponto que deseja.","server",5000)
+
+			CreateThread(function()
+				while true do
+					local Ped = PlayerPedId()
+					local Camera = GetGameplayCamCoord()
+					local Handler = StartExpensiveSynchronousShapeTestLosProbe(Camera,GetCoordsFromCam(25.0,Camera),-1,Ped,4)
+					local _,_,Coords = GetShapeTestResult(Handler)
+
+					DrawMarker(28,Coords["x"],Coords["y"],Coords["z"],0.0,0.0,0.0,0.0,0.0,0.0,0.05,0.05,0.05,88,101,242,175,0,0,0,0)
+
+					if IsControlJustPressed(1,38) then
+						exports["keyboard"]:Copy("Coordenadas",Optimize(Coords["x"])..","..Optimize(Coords["y"])..","..Optimize(Coords["z"]))
+
+						Active = false
+
+						break
+					end
+
+					Wait(1)
+				end
+			end)
+		end
+	else
+		TriggerEvent("Notify","Atenção","Você não tem permissões para isso.","amarelo",5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

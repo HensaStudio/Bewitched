@@ -81,15 +81,23 @@ CreateThread(function()
 		if IsPedInAnyVehicle(Ped) then
 			local Vehicle = GetVehiclePedIsUsing(Ped)
 			local ClassVehicle = GetVehicleClass(Vehicle)
-			if not Class[ClassVehicle] or Class[ClassVehicle] ~= 0.0 then
-				if GetVehicleFuelLevel(Vehicle) >= 1 then
-					if (GetEntitySpeed(Vehicle) * VehVelocity) >= 1 and GetPedInVehicleSeat(Vehicle,-1) == Ped then
-						ActiveFuel = (ActiveFuel - (Consume[floor(GetVehicleCurrentRpm(Vehicle))] or 1.0) * (Class[GetVehicleClass(Vehicle)] or 1.0) / 10)
-						SetVehicleFuelLevel(Vehicle,ActiveFuel + 0.0)
-						Entity(Vehicle)["state"]:set("Fuel",ActiveFuel,true)
+			local FuelLevel = GetVehicleFuelLevel(Vehicle)
+			
+			if Class[ClassVehicle] and Class[ClassVehicle] ~= 0.0 then
+				if FuelLevel >= 1 then
+					local VehicleSpeed = GetEntitySpeed(Vehicle) * VehVelocity
+					local IsDriver = GetPedInVehicleSeat(Vehicle, -1) == Ped
+					if VehicleSpeed >= 1 and IsDriver then
+						local Rpm = floor(GetVehicleCurrentRpm(Vehicle))
+						local ConsumptionRate = Consume[Rpm] or 1.0
+						local ClassModifier = Class[ClassVehicle] or 1.0
+						ActiveFuel = ActiveFuel - (ConsumptionRate * ClassModifier / 10)
+
+						SetVehicleFuelLevel(Vehicle, ActiveFuel)
+						Entity(Vehicle)["state"]:set("Fuel", ActiveFuel, true)
 					end
 				else
-					SetVehicleEngineOn(Vehicle,false,true,true)
+					SetVehicleEngineOn(Vehicle, false, true, true)
 					TimeDistance = 1
 				end
 			end
@@ -106,33 +114,27 @@ CreateThread(function()
 		local Ped = PlayerPedId()
 		if IsPedInAnyVehicle(Ped) then
 			local Vehicle = GetVehiclePedIsUsing(Ped)
-			if GetVehicleClass(Vehicle) ~= 14 and GetVehicleClass(Vehicle) ~= 15 and GetVehicleClass(Vehicle) ~= 16 and GetVehicleClass(Vehicle) ~= 21 then
+			local VehicleClass = GetVehicleClass(Vehicle)
+			if VehicleClass ~= 14 and VehicleClass ~= 15 and VehicleClass ~= 16 and VehicleClass ~= 21 then
 				local Speed = GetEntitySpeed(Vehicle) * VehVelocity
+
 				if Speed >= 1 and NetworkGetEntityIsNetworked(Vehicle) then
 					local Network = NetworkGetNetworkIdFromEntity(Vehicle)
 
 					if VehBrakes[Network] == nil then
 						VehBrakes[Network] = vSERVER.VehicleBrakes(Network)
 
-						SetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeForce",VehBrakes[Network][1])
-						SetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeBiasFront",VehBrakes[Network][2])
-						SetVehicleHandlingFloat(Vehicle,"CHandlingData","fHandBrakeForce",VehBrakes[Network][3])
+						SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeForce", VehBrakes[Network][1])
+						SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeBiasFront", VehBrakes[Network][2])
+						SetVehicleHandlingFloat(Vehicle, "CHandlingData", "fHandBrakeForce", VehBrakes[Network][3])
 					end
 
-					if GetPedInVehicleSeat(Vehicle,-1) == Ped then
-						if IsPedOnAnyBike(Ped) then
-							local BrakeStatusOne = GetVehicleWheelBrakePressure(Vehicle,0)
+					if GetPedInVehicleSeat(Vehicle, -1) == Ped then
+						local BrakeStatusOne = GetVehicleWheelBrakePressure(Vehicle, 0)
+						local BrakeStatusTwo = GetVehicleWheelBrakePressure(Vehicle, 2)
 
-							if BrakeStatusOne ~= 0.0 then
-								UpdateBrakes(Vehicle,Network)
-							end
-						else
-							local BrakeStatusOne = GetVehicleWheelBrakePressure(Vehicle,0)
-							local BrakeStatusTeo = GetVehicleWheelBrakePressure(Vehicle,2)
-
-							if BrakeStatusOne ~= 0.0 or BrakeStatusTeo ~= 0.0 then
-								UpdateBrakes(Vehicle,Network)
-							end
+						if (IsPedOnAnyBike(Ped) and BrakeStatusOne ~= 0.0) or (not IsPedOnAnyBike(Ped) and (BrakeStatusOne ~= 0.0 or BrakeStatusTwo ~= 0.0)) then
+							UpdateBrakes(Vehicle, Network)
 						end
 					end
 				end
@@ -145,34 +147,33 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATEBRAKES
 -----------------------------------------------------------------------------------------------------------------------------------------
-function UpdateBrakes(Vehicle,Network)
-	local BrakeForceFloat = GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeForce")
-	local BrakeFrontFloat = GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeBiasFront")
-	local BrakeHandFloat = GetVehicleHandlingFloat(Vehicle,"CHandlingData","fHandBrakeForce")
+function UpdateBrakes(Vehicle, Network)
+	local BrakeForceFloat = GetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeForce")
+	local BrakeFrontFloat = GetVehicleHandlingFloat(Vehicle, "CHandlingData", "fBrakeBiasFront")
+	local BrakeHandFloat = GetVehicleHandlingFloat(Vehicle, "CHandlingData", "fHandBrakeForce")
 
 	local Force = BrakeForceFloat - (0.90 * 0.0015)
 	local Front = BrakeFrontFloat - (0.55 * 0.0020)
 	local Hands = BrakeHandFloat - (0.75 * 0.0020)
 
-	if Force <= 0.0900 then Force = 0.0900 end
-	if Front <= 0.0550 then Front = 0.0550 end
-	if Hands <= 0.0750 then Hands = 0.0750 end
+	Force = math.max(Force, 0.0900)
+	Front = math.max(Front, 0.0550)
+	Hands = math.max(Hands, 0.0750)
 
 	local PlayerArounds = {}
-	for _,Player in ipairs(GetActivePlayers()) do
-		PlayerArounds[#PlayerArounds + 1] = GetPlayerServerId(Player)
+	for _, Player in ipairs(GetActivePlayers()) do
+		table.insert(PlayerArounds, GetPlayerServerId(Player))
 	end
 
-	TriggerServerEvent("engine:TryBrakes",Network,{ Force, Front, Hands },PlayerArounds)
+	TriggerServerEvent("engine:TryBrakes", Network, { Force, Front, Hands }, PlayerArounds)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ENGINE:SUPPLY
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("engine:Supply")
-AddEventHandler("engine:Supply",function(Entitys)
+AddEventHandler("engine:Supply", function(Entitys)
 	local Vehicle = Entitys[3]
-	Lasted = GetVehicleFuelLevel(Vehicle)
-
+	local Lasted = GetVehicleFuelLevel(Vehicle)
 	if Lasted <= 99.975 then
 		local Ped = PlayerPedId()
 		local Gallons = Entitys[6]
@@ -180,63 +181,53 @@ AddEventHandler("engine:Supply",function(Entitys)
 
 		if not DisplayNui and not Gallons then
 			SendNUIMessage({ Action = "Open" })
-			TriggerEvent("hud:Active",false)
+			TriggerEvent("hud:Active", false)
 			DisplayNui = true
 		end
 
 		if not FuelRecharger then
 			FuelRecharger = true
-			TaskTurnPedToFaceEntity(Ped,Vehicle,5000)
+			TaskTurnPedToFaceEntity(Ped, Vehicle, 5000)
 		end
 
 		while FuelRecharger do
-			DisableControlAction(0,18,true)
-			DisableControlAction(0,22,true)
-			DisableControlAction(0,23,true)
-			DisableControlAction(0,24,true)
-			DisableControlAction(0,29,true)
-			DisableControlAction(0,30,true)
-			DisableControlAction(0,31,true)
-			DisableControlAction(0,140,true)
-			DisableControlAction(0,141,true)
-			DisableControlAction(0,142,true)
-			DisableControlAction(0,143,true)
-			DisableControlAction(0,257,true)
-			DisableControlAction(0,263,true)
+			local disableControls = {18, 22, 23, 24, 29, 30, 31, 140, 141, 142, 143, 257, 263}
+			for _, control in ipairs(disableControls) do
+				DisableControlAction(0, control, true)
+			end
 
-			local Coords = GetEntityCoords(Vehicle)
 			local VehicleFuel = GetVehicleFuelLevel(Vehicle)
 
-			if not Gallon then
-				Price = Price + 0.350
-				SetVehicleFuelLevel(Vehicle,VehicleFuel + 0.015)
-				SendNUIMessage({ Action = "Tank", Payload = { floor(VehicleFuel),Price,0.350 * 8 } })
+			if not Gallons then
+				Price = (Price or 0) + 0.350
+				SetVehicleFuelLevel(Vehicle, VehicleFuel + 0.015)
+				SendNUIMessage({ Action = "Tank", Payload = { floor(VehicleFuel), Price, 0.350 * 8 } })
 			else
-				if (GetAmmoInPedWeapon(Ped,883325847) - 0.025 * 100) > 1 then
-					SetPedAmmo(Ped,883325847,math.floor(GetAmmoInPedWeapon(Ped,883325847) - 0.015 * 100))
-					SetVehicleFuelLevel(Vehicle,VehicleFuel + 0.015)
+				if (GetAmmoInPedWeapon(Ped, 883325847) - 0.025 * 100) > 1 then
+					SetPedAmmo(Ped, 883325847, math.floor(GetAmmoInPedWeapon(Ped, 883325847) - 0.015 * 100))
+					SetVehicleFuelLevel(Vehicle, VehicleFuel + 0.015)
 				end
 			end
 
-			SetDrawOrigin(Coords["x"],Coords["y"],Coords["z"])
-			DrawSprite("Textures","E",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
+			SetDrawOrigin(Coords.x, Coords.y, Coords.z)
+			DrawSprite("Textures", "E", 0.0, 0.0, 0.02, 0.02 * GetAspectRatio(false), 0.0, 255, 255, 255, 255)
 			ClearDrawOrigin()
 
-			if not IsEntityPlayingAnim(Ped,"timetable@gardener@filling_can","gar_ig_5_filling_can",3) and LoadAnim("timetable@gardener@filling_can") then
-				TaskPlayAnim(Ped,"timetable@gardener@filling_can","gar_ig_5_filling_can",8.0,8.0,-1,50,1,0,0,0)
+			if not IsEntityPlayingAnim(Ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 3) and LoadAnim("timetable@gardener@filling_can") then
+				TaskPlayAnim(Ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 8.0, 8.0, -1, 50, 1, 0, 0, 0)
 			end
 
-			if VehicleFuel >= 100.0 or GetEntityHealth(Ped) <= 100 or (Gallon and GetAmmoInPedWeapon(Ped,883325847) - 0.025 * 100 <= 1) or IsControlJustPressed(1,38) then
+			if VehicleFuel >= 100.0 or GetEntityHealth(Ped) <= 100 or (Gallons and GetAmmoInPedWeapon(Ped, 883325847) - 0.025 * 100 <= 1) or IsControlJustPressed(1, 38) then
 				if not Gallons and not vSERVER.RechargeFuel(Price) then
-					Entity(Vehicle)["state"]:set("Fuel",Lasted + 0.0,true)
+					Entity(Vehicle)["state"]:set("Fuel", Lasted + 0.0, true)
 					ActiveFuel = Lasted
 				else
-					Entity(Vehicle)["state"]:set("Fuel",VehicleFuel + 0.0,true)
+					Entity(Vehicle)["state"]:set("Fuel", VehicleFuel + 0.0, true)
 					ActiveFuel = VehicleFuel
 
 					if DisplayNui then
 						SendNUIMessage({ Action = "Close" })
-						TriggerEvent("hud:Active",true)
+						TriggerEvent("hud:Active", true)
 					end
 				end
 
@@ -250,7 +241,7 @@ AddEventHandler("engine:Supply",function(Entitys)
 			Wait(1)
 		end
 	else
-		TriggerEvent("Notify","Aviso","O tanque está cheio.","vermelho",5000)
+		TriggerEvent("Notify", "Aviso", "O tanque está cheio.", "vermelho", 5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

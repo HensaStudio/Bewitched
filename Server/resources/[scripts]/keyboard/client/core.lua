@@ -155,6 +155,35 @@ function Nitro(First)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- POSTIT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function PostIt(First,Second)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "area",
+				placeholder = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "options",
+				placeholder = "Selecione uma distância",
+				options = Second,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- OPTIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Options(First,Second)
@@ -179,6 +208,30 @@ function Options(First,Second)
 
 	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
 		return { Array["1"]["input"],Array["2"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- MONEYWASH
+-----------------------------------------------------------------------------------------------------------------------------------------
+function MoneyWash(First)
+	local Array = Keyboard({
+		title = "Máquina de Lavar",
+		subtitle = "Lave o seu dinheiro sujo",
+		rows = {
+			{
+				id = 1,
+				mode = "options",
+				placeholder = "Selecione um valor",
+				options = First,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" then
+		return { Array["1"]["input"] }
 	end
 
 	return false
@@ -747,6 +800,12 @@ function Hensa.Timeset(First,Secondary)
 	return Timeset(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- POSTIT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.PostIt(First,Secondary)
+	return PostIt(First,Secondary)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- ITEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Item(First,Secondary,Third,Fourth,Fifty)
@@ -765,6 +824,12 @@ function Hensa.Perimeters(First)
 	return Perimeters(First)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- MONEYWASH
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.MoneyWash(First)
+	return MoneyWash(First)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("Ban",Ban)
@@ -774,6 +839,7 @@ exports("Area",Area)
 exports("Copy",Copy)
 exports("Fines",Fines)
 exports("Nitro",Nitro)
+exports("PostIt",PostIt)
 exports("Options",Options)
 exports("Weather",Weather)
 exports("Timeset",Timeset)
@@ -781,6 +847,7 @@ exports("Primary",Primary)
 exports("Password",Password)
 exports("Tertiary",Tertiary)
 exports("Announce",Announce)
+exports("MoneyWash",MoneyWash)
 exports("Secondary",Secondary)
 exports("Instagram",Instagram)
 exports("GiveGroup",GiveGroup)

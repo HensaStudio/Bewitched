@@ -10,11 +10,9 @@ ui_page "web/index.html"
 
 client_scripts {
 	"@vrp/lib/Utils.lua",
-	"@vrp/config/Item.lua",
-	"@vrp/config/Native.lua",
-	"@vrp/config/Vehicle.lua",
 	"@PolyZone/client.lua",
 	"@PolyZone/BoxZone.lua",
+	"@vrp/config/Native.lua",
 	"@PolyZone/EntityZone.lua",
 	"@PolyZone/CircleZone.lua",
 	"@PolyZone/ComboZone.lua",
@@ -22,16 +20,18 @@ client_scripts {
 }
 
 server_scripts {
-	"@vrp/config/Global.lua",
-	"@vrp/config/Item.lua",
 	"@vrp/lib/Utils.lua",
 	"server/*"
 }
 
-shared_scripts {
-	"shared/*"
-}
-
 files {
 	"web/*"
+}
+
+shared_scripts {
+	"@vrp/config/Item.lua",
+	"@vrp/config/Vehicle.lua",
+	"@vrp/config/Global.lua",
+	"@vrp/config/Drops.lua",
+	"shared/*"
 }

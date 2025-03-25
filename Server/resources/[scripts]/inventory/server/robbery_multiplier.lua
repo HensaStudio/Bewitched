@@ -5,6 +5,7 @@ local Config = {
 	["Register"] = {
 		["Timer"] = 15,
 		["Wanted"] = 60,
+		["Game"] = true,
 		["Delay"] = 3600,
 		["Cooldown"] = {},
 		["Percentage"] = 750,
@@ -57,6 +58,12 @@ AddEventHandler("inventory:RobberyMultiplier",function(Number,Mode)
 		end
 
 		if not Config[Mode]["Cooldown"][Number] or os.time() > Config[Mode]["Cooldown"][Number] then
+			if Config[Mode]["Game"] then
+				if not vRP.Safecrack(source,1) then
+					return false
+				end
+			end
+
 			Player(source)["state"]["Buttons"] = true
 			Active[Passport] = os.time() + Config[Mode]["Timer"]
 			TriggerClientEvent("player:Residual",source,Config[Mode]["Residual"])

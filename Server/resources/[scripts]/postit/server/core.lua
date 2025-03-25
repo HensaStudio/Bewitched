@@ -24,7 +24,8 @@ function Hensa.Add(Coords)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		local Keyboard = vKEYBOARD.Secondary(source,"Mensagem","Distância (3 a 15)")
+		local Distances = { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+		local Keyboard = vKEYBOARD.PostIt(source,"Mensagem:",Distances)
 		if Keyboard and parseInt(Keyboard[2]) >= 3 and parseInt(Keyboard[2]) <= 15 then
 			if vRP.TakeItem(Passport,"postit",1,true) then
 				local Route = GetPlayerRoutingBucket(source)

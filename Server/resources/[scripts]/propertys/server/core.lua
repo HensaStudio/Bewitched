@@ -21,7 +21,7 @@ local Active = {}
 local Robbery = {}
 local CountClothes = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- GLOBALVARIABLES
+-- GLOBALSTATE
 -----------------------------------------------------------------------------------------------------------------------------------------
 GlobalState["Markers"] = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -155,12 +155,8 @@ function Hensa.Propertys(Name)
 	local Passport = vRP.Passport(source)
 	if Passport then
 		if Name == "Hotel" then
-			local Consult = vRP.Query("propertys/Count",{ Passport = Passport })
-			if Consult[1] then
-				local Count = Consult[1]["COUNT(Passport)"]
-				if Count <= 0 then
-					return "Hotel"
-				end
+			if vRP.Scalar("propertys/Count",{ Passport = Passport }) <= 0 then
+				return "Hotel"
 			end
 		else
 			local Consult = vRP.Query("propertys/Exist",{ Name = Name })
@@ -348,8 +344,8 @@ AddEventHandler("propertys:Transfer",function(Name)
 
 			local Keyboard = vKEYBOARD.Primary(source,"Passaporte")
 			if Keyboard and vRP.Identity(Keyboard[1]) and vRP.Request(source,"Propriedades","Deseja trasnferir a propriedade para passaporte <b>"..Keyboard[1].."</b>?") then
-				vRP.Query("propertys/Transfer",{ Name = Name, Passport = Keyboard[1] })
 				TriggerClientEvent("Notify",source,"Propriedades","Transferência concluída.","verde",5000)
+				vRP.Query("propertys/Transfer",{ Name = Name, Passport = Keyboard[1] })
 			end
 		end
 
@@ -495,7 +491,10 @@ function Hensa.Mount(Name,Mode)
 		if Name == "Hotel" then
 			Name = "Hotel:"..Passport
 		else
-			Weight = vRP.Query("propertys/Exist",{ Name = Name })[1][Mode]
+			local Consult = vRP.Query("propertys/Exist",{ Name = Name })
+			if Consult and Consult[1] and Consult[1][Mode] then
+				Weight = Consult[1][Mode]
+			end
 		end
 
 		local Primary = {}
@@ -503,43 +502,47 @@ function Hensa.Mount(Name,Mode)
 		local Consult = vRP.GetServerData(Mode..":"..Name)
 
 		for Index,v in pairs(Inv) do
-			v["name"] = ItemName(v["item"])
-			v["weight"] = ItemWeight(v["item"])
-			v["index"] = ItemIndex(v["item"])
-			v["amount"] = parseInt(v["amount"])
-			v["rarity"] = ItemRarity(v["item"])
-			v["economy"] = ItemEconomy(v["item"])
-			v["desc"] = ItemDescription(v["item"])
-			v["key"] = v["item"]
-			v["slot"] = Index
+			if (v["amount"] <= 0 or not ItemExist(v["item"])) then
+				vRP.RemoveItem(Passport,v["item"],v["amount"],false)
+			else
+				v["name"] = ItemName(v["item"])
+				v["weight"] = ItemWeight(v["item"])
+				v["index"] = ItemIndex(v["item"])
+				v["amount"] = parseInt(v["amount"])
+				v["rarity"] = ItemRarity(v["item"])
+				v["economy"] = ItemEconomy(v["item"])
+				v["desc"] = ItemDescription(v["item"])
+				v["key"] = v["item"]
+				v["slot"] = Index
 
-			local Split = splitString(v["item"])
+				local Split = splitString(v["item"])
 
-			if not v["desc"] then
-				if Split[1] == "vehkey" and Split[2] then
-					v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
-				elseif ItemNamed(Split[1]) and Split[2] then
-					if Split[1] == "identity" then
-						v["desc"] = "Passaporte: <rare>"..Dotted(Split[2]).."</rare><br>Nome: <rare>"..vRP.FullName(Split[2]).."</rare><br>Tipo Sangüineo: <rare>"..Sanguine(vRP.Identity(Split[2])["Blood"]).."</rare>"
-					else
-						v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+				if not v["desc"] then
+					if Split[1] == "vehkey" and Split[2] then
+						v["desc"] = "Placa do Veículo: <common>"..Split[2].."</common>"
+					elseif ItemNamed(Split[1]) and Split[2] then
+						if Split[1] == "identity" then
+							v["desc"] = "Passaporte: <rare>"..Dotted(Split[2]).."</rare><br>Nome: <rare>"..vRP.FullName(Split[2]).."</rare><br>Tipo Sangüineo: <rare>"..Sanguine(vRP.Identity(Split[2])["Blood"]).."</rare>"
+						else
+							v["desc"] = "Propriedade: <common>"..vRP.FullName(Split[2]).."</common>"
+						end
 					end
 				end
-			end
 
-			if Split[2] then
-				local Loaded = ItemLoads(v["item"])
-				if Loaded then
-					v["charges"] = parseInt(Split[2] * (100 / Loaded))
+				if Split[2] then
+					local Loaded = ItemLoads(v["item"])
+					if Loaded then
+						v["charges"] = parseInt(Split[2] * (100 / Loaded))
+					end
+
+					if ItemDurability(v["item"]) then
+						v["durability"] = parseInt(os.time() - Split[2])
+						v["days"] = ItemDurability(v["item"])
+					end
 				end
 
-				if ItemDurability(v["item"]) then
-					v["durability"] = parseInt(os.time() - Split[2])
-					v["days"] = ItemDurability(v["item"])
-				end
+				Primary[Index] = v
 			end
-
-			Primary[Index] = v
 		end
 
 		local Secondary = {}
@@ -691,20 +694,16 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("ChosenCharacter",function(Passport,source)
 	local Increments = {}
-
-	local Consult = vRP.Query("propertys/Count", { Passport = Passport })
-	if Consult[1] then
-		local Count = Consult[1]["COUNT(Passport)"]
-		if Count <= 0 then
-			Increments[#Increments + 1] = Propertys["Hotel"]["Coords"]
-		else
-			local All = vRP.Query("propertys/AllUser",{ Passport = Passport })
-			if All[1] then
-				for _,v in pairs(All) do
-					local Name = v["Name"]
-					if Propertys[Name] then
-						Increments[#Increments + 1] = Propertys[Name]["Coords"]
-					end
+	
+	if vRP.Scalar("propertys/Count",{ Passport = Passport }) <= 0 then
+		Increments[#Increments + 1] = Propertys["Hotel"]["Coords"]
+	else
+		local Consult = vRP.Query("propertys/AllUser",{ Passport = Passport })
+		if Consult[1] then
+			for _,v in pairs(Consult) do
+				local Name = v["Name"]
+				if Propertys[Name] then
+					Increments[#Increments + 1] = Propertys[Name]["Coords"]
 				end
 			end
 		end

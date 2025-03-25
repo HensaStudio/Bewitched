@@ -14,54 +14,46 @@ vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Price = 750
 local Calls = {}
 local Announces = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKIN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.CheckIn()
+	local Return = false
 	local source = source
+	local Alimentation = false
+	local Valuation,Reposed = 1000,1200
 	local Passport = vRP.Passport(source)
 	if Passport then
+		if vRP.UserPremium(Passport) then
+			Valuation,Reposed = 500,600
+		end
+
+		if vRP.Request(source,"Centro Médico","Deseja adicionar o serviço de alimentação pagando <b>"..Currency..""..Dotted(500).." "..ItemName(DefaultMoneyOne).."</b>?") then
+			Valuation = Valuation + 500
+			Alimentation = true
+		end
+
 		if vRP.GetHealth(source) <= 100 then
-			if vRP.TakeItem(Passport, "paramedicpass", 1, true) then
-				vRP.UpgradeHunger(Passport, 30)
-				vRP.UpgradeThirst(Passport, 30)
-				TriggerEvent("Reposed", source, Passport, 900)
+			Valuation = Valuation + 500
+			Reposed = Reposed + 600
+		end
 
-				return true
-			else
-				if vRP.PaymentFull(Passport, Price * 2) then
-					vRP.UpgradeHunger(Passport, 30)
-					vRP.UpgradeThirst(Passport, 30)
-					TriggerEvent("Reposed", source, Passport, 900)
-
-					return true
-				end
+		if vRP.PaymentFull(Passport,Valuation) then
+			if Alimentation then
+				vRP.UpgradeThirst(Passport,25)
+				vRP.UpgradeHunger(Passport,25)
 			end
+
+			TriggerEvent("Reposed",source,Passport,Reposed)
+			Return = true
 		else
-			if vRP.TakeItem(Passport, "paramedicpass", 1, true) then
-				vRP.UpgradeHunger(Passport, 30)
-				vRP.UpgradeThirst(Passport, 30)
-				TriggerEvent("Reposed", source, Passport, 900)
-
-				return true
-			else
-				if vRP.Request(source, "Hospital", "Prosseguir o tratamento por <b>$"..parseInt(Price).."</b> "..ItemName("dollars").."?") then
-					if vRP.PaymentFull(Passport, Price) then
-						vRP.UpgradeHunger(Passport, 30)
-						vRP.UpgradeThirst(Passport, 30)
-						TriggerEvent("Reposed", source, Passport, 900)
-
-						return true
-					end
-				end
-			end
+			TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)
 		end
 	end
 
-	return false
+	return Return
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TARGET:ANNOUNCES
@@ -79,35 +71,35 @@ AddEventHandler("target:Announces", function(Service)
 			if Service == "Policia" then
 				if vRP.HasGroup(Passport, "Policia") then
 					Announces[Service] = os.time() + 600
-					TriggerClientEvent("Notify", -1, "policia", "Sinta-se seguro(a) agora mesmo, pois há policiais realizando patrulhas em nossa cidade neste exato instante.", "Los Santos Police Department", 15000)
+					TriggerClientEvent("Notify", -1, "Los Santos Police Department", "Sinta-se seguro(a) agora mesmo, pois há policiais realizando patrulhas em nossa cidade neste exato instante.", "policia", 15000)
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Você não pode enviar um anúncio.", "Aviso", 5000)
+					TriggerClientEvent("Notify", source, "Aviso", "Você não pode enviar um anúncio.", "vermelho", 5000)
 				end
 			elseif Service == "Paramedico" then
 				if vRP.HasGroup(Passport, "Paramedico") then
 					Announces[Service] = os.time() + 600
-					TriggerClientEvent("Notify", -1, "hospital", "Estamos em busca de doadores de sangue, seja solidário e ajude o próximo, procure um de nossos profissionais.", "Pillbox Medical Center", 15000)
+					TriggerClientEvent("Notify", -1, "Pillbox Medical Center", "Estamos em busca de doadores de sangue, seja solidário e ajude o próximo, procure um de nossos profissionais.", "hospital", 15000)
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Você não pode enviar um anúncio.", "Aviso", 5000)
+					TriggerClientEvent("Notify", source, "Aviso", "Você não pode enviar um anúncio.", "vermelho", 5000)
 				end
 			elseif Service == "Mecanico" then
 				if vRP.HasGroup(Passport, "Mecanico") then
 					Announces[Service] = os.time() + 600
-					TriggerClientEvent("Notify", -1, "mecanico", "Necessita dos serviços de uma oficina mecânica? Temos profissionais disponíveis. Faça agora mesmo a sua solicitação.", "Los Santos Customs", 15000)
+					TriggerClientEvent("Notify", -1, "Los Santos Customs", "Necessita dos serviços de uma oficina mecânica? Temos profissionais disponíveis. Faça agora mesmo a sua solicitação.", "mechanic", 15000)
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Você não pode enviar um anúncio.", "Aviso", 5000)
+					TriggerClientEvent("Notify", source, "Aviso", "Você não pode enviar um anúncio.", "vermelho", 5000)
 				end
 			else
 				if vRP.HasGroup(Passport, Service) then
 					Announces[Service] = os.time() + 600
-					TriggerClientEvent("Notify", -1, "default", "Estamos em busca de trabalhadores, compareça ao estabelecimento, procure um de nossos funcionários e consulte nosso serviço de entregas.", Service, 15000)
+					TriggerClientEvent("Notify", -1, "Anúncio de "..Service.."", "Estamos em busca de trabalhadores, compareça ao estabelecimento, procure um de nossos funcionários e consulte nosso serviço de entregas.", "announcement", 15000)
 				else
-					TriggerClientEvent("Notify", source, "vermelho", "Você não pode enviar um anúncio.", "Aviso", 5000)
+					TriggerClientEvent("Notify", source, "Aviso", "Você não pode enviar um anúncio.", "vermelho", 5000)
 				end
 			end
 		else
 			local Cooldown = parseInt(Announces[Service] - os.time())
-			TriggerClientEvent("Notify", source, "azul", "Aguarde <b>" .. Cooldown .. "</b> segundos.", false, 5000)
+			TriggerClientEvent("Notify", source, "Anúncios", "Aguarde <b>"..Cooldown.."</b> segundos.", "azul", 5000)
 		end
 	end
 end)
@@ -129,12 +121,13 @@ AddEventHandler("target:Call", function(Service)
 			if Total == 0 then
 				TriggerClientEvent("Notify",source,"Atenção","O serviço selecionado no momento está inativo.","amarelo",5000)
 			else
-				if vRP.Request(source, "Emergência", "Você realmente deseja ligar para <b>" .. Service .. "</b> por <b>$45</b>?") then
+				local CallPrice = 55
+				if vRP.Request(source, "Emergência", "Você realmente deseja ligar para <b>"..Service.."</b> por <b>"..Currency..""..Dotted(CallPrice).." "..ItemName(DefaultMoneyOne).."</b>?") then
 					TriggerClientEvent("emotes", source, "ligar")
 
 					local Keyboard = vKEYBOARD.Area(source,"Qual o motivo do chamado?")
 					if Keyboard then
-						if vRP.PaymentFull(Passport,45) then
+						if vRP.PaymentFull(Passport,CallPrice) then
 							local Coords = vRP.GetEntityCoords(source)
 							local Permission = vRP.NumPermission(Service)
 							for Passports,Sources in pairs(Permission) do
@@ -143,9 +136,11 @@ AddEventHandler("target:Call", function(Service)
 								end)
 							end
 
-							exports["bank"]:AddTaxs(Passport,source,"Prefeitura",45,"Telefone Coletivo.")
+							exports["bank"]:AddTaxs(Passport,source,"Prefeitura",CallPrice,"Telefone Coletivo.")
 
 							Calls[Service] = os.time() + 350
+						else
+							TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)
 						end
 					end
 

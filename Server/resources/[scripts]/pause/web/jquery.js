@@ -27,7 +27,7 @@ $(function () {
 	});
 
 	$("#link").click(function () {
-		window.invokeNative("openUrl", "https://discord.gg/95mzD4v5Sg");
+		window.invokeNative("openUrl", "https://hensa.store/discord");
 	});
 })
 

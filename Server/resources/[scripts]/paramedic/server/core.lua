@@ -16,30 +16,6 @@ vSURVIVAL = Tunnel.getInterface("survival")
 local Blood = {}
 local Extract = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PARAMEDIC:TREATMENT
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterServerEvent("paramedic:Treatment")
-AddEventHandler("paramedic:Treatment",function(Entitys)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.GetHealth(source) > 100 and vRP.GetHealth(Entitys) > 100 then
-		local OtherPassport = vRP.Passport(Entitys)
-		local Identity = vRP.Identity(OtherPassport)
-		if Identity then
-			if vRP.TakeItem(Passport,"syringe0"..Identity["Blood"]) then
-				if not Blood[OtherPassport] then
-					Blood[OtherPassport] = os.time() + 1800
-				end
-
-				TriggerClientEvent("target:StartTreatment",Entitys)
-				TriggerClientEvent("Notify",source,"Centro Médico","Tratamento começou.","hospital",5000)
-			else
-				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName("syringe0"..Identity["Blood"]).."</b>.","amarelo",5000)
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- PARAMEDIC:ADRENALINE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("paramedic:Adrenaline")
@@ -61,6 +37,30 @@ AddEventHandler("paramedic:Adrenaline",function(Entitys)
 				else
 					TriggerClientEvent("Notify",source,"Adrenalina","Os batimentos cardiados não podem ser acelerados no momento.","amarelo",5000)
 				end
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PARAMEDIC:TREATMENT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("paramedic:Treatment")
+AddEventHandler("paramedic:Treatment",function(Entitys)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.GetHealth(source) > 100 and vRP.GetHealth(Entitys) > 100 then
+		local OtherPassport = vRP.Passport(Entitys)
+		local Identity = vRP.Identity(OtherPassport)
+		if Identity then
+			if vRP.TakeItem(Passport,"syringe0"..Identity["Blood"]) then
+				if not Blood[OtherPassport] then
+					Blood[OtherPassport] = os.time() + 1800
+				end
+
+				TriggerClientEvent("target:StartTreatment",Entitys)
+				TriggerClientEvent("Notify",source,"Centro Médico","Tratamento começou.","hospital",5000)
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName("syringe0"..Identity["Blood"]).."</b>.","amarelo",5000)
 			end
 		end
 	end

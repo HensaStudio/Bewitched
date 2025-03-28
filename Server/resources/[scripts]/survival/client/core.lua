@@ -115,7 +115,7 @@ CreateThread(function()
 					end
 
 					SendNUIMessage({ Action = "Open" })
-					TriggerServerEvent("paramedic:bloodDeath")
+					TriggerServerEvent("paramedic:BloodDeath")
 					TriggerEvent("player:DeathUpdate",true)
 					TriggerEvent("inventory:CleanWeapons")
 					TriggerServerEvent("inventory:Cancel")

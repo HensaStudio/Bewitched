@@ -1697,25 +1697,29 @@ RegisterServerEvent("inventory:RefillGallon")
 AddEventHandler("inventory:RefillGallon",function()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and vRP.ConsultItem(Passport,"emptybottle",1) then
-		Active[Passport] = os.time() + 30
-		Player(source)["state"]["Buttons"] = true
-		TriggerClientEvent("Progress",source,"Enchendo",30000)
-		vRPC.PlayAnim(source,false,{"amb@prop_human_parking_meter@female@idle_a","idle_a_female"},true)
+	if Passport and not Active[Passport] then
+		if vRP.ConsultItem(Passport,"emptybottle",1) then
+			Active[Passport] = os.time() + 30
+			Player(source)["state"]["Buttons"] = true
+			TriggerClientEvent("Progress",source,"Enchendo",30000)
+			vRPC.PlayAnim(source,false,{"amb@prop_human_parking_meter@female@idle_a","idle_a_female"},true)
 
-		repeat
-			if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
-				vRPC.Destroy(source)
-				Active[Passport] = nil
-				Player(source)["state"]["Buttons"] = false
+			repeat
+				if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+					vRPC.Destroy(source)
+					Active[Passport] = nil
+					Player(source)["state"]["Buttons"] = false
 
-				if vRP.TakeItem(Passport,"emptybottle",1,true) then
-					vRP.GenerateItem(Passport,"water",1,true)
+					if vRP.TakeItem(Passport,"emptybottle",1,true) then
+						vRP.GenerateItem(Passport,"water",1,true)
+					end
 				end
-			end
 
-			Wait(100)
-		until not Active[Passport]
+				Wait(100)
+			until not Active[Passport]
+		else
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa de <b>1x "..ItemName("emptybottle").."</b>.","amarelo",5000)
+		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1816,6 +1820,7 @@ AddEventHandler("Connect",function(Passport,source)
 
 	TriggerClientEvent("objects:Table",source,Objects)
 	TriggerClientEvent("inventory:Drops",source,Drops)
+	TriggerClientEvent("inventory:Skins",source,Users["Skins"][Passport])
 
 	for Name,_ in pairs(Buffs) do
 		if Buffs[Name] and Buffs[Name][Passport] and os.time() < Buffs[Name][Passport] then

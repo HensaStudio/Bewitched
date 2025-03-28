@@ -226,7 +226,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("admin:LightningThunder")
 AddEventHandler("admin:LightningThunder", function(Value)
-	for i=1, tonumber(Value) do
+	for i = 1, tonumber(Value) do
 		CreateLightningThunder()
 	end
 end)

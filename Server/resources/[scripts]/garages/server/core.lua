@@ -213,28 +213,42 @@ function Hensa.Vehicles(Number)
 
 				if VehicleExist(v) then
 					if VehicleResult[1] then
+						local TaxTime = false
+						if VehicleResult[1]["Tax"] >= os.time() then
+							TaxTime = CompleteTimers(VehicleResult[1]["Tax"] - os.time())
+						end
+
+						local RentalTime = false
+						if VehicleResult[1]["Rental"] ~= 0 then
+							RentalTime = CompleteTimers(VehicleResult[1]["Rental"] - os.time())
+						end
+
 						Vehicle[#Vehicle + 1] = {
 							["Model"] = v,
 							["Name"] = VehicleName(v),
-							["Type"] = VehicleMode(v),
+							["Mode"] = VehicleMode(v),
 							["Engine"] = VehicleResult[1]["Engine"],
 							["Chassi"] = VehicleResult[1]["Health"],
 							["Body"] = VehicleResult[1]["Body"],
 							["Fuel"] = VehicleResult[1]["Fuel"],
 							["Weight"] = Dotted(VehicleWeight(v)),
-							["Tax"] = Dotted(VehiclePrice(v) * 0.10)
+							["Tax"] = Dotted(VehiclePrice(v) * 0.10),
+							["TaxTime"] = TaxTime,
+							["RentalTime"] = RentalTime
 						}
 					else
 						Vehicle[#Vehicle + 1] = {
 							["Model"] = v,
 							["Name"] = VehicleName(v),
-							["Type"] = VehicleMode(v),
+							["Mode"] = VehicleMode(v),
 							["Engine"] = 1000,
 							["Chassi"] = 1000,
 							["Body"] = 1000,
 							["Fuel"] = 100,
 							["Weight"] = Dotted(VehicleWeight(v)),
-							["Tax"] = Dotted(VehiclePrice(v) * 0.10)
+							["Tax"] = Dotted(VehiclePrice(v) * 0.10),
+							["TaxTime"] = false,
+							["RentalTime"] = false
 						}
 					end
 				end
@@ -251,6 +265,16 @@ function Hensa.Vehicles(Number)
 					end
 
 					if v["Work"] == "false" then
+						local TaxTime = false
+						if v["Tax"] >= os.time() then
+							TaxTime = CompleteTimers(v["Tax"] - os.time())
+						end
+
+						local RentalTime = false
+						if v["Rental"] ~= 0 then
+							RentalTime = CompleteTimers(v["Rental"] - os.time())
+						end
+
 						Vehicle[#Vehicle + 1] = {
 							["Model"] = v["Vehicle"],
 							["Name"] = VehicleName(v["Vehicle"]),
@@ -260,7 +284,9 @@ function Hensa.Vehicles(Number)
 							["Body"] = v["Body"],
 							["Fuel"] = v["Fuel"],
 							["Weight"] = Dotted(VehicleWeight(v["Vehicle"])),
-							["Tax"] = Dotted(VehiclePrice(v["Vehicle"]) * 0.10)
+							["Tax"] = Dotted(VehiclePrice(v["Vehicle"]) * 0.10),
+							["TaxTime"] = TaxTime,
+							["RentalTime"] = RentalTime
 						}
 					end
 				end
@@ -998,8 +1024,8 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SPAWNED
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Spawned(plate)
-	if Spawn[plate] then
+function Spawned(Plate)
+	if Spawn[Plate] then
 		return true
 	end
 

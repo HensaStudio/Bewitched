@@ -29,7 +29,7 @@ AddEventHandler("gameEventTriggered",function(Event,Message)
 	if (Message[7] == 126349499 or Message[7] == 1064738331 or Message[7] == 85055149) and GetEntityHealth(Message[1]) > 100 then
 		SetPedToRagdoll(Message[1],2500,2500,0,0,0,0)
 	else
-		if GetGameTimer() >= Injuried and GetEntityHealth(Message[1]) > 100 then
+		if GetGameTimer() >= Injuried and not IsPedInAnyVehicle(Message[1]) and GetEntityHealth(Message[1]) > 100 then
 			Injuried = GetGameTimer() + 1000
 
 			local Hit,Mark = GetPedLastDamageBone(Message[1])
@@ -63,52 +63,6 @@ CreateThread(function()
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PARAMEDIC:OPEN
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("paramedic:Open")
-AddEventHandler("paramedic:Open", function()
-	local Ped = PlayerPedId()
-	if not IsPedSwimming(Ped) then
-		if LocalPlayer["state"]["Paramedico"] then
-			SendNUIMessage({ action = "Open" })
-			TriggerEvent("dynamic:Close")
-			SetNuiFocus(true, true)
-
-			if not IsPedInAnyVehicle(Ped) then
-				vRP.CreateObjects("amb@code_human_in_bus_passenger_idles@female@tablet@idle_a", "idle_a", "prop_cs_tablet", 49, 28422, -0.05, 0.0, 0.0, 0.0, 0.0, 0.0)
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- GIVEPSICO
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("GivePsico", function(data)
-	vSERVER.GivePsico(data["passaporte"])
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- ANNOUNCE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("Announce", function(data)
-	vSERVER.Announce(data["Title"], data["Seconds"], data["Text"])
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- CLOSE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNUICallback("Close", function()
-	SetNuiFocus(false, false)
-	SetCursorLocation(0.5, 0.5)
-	SendNUIMessage({ action = "Close" })
-	vRP.Destroy("one")
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- PARAMEDIC:UPDATE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("paramedic:Update")
-AddEventHandler("paramedic:Update", function(action, data)
-	SendNUIMessage({ action = action, data = data })
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- PARAMEDIC:RESET
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("paramedic:Reset")
@@ -123,7 +77,7 @@ end)
 -- BLEEDING
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Bleeding()
-	return Bleeding
+	return Bleedings
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BANDAGE

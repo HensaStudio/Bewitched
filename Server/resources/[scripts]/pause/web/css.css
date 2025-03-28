@@ -1,7 +1,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	color: #ccc;
+	color: #fff;
 	overflow: hidden;
 	font-size: 0.8vw;
 	font-family: "Jura";
@@ -23,7 +23,7 @@ body {
 	text-align: center;
 	align-items: center;
 	justify-content: center;
-	background: linear-gradient(182.01deg, rgb(12 96 147 / 90%) 1.69%, rgba(1, 1, 10, 0.9) 98.53%);
+	background: #5da1f8b0;
 }
 
 .Menu {
@@ -31,7 +31,7 @@ body {
 	left: 40%;
 	width: 20%;
 	position: absolute;
-	text-shadow: 1px 1px #000;
+	text-shadow: 1px 1px #00000075;
 }
 
 #resume:hover,
@@ -40,5 +40,15 @@ body {
 #settings:hover,
 #disconnect:hover,
 #link:hover {
-	color: #5865f2;
+	color: #2c85f6;
+}
+
+.blink {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

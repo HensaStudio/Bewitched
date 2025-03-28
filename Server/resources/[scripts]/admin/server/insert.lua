@@ -756,7 +756,8 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "tyreburst" then
 			if vRP.HasGroup(Passport,"Admin",2) then
-				local Keyboard = vKEYBOARD.Primary(source,"Número do Pneu:")
+				local TyresNumber = { 1, 2, 3, 4, 5 }
+				local Keyboard = vKEYBOARD.Tyres(source,TyresNumber)
 				if Keyboard then
 					TriggerClientEvent("admin:TyreBurst", source, tonumber(Keyboard[1]))
 				end
@@ -765,7 +766,8 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			end
 		elseif Mode == "createlightning" then
 			if vRP.HasGroup(Passport,"Admin",2) then
-				local Keyboard = vKEYBOARD.Primary(source,"Número:")
+				local LightningAmounts = { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 }
+				local Keyboard = vKEYBOARD.Lightning(source,LightningAmounts)
 				if Keyboard then
 					local UsersList = vRP.Players()
 					for k, v in pairs(UsersList) do

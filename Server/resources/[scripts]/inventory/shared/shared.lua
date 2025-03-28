@@ -149,6 +149,7 @@ Multiplier = {
 	{ ["Coords"] = vec3(-290.98,6199.91,31.68), ["Mode"] = "Register" },
 	{ ["Coords"] = vec3(241.64,-898.65,29.81), ["Mode"] = "Register" },
 	{ ["Coords"] = vec3(239.44,-897.86,29.81), ["Mode"] = "Register" },
+	{ ["Coords"] = vec3(173.1,-1322.21,29.54), ["Mode"] = "Register" },
 	{ ["Coords"] = vec3(-905.15,-2781.36,14.33), ["Mode"] = "Container" },
 	{ ["Coords"] = vec3(1178.63,-3126.89,6.22), ["Mode"] = "Container" },
 	{ ["Coords"] = vec3(1178.45,-2996.97,6.11), ["Mode"] = "Container" },

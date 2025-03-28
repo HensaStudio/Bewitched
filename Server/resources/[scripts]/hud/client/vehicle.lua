@@ -379,7 +379,7 @@ CreateThread(function()
 		if LocalPlayer["state"]["Active"] then
 			local Ped = PlayerPedId()
 			if IsPedInAnyVehicle(Ped) then
-				if not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyPlane(Ped) then
+				if not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyBoat(Ped) and not IsPedInAnyPlane(Ped) then
 					TimeDistance = 1
 
 					local Vehicle = GetVehiclePedIsUsing(Ped)

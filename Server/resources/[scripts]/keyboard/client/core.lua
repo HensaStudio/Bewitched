@@ -155,6 +155,35 @@ function Nitro(First)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CREATION
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creation(First,Second)
+	local Array = Keyboard({
+		title = "Formulário",
+		subtitle = "Preencha os campos abaixo",
+		rows = {
+			{
+				id = 1,
+				mode = "text",
+				placeholder = First,
+				value = ""
+			},{
+				id = 2,
+				mode = "options",
+				placeholder = "Selecione uma opção",
+				options = Second,
+				value = ""
+			}
+		}
+	})
+
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"] }
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- COUPON
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Coupon(First,Second,Third)
@@ -906,6 +935,12 @@ function Hensa.Announce(First,Secondary,Third,Fourth)
 	return Announce(First,Secondary,Third,Fourth)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CREATION
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Creation(First,Secondary)
+	return Creation(First,Secondary)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- COUPON
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Coupon(First,Secondary,Third)
@@ -946,6 +981,7 @@ exports("Options",Options)
 exports("Weather",Weather)
 exports("Timeset",Timeset)
 exports("Primary",Primary)
+exports("Creation",Creation)
 exports("Password",Password)
 exports("Tertiary",Tertiary)
 exports("Announce",Announce)

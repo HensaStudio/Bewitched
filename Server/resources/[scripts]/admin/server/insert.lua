@@ -259,6 +259,24 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			else
 				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
 			end
+		elseif Mode == "creation" then
+			if vRP.HasGroup(Passport,"Admin",1) then
+				local CreationResult = 0
+				local CreationOptions = { "Permitir", "Proibir" }
+				local Keyboard = vKEYBOARD.Creation(source,"Passaporte:",CreationOptions)
+				if Keyboard then
+					if Keyboard[2] == "Proibir" then
+						CreationResult = 1
+					elseif Keyboard[2] == "Permitir" then
+						CreationResult = 0
+					end
+
+					TriggerClientEvent("Notify",source,"Atenção","Você alterou a tabela <b>Creator</b> do passaporte <b>"..Dotted(Keyboard[1]).."</b>.","amarelo",5000)
+					vRP.Query("playerdata/SetData",{ Passport = Keyboard[1], Name = "Creator", Information = json.encode(CreationResult) })
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+			end
 		elseif Mode == "nc" then
 			if vRP.HasGroup(Passport,"Admin",2) then
 				vRPC.NoClip(source)

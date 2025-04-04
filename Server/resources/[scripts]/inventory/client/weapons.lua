@@ -8,6 +8,13 @@ TakeWeapon = false
 StoreWeapon = false
 local Reloaded = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:SKINS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("inventory:Skins")
+AddEventHandler("inventory:Skins",function(Table)
+	Skins = Table
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSTOREWEAPON
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
@@ -138,6 +145,10 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 			TriggerEvent("Weapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
 
+			if Skin then
+				GiveWeaponComponentToPed(Ped,Weapon,Skin)
+			end
+
 			if Components then
 				for Item,_ in pairs(Components) do
 					local Comp = WeaponAttach(SplitOne(Item),Weapon)
@@ -152,6 +163,10 @@ function Hensa.TakeWeapon(Name,Ammo,Components,Type,Skin)
 			Weapon = Name
 			TriggerEvent("Weapon",Weapon)
 			GiveWeaponToPed(Ped,Weapon,Ammo,false,true)
+
+			if Skin then
+				GiveWeaponComponentToPed(Ped,Weapon,Skin)
+			end
 
 			if Components then
 				for Item,_ in pairs(Components) do

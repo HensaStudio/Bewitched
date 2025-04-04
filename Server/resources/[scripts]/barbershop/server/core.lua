@@ -44,8 +44,7 @@ function Hensa.Mode()
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		local Identity = vRP.Identity(Passport)
-		if Identity and Identity["Created"] >= os.time() then
+		if not vRP.UserData(Passport, "Creator") == 1 then
 			Return = true
 		end
 	end

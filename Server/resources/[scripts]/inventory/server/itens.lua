@@ -750,10 +750,10 @@ Use = {
 
 					if vDEVICE.Device(source,30) then
 						if Boosting[Plate]["Class"] >= 4 then
-							exports["markers"]:Enter(source,"Boosting",Passport,60)
+							exports["markers"]:Enter(source,"Boosting",1,Passport,60)
 						end
 
-						vRP.UpgradeStress(Passport,3)
+						vRP.UpgradeStress(Passport,math.random(2,5))
 						Travel[Passport] = vRP.GetEntityCoords(source)
 						Boosting[Plate]["Amount"] = Boosting[Plate]["Amount"] + 1
 
@@ -799,7 +799,7 @@ Use = {
 				if vRPC.InsideVehicle(source) then
 					vGARAGE.StartHotwired(source)
 
-					if vRP.Task(source,10,5000) then
+					if vRP.Task(source,10,2000) then
 						vGARAGE.RegisterDecors(source,Vehicle)
 						TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
@@ -817,9 +817,7 @@ Use = {
 
 						if DoesEntityExist(Networked) then
 							if not vRP.PassportPlate(Plate) then
-								Entity(Networked)["state"]:set("Lockpick",Passport,true)
 								Entity(Networked)["state"]:set("Fuel",100,true)
-								Entity(Networked)["state"]:set("Nitro",0,true)
 								SetVehicleDoorsLocked(Networked,1)
 							elseif math.random(100) >= 75 then
 								SetVehicleDoorsLocked(Networked,1)
@@ -831,7 +829,7 @@ Use = {
 				else
 					vRPC.PlayAnim(source,false,{"missfbi_s4mop","clean_mop_back_player"},true)
 
-					if vRP.Task(source,10,10000) then
+					if vRP.Task(source,10,2000) then
 						Active[Passport] = os.time() + 15
 						vGARAGE.RegisterDecors(source,Vehicle)
 						TriggerClientEvent("Progress",source,"Destravando",15000)
@@ -867,10 +865,8 @@ Use = {
 									if not vRP.PassportPlate(Plate) then
 										if not Dismantle[Plate] then
 											Entity(Networked)["state"]:set("Fuel",100,true)
-											Entity(Networked)["state"]:set("Nitro",0,true)
 										end
 
-										Entity(Networked)["state"]:set("Lockpick",Passport,true)
 										SetVehicleDoorsLocked(Networked,1)
 									elseif math.random(100) >= 75 then
 										SetVehicleDoorsLocked(Networked,1)

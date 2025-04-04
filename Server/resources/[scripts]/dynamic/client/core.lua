@@ -292,6 +292,7 @@ RegisterCommand("AdminFunctions", function()
 				exports["dynamic"]:AddButton("Remove Group", "Remover o grupo de um ID.", "admin:Dynamic", "ungroup", "groups", true)
 
 				exports["dynamic"]:AddMenu("Personagens", "Clique para mais informações.", "peds")
+				exports["dynamic"]:AddButton("Creation", "Permitir/Proibir alterar genética.", "admin:Dynamic", "creation", "peds", true)
 				exports["dynamic"]:AddButton("Barbershop", "Abra a Barbearia.", "barbershop:Open", "", "peds", false)
 				exports["dynamic"]:AddButton("Reset Skin", "Resete a Skin do ID.", "admin:Dynamic", "resetskin", "peds", true)
 				exports["dynamic"]:AddButton("Skin", "Mude a Skin do ID.", "admin:Dynamic", "skin", "peds", true)

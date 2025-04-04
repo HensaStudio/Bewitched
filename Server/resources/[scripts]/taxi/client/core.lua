@@ -167,8 +167,8 @@ function CreatePassenger(Vehicle)
 	end
 
 	local Rand = math.random(#Models)
-	local Application, Network = vRPS.CreatePed(Models[Rand], Locations[Selected]["Ped"]["x"], Locations[Selected]["Ped"]["y"], Locations[Selected]["Ped"]["z"], Heading, 4)
-	if Application then
+	local Network = vRPS.CreateModels(Models[Rand],Locations[Selected]["Ped"]["x"],Locations[Selected]["Ped"]["y"],Locations[Selected]["Ped"]["z"])
+	if Network then
 		Walking = true
 
 		SetTimeout(2500,function()

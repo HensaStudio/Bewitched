@@ -148,9 +148,10 @@ CREATE TABLE IF NOT EXISTS `propertys` (
 DROP TABLE IF EXISTS `races`;
 CREATE TABLE IF NOT EXISTS `races` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
+  `Mode` int(5) NOT NULL DEFAULT 0,
   `Race` int(5) NOT NULL DEFAULT 0,
   `Passport` int(10) NOT NULL DEFAULT 0,
-  `Vehicle` varchar(50) NOT NULL DEFAULT 'Hensa',
+  `Vehicle` varchar(50) NOT NULL DEFAULT 'Neon',
   `Points` int(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`),

@@ -28,6 +28,7 @@ local PurgeActive = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 local SeatbeltSpeed = 0
 local SeatbeltLock = false
+local SeatbeltAlarm = GetGameTimer()
 local SeatbeltVelocity = vec3(0,0,0)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TYRES
@@ -186,6 +187,11 @@ CreateThread(function()
 					SendNUIMessage({ name = "Rpm", payload = VRpm })
 					Rpm = VRpm
 				end
+
+				if not SeatbeltLock and SeatbeltAlarm <= GetGameTimer() and not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyPlane(Ped) and VSpeed >= 5.0 then
+					TriggerEvent("sounds:Private","beltalarm",1.0)
+					SeatbeltAlarm = GetGameTimer() + 1150
+				end
 			else
 				if IsMinimapRendering() then
 					DisplayRadar(false)
@@ -258,7 +264,7 @@ function NitroEnable()
 
 					if NitroFuel >= 1 then
 						if GetIsVehicleEngineRunning(Vehicle) then
-							local Speed = GetEntitySpeed(Vehicle) * 2.236936
+							local Speed = GetEntitySpeed(Vehicle) * 3.6
 							if Speed > 10 then
 								LocalPlayer["state"]["Nitro"] = true
 
@@ -384,16 +390,21 @@ CreateThread(function()
 
 					local Vehicle = GetVehiclePedIsUsing(Ped)
 					local Speed = GetEntitySpeed(Vehicle) * 3.6
+
 					if GetVehicleDoorLockStatus(Vehicle) >= 2 or SeatbeltLock then
 						DisableControlAction(0,75,true)
 						DisableControlAction(27,75,true)
 					end
 
 					if Speed ~= SeatbeltSpeed then
-						if (SeatbeltSpeed - Speed) >= 60 and not SeatbeltLock then
+						if not Entity(Vehicle)["state"]["Seatbelt"] and not SeatbeltLock and (SeatbeltSpeed - Speed) >= 50.0 then
 							SmashVehicleWindow(Vehicle,6)
+
+							ApplyDamageToPed(Ped,25,false)
+
 							SetEntityNoCollisionEntity(Ped,Vehicle,false)
 							SetEntityNoCollisionEntity(Vehicle,Ped,false)
+
 							TriggerServerEvent("hud:VehicleEject",SeatbeltVelocity)
 
 							SetTimeout(500,function()
@@ -422,7 +433,7 @@ CreateThread(function()
 			end
 		end
 
-		Wait(timeDistance)
+		Wait(TimeDistance)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -430,19 +441,27 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("Seatbeltz",function(source)
 	local Ped = PlayerPedId()
+	local Vehicle = GetVehiclePedIsUsing(Ped)
 	if IsPedInAnyVehicle(Ped) and not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyBoat(Ped) and not IsPedInAnyPlane(Ped) then
 		if SeatbeltLock then
-			TriggerEvent("sounds:Private","beltoff",0.5)
+			SeatbeltAlarm = GetGameTimer() + 2000
+
+			TriggerEvent("sounds:Private","beltoff",1.0)
 			SendNUIMessage({ name = "Seatbelt", payload = false })
+
 			SeatbeltLock = false
+
+			if Entity(Vehicle)["state"]["Seatbelt"] then
+				TriggerEvent("Notify","Cinto de Segurança","Cinto de Corrida removido.","vermelho",5000)
+			end
 		else
 			TriggerEvent("sounds:Private","belton",0.5)
 			SendNUIMessage({ name = "Seatbelt", payload = true })
+
 			SeatbeltLock = true
 
-			local Vehicle = GetVehiclePedIsUsing(Ped)
 			if Entity(Vehicle)["state"]["Seatbelt"] then
-				TriggerEvent("Notify","Cinto de Segurança","Cinto de Corrida colocado.","azul",5000)
+				TriggerEvent("Notify","Cinto de Segurança","Cinto de Corrida colocado.","verde",5000)
 			end
 		end
 	end

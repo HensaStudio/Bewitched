@@ -57,7 +57,7 @@ function Hensa.ChosenCharacter(Passport)
 	local Return = false
 	local source = source
 	local License = vRP.Identities(source)
-	local Consult = vRP.Query("characters/UserLicense",{ id = Passport, License = License })
+	local Consult = vRP.Query("characters/UserLicense",{ Passport = Passport, License = License })
 
 	if Consult[1] and not Licensed[License] then
 		exports["vrp"]:Bucket(source,"Exit")

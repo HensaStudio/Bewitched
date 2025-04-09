@@ -316,7 +316,7 @@ AddEventHandler("propertys:Sell",function(Name)
 					GlobalState:set("Markers",Markers,true)
 				end
 
-				vRP.GiveBank(Passport,Price)
+				vRP.GiveBank(Passport,Price,true)
 				vRP.RemoveServerData("Vault:"..Name)
 				vRP.RemoveServerData("Fridge:"..Name)
 				vRP.Query("propertys/Sell",{ Name = Name })

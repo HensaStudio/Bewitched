@@ -122,8 +122,11 @@ function Hensa.CreateVehicle(Model, Network, Engine, Health, Customize, Windows,
 			SetVehicleHasBeenOwnedByPlayer(Vehicle, true)
 			SetVehicleNeedsToBeHotwired(Vehicle, false)
 			DecorSetInt(Vehicle, "Player_Vehicle", -1)
+			EnableVehicleExhaustPops(Vehicle, true)
+			SetVehicleWheelsCanBreak(Vehicle, true)
 			SetVehicleOnGroundProperly(Vehicle)
 			SetVehRadioStation(Vehicle, "OFF")
+			SetVehicleCanBreak(Vehicle, true)
 			SetEntityHealth(Vehicle, Health)
 
 			if Admin then

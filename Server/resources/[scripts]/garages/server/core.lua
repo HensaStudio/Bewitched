@@ -92,7 +92,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SERVERVEHICLE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.ServerVehicle(Model, x, y, z, Heading, Plate, Nitrox, Doors, Body, Fuel)
+function Hensa.ServerVehicle(Model, x, y, z, Heading, Plate, Nitrox, Doors, Body, Fuel, Seatbelt, Drift)
 	local VehicleSpawned = 0
 	local VehicleHash = GetHashKey(Model)
 	local Vehicle = CreateVehicle(VehicleHash, x, y, z, Heading, true, true)
@@ -126,11 +126,16 @@ function Hensa.ServerVehicle(Model, x, y, z, Heading, Plate, Nitrox, Doors, Body
 	end
 
 	local Network = NetworkGetNetworkIdFromEntity(Vehicle)
-	local Networked = NetworkGetEntityFromNetworkId(Network)
-
-	if not Fuel then
-		Entity(Networked)["state"]:set("Fuel", 100, true)
+	local Networked = nil
+	if Network then
+		Networked = NetworkGetEntityFromNetworkId(Network)
 	end
+
+	Entity(Vehicle)["state"]:set("Fuel", Fuel or 100, true)
+
+	Entity(Networked)["state"]:set("Drift", Drift or false, true)
+
+	Entity(Networked)["state"]:set("Seatbelt", Seatbelt or 0, true)
 
 	if Model ~= "wheelchair" then
 		SetVehicleDoorsLocked(Networked, 2)
@@ -400,7 +405,7 @@ function Hensa.Sell(Name)
 			if vRP.Request(source, "Garagem", Message) then
 				local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = Passport, Vehicle = Name })
 				if Consult[1] then
-					vRP.GiveBank(Passport, Price)
+					vRP.GiveBank(Passport, Price, true)
 
 					vRP.Query("vehicles/removeVehicles",{ Passport = Passport, Vehicle = Name })
 					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..Consult[1]["id"] })
@@ -616,6 +621,10 @@ function Hensa.Spawn(Name, Number)
 									Plates[Plate] = Passport
 									GlobalState:set("Plates", Plates, true)
 
+									if vehicle[1]["Seatbelt"] then
+										Entity(Networked)["state"]:set("Seatbelt", true, true)
+									end
+
 									if vehicle[1]["Drift"] then
 										Entity(Networked)["state"]:set("Drift", true, true)
 									end
@@ -638,6 +647,10 @@ function Hensa.Spawn(Name, Number)
 										Plates[Plate] = Passport
 										GlobalState:set("Plates", Plates, true)
 										Entity(Networked)["state"]:set("Lockpick", true, true)
+
+										if vehicle[1]["Seatbelt"] then
+											Entity(Networked)["state"]:set("Seatbelt", true, true)
+										end
 
 										if vehicle[1]["Drift"] then
 											Entity(Networked)["state"]:set("Drift", true, true)
@@ -663,6 +676,10 @@ function Hensa.Spawn(Name, Number)
 											Plates[Plate] = Passport
 											GlobalState:set("Plates", Plates, true)
 
+											if vehicle[1]["Seatbelt"] then
+												Entity(Networked)["state"]:set("Seatbelt", true, true)
+											end
+
 											if vehicle[1]["Drift"] then
 												Entity(Networked)["state"]:set("Drift", true, true)
 											end
@@ -684,6 +701,10 @@ function Hensa.Spawn(Name, Number)
 
 													Plates[Plate] = Passport
 													GlobalState:set("Plates", Plates, true)
+
+													if vehicle[1]["Seatbelt"] then
+														Entity(Networked)["state"]:set("Seatbelt", true, true)
+													end
 
 													if vehicle[1]["Drift"] then
 														Entity(Networked)["state"]:set("Drift", true, true)
@@ -712,6 +733,10 @@ function Hensa.Spawn(Name, Number)
 								Plates[Plate] = Passport
 								GlobalState:set("Plates", Plates, true)
 
+								if vehicle[1]["Seatbelt"] then
+									Entity(Networked)["state"]:set("Seatbelt", true, true)
+								end
+
 								if vehicle[1]["Drift"] then
 									Entity(Networked)["state"]:set("Drift", true, true)
 								end
@@ -735,28 +760,37 @@ RegisterCommand("car", function(source, Message)
 			local Coords = GetEntityCoords(Ped)
 			local Heading = GetEntityHeading(Ped)
 			local Plate = "VEH"..(math.random(10000,90000) + Passport)
-
 			local Exist, Network, Vehicle = Hensa.ServerVehicle(VehicleName, Coords["x"], Coords["y"], Coords["z"], Heading, Plate, 2000, nil, 1000)
-			if not Exist then
-				return
-			end
+			if Exist then
+				local Players = vRPC.Players(source)
+				for _,Sources in pairs(Players) do
+					async(function()
+						vCLIENT.CreateVehicle(Sources, VehicleName, Network, 1000, 1000, nil, false, false, { 1.25, 0.75, 0.95 }, true)
+					end)
+				end
 
-			local Networked = NetworkGetEntityFromNetworkId(Network)
+				if Ped and Vehicle then
+					SetPedIntoVehicle(Ped, Vehicle, -1)
+				end
 
-			vCLIENT.CreateVehicle(-1, VehicleName, Network, 1000, 1000, nil, false, false, { 1.25, 0.75, 0.95 }, true)
-			Spawn[Plate] = { Passport, VehicleName, Network }
-			TriggerEvent("engine:InsertBrakes", Network, "")
-			Entity(Networked)["state"]:set("Fuel", 100, true)
-			SetPedIntoVehicle(Ped, Vehicle, -1)
+				local Networked = NetworkGetEntityFromNetworkId(Network)
 
-			local Plates = GlobalState["Plates"]
-			Plates[Plate] = Passport
-			GlobalState:set("Plates", Plates, true)
+				Spawn[Plate] = { Passport, VehicleName, Network }
+				TriggerEvent("engine:InsertBrakes", Network, "")
+				Entity(Networked)["state"]:set("Fuel", 100, true)
+				SetPedIntoVehicle(Ped, Vehicle, -1)
 
-			Entity(Networked)["state"]:set("Drift", true, true)
+				local Plates = GlobalState["Plates"]
+				Plates[Plate] = Passport
+				GlobalState:set("Plates", Plates, true)
 
-			if Logs then
-				exports["discord"]:Embed("Garages","**Passaporte:** "..Passport.."\n**Spawnou:** "..VehicleName.."\n**Coords:** "..Coords,0xa3c846)
+				Entity(Networked)["state"]:set("Seatbelt", true, true)
+
+				Entity(Networked)["state"]:set("Drift", true, true)
+
+				if Logs then
+					exports["discord"]:Embed("Garages","**Passaporte:** "..Passport.."\n**Spawnou:** "..VehicleName.."\n**Coords:** "..Coords,0xa3c846)
+				end
 			end
 		end
 	end

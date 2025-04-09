@@ -147,16 +147,16 @@ CREATE TABLE IF NOT EXISTS `propertys` (
 
 DROP TABLE IF EXISTS `races`;
 CREATE TABLE IF NOT EXISTS `races` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `Mode` int(5) NOT NULL DEFAULT 0,
-  `Race` int(5) NOT NULL DEFAULT 0,
-  `Passport` int(10) NOT NULL DEFAULT 0,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Race` int(3) NOT NULL DEFAULT 0,
+  `Passport` int(5) NOT NULL DEFAULT 0,
+  `Name` varchar(100) NOT NULL DEFAULT 'Hensa.store',
   `Vehicle` varchar(50) NOT NULL DEFAULT 'Neon',
   `Points` int(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`),
   KEY `Race` (`Race`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `vehicles`;
 CREATE TABLE IF NOT EXISTS `vehicles` (
@@ -181,6 +181,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
   `Windows` longtext NOT NULL,
   `Tyres` longtext NOT NULL,
   `Brakes` longtext NOT NULL,
+  `Seatbelt` tinyint(1) NOT NULL DEFAULT 0,
   `Drift` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`),

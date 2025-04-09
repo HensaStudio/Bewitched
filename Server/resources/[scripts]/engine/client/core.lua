@@ -279,6 +279,10 @@ AddEventHandler("engine:Vehrify", function(Entitys)
 		exports["dynamic"]:AddButton("Chassi do Veículo", "Numeração original: <rare>2"..Entitys[3].."4</rare>.", "", "", false, false)
 	end
 
+	if Entity(Vehicle)["state"]["Seatbelt"] then
+		exports["dynamic"]:AddButton("Cinto Reforçado", "Modificações <rare>Instaladas</rare>.", "", "", false, false)
+	end
+
 	if Entity(Vehicle)["state"]["Drift"] then
 		exports["dynamic"]:AddButton("Kit para Drifts", "Modificações <rare>Instaladas</rare>.", "", "", false, false)
 	end

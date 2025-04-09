@@ -1,11 +1,15 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
--- VARIABLES
+-- CONTROLS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local BunnyHope = GetGameTimer()
+local CONTROLS = { 37,204,211,349,192,157,158,159,160,161,162,163,164,165 }
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BUNNYHOPE
+-----------------------------------------------------------------------------------------------------------------------------------------
+local BUNNYHOPE = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BLIPS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Blips = {
+local BLIPS = {
 	{ -545.31,-203.74,38.22, 267, 5,  "Prefeitura", 0.6 },
 
 	{ 486.93,-921.71,26.4, 106, 1, "Bottom Dollar", 0.5 },
@@ -148,19 +152,20 @@ local Blips = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ALPHAS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Alphas = {
+local ALPHAS = {
 	{ vec3(1183.88,4002.14,30.23), 200, 31, 150.0 }, -- Vara de Madeira
 	{ vec3(-230.83,-3332.51,0.59), 200, 25, 150.0 }, -- Vara de Grafite
 	{ vec3(-1314.5,6207.45,-0.56), 200, 38, 150.0 }, -- Vara de Fibra
 	{ vec3(-627.61,7597.86,-0.42), 200, 49, 150.0 }, -- Vara de Carbono
 
+	{ vec3(564.88,-1748.92,29.73), 300, 20, 20.0 }, -- Drugs
 	{ vec3(179.9,2779.98,45.7), 200, 34, 35.0 }, -- Clandestine
 	{ vec3(778.49,-395.89,33.43), 200, 30, 35.0 } -- Dismantle
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ISLAND
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Island = {
+local ISLAND = {
 	"h4_islandairstrip",
 	"h4_islandairstrip_props",
 	"h4_islandx_mansion",
@@ -258,12 +263,25 @@ local Island = {
 	"h4_islandx",
 	"h4_islandx_barrack_hatch",
 	"h4_islandxdock_water_hatch",
-	"h4_beach_party"
+	"h4_beach_party",
+	"h4_mph4_terrain_01_grass_0",
+	"h4_mph4_terrain_01_grass_1",
+	"h4_mph4_terrain_02_grass_0",
+	"h4_mph4_terrain_02_grass_1",
+	"h4_mph4_terrain_02_grass_2",
+	"h4_mph4_terrain_02_grass_3",
+	"h4_mph4_terrain_04_grass_0",
+	"h4_mph4_terrain_04_grass_1",
+	"h4_mph4_terrain_04_grass_2",
+	"h4_mph4_terrain_04_grass_3",
+	"h4_mph4_terrain_05_grass_0",
+	"h4_mph4_terrain_06_grass_0",
+	"h4_mph4_airstrip_interior_0_airstrip_hanger"
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- IPLOADER
+-- IPL_LIST
 -----------------------------------------------------------------------------------------------------------------------------------------
-local InfoList = {
+local IPL_LIST = {
 	{
 		["Props"] = {
 			"swap_clean_apt",
@@ -290,16 +308,26 @@ local InfoList = {
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ADDSTATEBAGCHANGEHANDLER
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddStateBagChangeHandler("Blackout",nil,function(Name,Key,Value)
+	SetArtificialLightsState(Value)
+	SetArtificialLightsStateAffectsVehicles(false)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSYSTEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
+	if GlobalState["Blackout"] then
+		SetArtificialLightsState(true)
+		SetArtificialLightsStateAffectsVehicles(false)
+	end
+
 	while true do
 		local Pid = PlayerId()
 		local Ped = PlayerPedId()
-
 		if IsPedInAnyVehicle(Ped) then
 			DisableControlAction(0,345,true)
-			DisablePlayerVehicleRewards(Pid)
 
 			if IsPedInAnyHeli(Ped) then
 				local Vehicle = GetVehiclePedIsUsing(Ped)
@@ -308,10 +336,10 @@ CreateThread(function()
 				end
 			end
 		else
-			if BunnyHope >= GetGameTimer() then
+			if BUNNYHOPE >= GetGameTimer() then
 				DisableControlAction(1,22,true)
-			elseif IsPedJumping(Ped) and BunnyHope <= GetGameTimer() then
-				BunnyHope = GetGameTimer() + 1000
+			elseif IsPedJumping(Ped) and BUNNYHOPE <= GetGameTimer() then
+				BUNNYHOPE = GetGameTimer() + 1000
 			end
 		end
 
@@ -321,80 +349,57 @@ CreateThread(function()
 			end
 		end
 
-		DisableControlAction(0,37,true)
-		DisableControlAction(0,204,true)
-		DisableControlAction(0,211,true)
-		DisableControlAction(0,349,true)
-		DisableControlAction(0,192,true)
-		DisableControlAction(0,157,true)
-		DisableControlAction(0,158,true)
-		DisableControlAction(0,159,true)
-		DisableControlAction(0,160,true)
-		DisableControlAction(0,161,true)
-		DisableControlAction(0,162,true)
-		DisableControlAction(0,163,true)
-		DisableControlAction(0,164,true)
-		DisableControlAction(0,165,true)
+		for _,control in ipairs(CONTROLS) do
+			DisableControlAction(0,control,true)
+		end
 
 		DisableVehicleDistantlights(true)
-		SetArtificialLightsState(false)
 		SetAllVehicleGeneratorsActive()
 		CancelCurrentPoliceReport()
 		BlockWeaponWheelThisFrame()
-		InvalidateVehicleIdleCam()
 		SetCreateRandomCops(false)
 		SetPoliceRadarBlips(false)
 		DistantCopCarSirens(false)
 		SetPauseMenuActive(false)
-		InvalidateIdleCam()
 
-		SetVehicleDensityMultiplierThisFrame(0.2)
-		SetRandomVehicleDensityMultiplierThisFrame(0.2)
-		SetParkedVehicleDensityMultiplierThisFrame(0.2)
+		SetVehicleDensityMultiplierThisFrame(1.0)
+		SetRandomVehicleDensityMultiplierThisFrame(1.0)
+		SetParkedVehicleDensityMultiplierThisFrame(1.0)
 		SetScenarioPedDensityMultiplierThisFrame(1.0,1.0)
 		SetPedDensityMultiplierThisFrame(1.0)
 
 		if IsPedArmed(Ped,6) then
-			DisableControlAction(1,140,true)
-			DisableControlAction(1,141,true)
-			DisableControlAction(1,142,true)
+			DisableControlAction(0,140,true)
+			DisableControlAction(0,141,true)
+			DisableControlAction(0,142,true)
 		end
 
 		if IsPedUsingActionMode(Ped) then
 			SetPedUsingActionMode(Ped,-1,-1,1)
 		end
 
-		SetPedInfiniteAmmoClip(Ped,false)
+		SetPlayerTargetingMode(3)
+		DisablePlayerVehicleRewards(Pid)
 		SetPlayerLockonRangeOverride(Pid,0.0)
 		SetCreateRandomCopsOnScenarios(false)
 		SetCreateRandomCopsNotOnScenarios(false)
-
 		SetEntityProofs(Ped,false,true,true,false,false,false,false,false)
+		SetPedInfiniteAmmoClip(Ped,LocalPlayer["state"]["Arena"] and true or false)
 		N_0x4757f00bc6323cfe(-1553120962,0.0)
 		N_0x4757f00bc6323cfe(539292904,0.0)
-
-		SetWeatherTypeNow(GlobalState["Weather"])
-		SetWeatherTypePersist(GlobalState["Weather"])
-		SetWeatherTypeNowPersist(GlobalState["Weather"])
 
 		if IsPlayerWantedLevelGreater(Pid,0) then
 			ClearPlayerWantedLevel(Pid)
 		end
 
-		if IsPedInAnyVehicle(Ped) then
-			DisableControlAction(0,345,true)
-		end
+		SetWeatherTypeNow(GlobalState["Weather"])
+		SetWeatherTypePersist(GlobalState["Weather"])
+		SetWeatherTypeNowPersist(GlobalState["Weather"])
 
-		if LocalPlayer["state"]["Active"] then
-			NetworkOverrideClockTime(GlobalState["Hours"], GlobalState["Minutes"], 00)
+		if not LocalPlayer["state"]["Active"] then
+			NetworkOverrideClockTime(GlobalState["Hours"],GlobalState["Minutes"],0)
 		else
-			NetworkOverrideClockTime(12, 00, 00)
-		end
-
-		if IsPedOnFoot(GetPlayerPed(-1)) then
-			SetRadarZoom(1100)
-		elseif IsPedInAnyVehicle(GetPlayerPed(-1), true) then
-			SetRadarZoom(1100)
+			NetworkOverrideClockTime(12,0,0)
 		end
 
 		Wait(0)
@@ -446,20 +451,22 @@ CreateThread(function()
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ONCLIENTRESOURCESTART
+-- THREADSERVERSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("onClientResourceStart",function(Resource)
-	if (GetCurrentResourceName() ~= Resource) then
-		return
+CreateThread(function()
+	local mapZoomData = {
+		{ 0,0.96,0.9,0.08,0.0,0.0 },
+		{ 1,1.6,0.9,0.08,0.0,0.0 },
+		{ 2,8.6,0.9,0.08,0.0,0.0 },
+		{ 3,12.3,0.9,0.08,0.0,0.0 },
+		{ 4,22.3,0.9,0.08,0.0,0.0 }
+	}
+
+	for _,zoomData in ipairs(mapZoomData) do
+		SetMapZoomDataLevel(zoomData[1],zoomData[2],zoomData[3],zoomData[4],zoomData[5],zoomData[6])
 	end
 
-	SetMapZoomDataLevel(0,0.96,0.9,0.08,0.0,0.0)
-	SetMapZoomDataLevel(1,1.6,0.9,0.08,0.0,0.0)
-	SetMapZoomDataLevel(2,8.6,0.9,0.08,0.0,0.0)
-	SetMapZoomDataLevel(3,12.3,0.9,0.08,0.0,0.0)
-	SetMapZoomDataLevel(4,22.3,0.9,0.08,0.0,0.0)
-
-	for _,v in pairs(InfoList) do
+	for _,v in pairs(IPL_LIST) do
 		local Interior = GetInteriorAtCoords(v["Coords"])
 		LoadInterior(Interior)
 
@@ -472,53 +479,51 @@ AddEventHandler("onClientResourceStart",function(Resource)
 		RefreshInterior(Interior)
 	end
 
-	for Number = 1,#Alphas do
-		local Blip = AddBlipForRadius(Alphas[Number][1]["x"],Alphas[Number][1]["y"],Alphas[Number][1]["z"],Alphas[Number][4])
-		SetBlipAlpha(Blip,Alphas[Number][2])
-		SetBlipColour(Blip,Alphas[Number][3])
+	for _,alphaData in ipairs(ALPHAS) do
+		local radius = alphaData[1]
+		local Blip = AddBlipForRadius(radius["x"],radius["y"],radius["z"],alphaData[4])
+		SetBlipAlpha(Blip,alphaData[2])
+		SetBlipColour(Blip,alphaData[3])
 	end
 
-	for Number = 1,#Blips do
-		local Blip = AddBlipForCoord(Blips[Number][1],Blips[Number][2],Blips[Number][3])
-		SetBlipSprite(Blip,Blips[Number][4])
+	for _,blipData in ipairs(BLIPS) do
+		local Blip = AddBlipForCoord(blipData[1],blipData[2],blipData[3])
+		SetBlipSprite(Blip,blipData[4])
 		SetBlipDisplay(Blip,4)
 		SetBlipAsShortRange(Blip,true)
-		SetBlipColour(Blip,Blips[Number][5])
-		SetBlipScale(Blip,Blips[Number][7])
+		SetBlipColour(Blip,blipData[5])
+		SetBlipScale(Blip,blipData[7])
+
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString(Blips[Number][6])
+		AddTextComponentString(blipData[6])
 		EndTextCommandSetBlipName(Blip)
+
+		Wait(10)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADACTIVE
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
+	local IslandLoaded = false
+	for _,v in pairs(ISLAND) do
+		RequestIpl(v)
+	end
+
 	while true do
 		local Ped = PlayerPedId()
 		local Coords = GetEntityCoords(Ped)
-
 		if #(Coords - vec3(4840.57,-5174.42,2.0)) <= 2000 then
-			if not IsIplActive("h4_islandairstrip") then
-				for _,v in pairs(Island) do
-					RequestIpl(v)
-				end
-
+			if not IslandLoaded then
+				IslandLoaded = true
 				SetIslandHopperEnabled("HeistIsland",true)
 				SetAiGlobalPathNodesType(1)
-				SetDeepOceanScaler(0.0)
-				LoadGlobalWaterType(1)
 			end
 		else
-			if IsIplActive("h4_islandairstrip") then
-				for _,v in pairs(Island) do
-					RemoveIpl(v)
-				end
-
+			if IslandLoaded then
+				IslandLoaded = false
 				SetIslandHopperEnabled("HeistIsland",false)
 				SetAiGlobalPathNodesType(0)
-				SetDeepOceanScaler(1.0)
-				LoadGlobalWaterType(0)
 			end
 		end
 

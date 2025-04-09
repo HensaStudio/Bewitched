@@ -81,6 +81,11 @@ Use = {
 		end
 	end,
 
+	["racestablet"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		TriggerClientEvent("races:Open",source)
+		TriggerClientEvent("inventory:Close",source)
+	end,
+
 	["camera"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if not Player(source)["state"]["Camera"] then
 			local Ped = GetPlayerPed(source)
@@ -2604,13 +2609,13 @@ Use = {
 		if vRPC.InsideVehicle(source) then
 			TriggerClientEvent("inventory:Close",source)
 
-			local Model,Vehicle = vRPC.VehicleName(source)
+			local Model,Vehicle,Plate = vRPC.VehicleName(source)
 			local Networked = NetworkGetEntityFromNetworkId(Vehicle)
-			local Consult = vRP.Query("vehicles/selectVehicles",{ Passport = Passport, Vehicle = Model })
+			local Consult = vRP.Query("vehicles/PlateUsers",{ Plate = Plate, Vehicle = Model })
 			if DoesEntityExist(Networked) and Consult[1] and vRP.TakeItem(Passport,Full,1,true,Slot) then
 				Entity(Networked)["state"]:set("Seatbelt",true,true)
+				vRP.Query("vehicles/SeatbeltVehicles",{ Vehicle = Model, Plate = Plate })
 				TriggerClientEvent("Notify",source,"Sucesso","Cinto de Corrida ativado.","verde",5000)
-				vRP.Query("vehicles/SeatbeltVehicles",{ Vehicle = Model, Plate = Consult[1]["Plate"] })
 			end
 		end
 	end,

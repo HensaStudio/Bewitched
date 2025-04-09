@@ -639,6 +639,22 @@ List = {
 					["aluminum"] = 45
 				}
 			},
+			["seatbelt"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["rubber"] = 30,
+					["copper"] = 30,
+					["aluminum"] = 30
+				}
+			},
+			["coilover"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["rubber"] = 50,
+					["copper"] = 100,
+					["aluminum"] = 100
+				}
+			},
 			["nitro"] = {
 				["Amount"] = 1,
 				["Required"] = {
@@ -1473,6 +1489,16 @@ List = {
 				["Amount"] = 1,
 				["Required"] = {
 					["dirtydollar"] = 425
+				}
+			},
+			["racestablet"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["screws"] = 4,
+					["copper"] = 100,
+					["aluminum"] = 100,
+					["metalspring"] = 1,
+					["sheetmetal"] = 2
 				}
 			},
 			["lockpick"] = {

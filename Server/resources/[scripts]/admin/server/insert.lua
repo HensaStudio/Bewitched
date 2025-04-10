@@ -637,7 +637,7 @@ AddEventHandler("admin:Dynamic", function(Mode)
 			if vRP.HasGroup(Passport,"Admin") then
 				local Keyboard = vKEYBOARD.Secondary(source,"Passaporte:","Quantidade:")
 				if Keyboard then
-					vRP.GiveBank(Keyboard[1],Keyboard[2])
+					vRP.GiveBank(Keyboard[1],Keyboard[2],true)
 					TriggerClientEvent("Notify",source,"Sucesso","Envio concluído.","verde",5000)
 				end
 			else

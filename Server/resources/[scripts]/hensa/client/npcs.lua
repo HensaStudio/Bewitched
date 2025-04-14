@@ -512,6 +512,11 @@ local List = {
 		["Coords"] = vec4(341.32,-578.82,28.8,167.25),
 		["Model"] = "s_m_m_paramedic_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Garagem Hospital
+		["Distance"] = 30,
+		["Coords"] = vec4(337.44,-586.73,74.16,249.45),
+		["Model"] = "s_m_m_paramedic_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Hospital Service
 		["Distance"] = 30,
 		["Coords"] = vec4(312.35,-597.52,43.29,73.71),

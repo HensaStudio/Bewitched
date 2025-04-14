@@ -21,6 +21,7 @@ local Gemstone = 0
 local Pause = false
 local Road = "Roads"
 local Crossing = "Crossing"
+local Coupon = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PRINCIPAL
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -99,33 +100,32 @@ AddStateBagChangeHandler("Roubos",nil,function(Name,Key,Value)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- CUPOM
+-- COUPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Cupom = false
 RegisterCommand("escondercupom",function()
-	if Cupom then
-		Cupom = false
+	if Coupon then
+		Coupon = false
 		SendNUIMessage({ name = "Coupon", payload = false })
-	elseif GlobalState["Cupom"] then
-		Cupom = true
-		SendNUIMessage({ name = "Coupon", payload = { true,GlobalState["Cupom"][1],GlobalState["Cupom"][2] } })
+	elseif GlobalState["Coupon"] then
+		Coupon = true
+		SendNUIMessage({ name = "Coupon", payload = { true,GlobalState["Coupon"][1],GlobalState["Coupon"][2] } })
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDSTATEBAGCHANGEHANDLER
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddStateBagChangeHandler("Cupom",nil,function(Name,Key,Value)
+AddStateBagChangeHandler("Coupon",nil,function(Name,Key,Value)
 	if Value then
-		SendNUIMessage({ name = "Coupon", payload = { true,Value[1],Value[2],Value[3] } })
+		SendNUIMessage({ name = "Coupon", payload = { true,Value[1],Value[2] } })
 
-		if not Cupom then
-			Cupom = true
+		if not Coupon then
+			Coupon = true
 		end
 	else
 		SendNUIMessage({ name = "Coupon", payload = false })
 
-		if Cupom then
-			Cupom = false
+		if Coupon then
+			Coupon = false
 		end
 	end
 end)
@@ -316,6 +316,12 @@ AddStateBagChangeHandler("Players",nil,function(Name,Key,Value)
 	SendNUIMessage({ name = "Players", payload = Dotted(Value) })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ADDSTATEBAGCHANGEHANDLER
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddStateBagChangeHandler("Safezone",("player:%s"):format(LocalPlayer["state"]["Player"]),function(Name,Key,Value)
+	SendNUIMessage({ name = "Safezone", payload = Value })
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- HUD:VOIP
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("hud:Voip",function(Number)
@@ -342,12 +348,6 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("Wanted",function()
 	return Wanted > 0 and true or false
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- ADDSTATEBAGCHANGEHANDLER
------------------------------------------------------------------------------------------------------------------------------------------
-AddStateBagChangeHandler("Safezone",("player:%s"):format(LocalPlayer["state"]["Player"]),function(Name,Key,Value)
-	SendNUIMessage({ name = "Safezone", payload = Value })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- HUD:REPOSED

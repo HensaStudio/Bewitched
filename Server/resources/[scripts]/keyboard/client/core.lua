@@ -186,7 +186,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- COUPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Coupon(First,Second,Third)
+function Coupon(First,Second)
 	local Array = Keyboard({
 		title = "Cupom",
 		subtitle = "Preencha os campos abaixo",
@@ -201,18 +201,12 @@ function Coupon(First,Second,Third)
 				mode = "area",
 				placeholder = Second,
 				value = ""
-			},{
-				id = 3,
-				mode = "options",
-				placeholder = "Selecione os dias",
-				options = Third,
-				value = ""
 			}
 		}
 	})
 
-	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" and Array["3"] and Array["3"]["input"] ~= "" then
-		return { Array["1"]["input"],Array["2"]["input"],Array["3"]["input"] }
+	if Array and Array["1"] and Array["1"]["input"] ~= "" and Array["2"] and Array["2"]["input"] ~= "" then
+		return { Array["1"]["input"],Array["2"]["input"] }
 	end
 
 	return false
@@ -943,8 +937,8 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- COUPON
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Coupon(First,Secondary,Third)
-	return Coupon(First,Secondary,Third)
+function Hensa.Coupon(First,Secondary)
+	return Coupon(First,Secondary)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PERIMETERS

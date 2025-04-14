@@ -282,6 +282,10 @@ RegisterCommand("AdminFunctions", function()
 				exports["dynamic"]:AddButton("Ban", "Banir o ID.", "admin:Dynamic", "ban", "admin", true)
 				exports["dynamic"]:AddButton("Unban", "Desbanir o ID.", "admin:Dynamic", "unban", "admin", true)
 
+				exports["dynamic"]:AddMenu("Cupom", "Clique para mais informações.", "coupon")
+				exports["dynamic"]:AddButton("Adicionar", "Adicione um Cupom.", "hud:AddCoupon", "", "coupon", true)
+				exports["dynamic"]:AddButton("Remover", "Remova um Cupom.", "hud:RemoveCoupon", "", "coupon", true)
+
 				exports["dynamic"]:AddMenu("Clima", "Clique para mais informações.", "sky")
 				exports["dynamic"]:AddButton("Change Time", "Mudar a Hora do jogo.", "admin:Dynamic", "timeset", "sky", true)
 				exports["dynamic"]:AddButton("Change Weather", "Mudar o Clima do jogo.", "admin:Dynamic", "weatherset", "sky", true)

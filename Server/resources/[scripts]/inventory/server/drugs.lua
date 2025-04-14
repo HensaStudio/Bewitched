@@ -95,7 +95,7 @@ function Hensa.PaymentDrugs()
 		end
 
 		TriggerClientEvent("player:Residual",source,"Resíduo de Orgânicos")
-		vRP.GenerateItem(Passport,"dirtydollar",Valuation,true)
+		vRP.GenerateItem(Passport,DefaultMoneyTwo,Valuation,true)
 		vRP.PutExperience(Passport,"Traffic",GainExperience)
 		vRP.UpgradeStress(Passport,1)
 

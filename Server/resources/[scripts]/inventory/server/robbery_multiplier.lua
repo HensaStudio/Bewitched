@@ -14,8 +14,29 @@ local Config = {
 		["Residual"] = "Resquício de Línter",
 		["Payment"] = {
 			["List"] = {
-				{ ["Item"] = "dirtydollar", ["Chance"] = 100, ["Min"] = 325, ["Max"] = 375 }
+				{ ["Item"] = DefaultMoneyTwo, ["Chance"] = 100, ["Min"] = 325, ["Max"] = 375 }
 			}
+		}
+	},
+	["Eletronic"] = {
+		["Timer"] = 30,
+		["Wanted"] = 120,
+		["Game"] = true,
+		["Delay"] = 3600,
+		["Cooldown"] = {},
+		["Percentage"] = 550,
+		["Backpack"] = true,
+		["Name"] = "Roubo a Caixa Eletrônico",
+		["Residual"] = "Resquício de Línter",
+		["Payment"] = {
+			["List"] = {
+				{ ["Item"] = DefaultMoneyTwo, ["Chance"] = 100, ["Min"] = 725, ["Max"] = 1575 }
+			}
+		},
+		["Need"] = {
+			["Amount"] = 1,
+			["Consume"] = true,
+			["Item"] = "lockpick"
 		}
 	}
 }

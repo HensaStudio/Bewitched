@@ -50,7 +50,7 @@ AddEventHandler("inventory:Stockade",function(Vehicle)
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
-				vRP.GenerateItem(Passport,"dirtydollar",7225,true)
+				vRP.GenerateItem(Passport,DefaultMoneyTwo,7225,true)
 			end
 
 			Wait(100)

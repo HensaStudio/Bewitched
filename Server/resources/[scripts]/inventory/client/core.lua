@@ -377,3 +377,24 @@ function Hensa.EntityCoordsZ()
 
 	return vec3(Coords["x"],Coords["y"],GroundZ)
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADSWIMMING
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	while true do
+		local Ped = PlayerPedId()
+		if not IsPedInAnyVehicle(Ped) then
+			if IsPedSwimming(Ped) then
+				if not Swimming and not ScubaTank and not ScubaMask then
+					Swimming = true
+
+					vSERVER.Swimming()
+				end
+			elseif Swimming then
+				Swimming = false
+			end
+		end
+
+		Wait(10000)
+	end
+end)

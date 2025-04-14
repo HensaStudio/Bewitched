@@ -81,7 +81,7 @@ function Hensa.Deposit(Valuation)
 		Active[Passport] = true
 
 		if vRP.ConsultItem(Passport,DefaultMoneyOne,Valuation) and vRP.TakeItem(Passport,DefaultMoneyOne,Valuation) then
-			vRP.GiveBank(Passport,Valuation)
+			vRP.GiveBank(Passport,Valuation,true)
 		end
 
 		Active[Passport] = nil
@@ -121,7 +121,7 @@ function Hensa.Transfer(OtherPassport,Valuation)
 		Active[Passport] = true
 
 		if vRP.Identity(OtherPassport) and vRP.PaymentBank(Passport,Valuation,true) then
-			vRP.GiveBank(OtherPassport,Valuation)
+			vRP.GiveBank(OtherPassport,Valuation,true)
 		end
 
 		Active[Passport] = nil
@@ -351,7 +351,7 @@ function Hensa.InvoicePayment(Number)
 		local Invoice = vRP.Query("invoices/Check",{ id = Number })
 		if Invoice[1] then
 			if vRP.PaymentBank(Passport,Invoice[1]["Price"]) then
-				vRP.GiveBank(Invoice[1]["Received"],Invoice[1]["Price"])
+				vRP.GiveBank(Invoice[1]["Received"],Invoice[1]["Price"],true)
 				vRP.Query("invoices/Remove",{ id = Number })
 				Active[Passport] = nil
 
@@ -453,7 +453,7 @@ function Hensa.InvestRescue()
 		if InvestmentCheck[1] then
 			local Valuation = InvestmentCheck[1]["Deposit"] + InvestmentCheck[1]["Liquid"]
 			vRP.Query("investments/Remove",{ Passport = Passport })
-			vRP.GiveBank(Passport,Valuation)
+			vRP.GiveBank(Passport,Valuation,true)
 		end
 
 		Active[Passport] = nil

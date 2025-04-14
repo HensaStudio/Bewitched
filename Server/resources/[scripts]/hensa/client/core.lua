@@ -163,6 +163,19 @@ local ALPHAS = {
 	{ vec3(778.49,-395.89,33.43), 200, 30, 35.0 } -- Dismantle
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- TELEPORT
+-----------------------------------------------------------------------------------------------------------------------------------------
+local TELEPORT = {
+	{ vec3(332.33,-595.66,43.29),vec3(344.37,-586.21,28.8) },
+	{ vec3(344.37,-586.21,28.8),vec3(332.33,-595.66,43.29) },
+
+	{ vec3(330.39,-601.25,43.29),vec3(330.4,-601.23,43.29) },
+	{ vec3(330.4,-601.23,43.29),vec3(330.39,-601.25,43.29) },
+
+	{ vec3(327.12,-603.89,43.29),vec3(338.52,-583.76,74.16) },
+	{ vec3(338.52,-583.76,74.16),vec3(327.12,-603.89,43.29) }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- ISLAND
 -----------------------------------------------------------------------------------------------------------------------------------------
 local ISLAND = {
@@ -392,11 +405,7 @@ CreateThread(function()
 			ClearPlayerWantedLevel(Pid)
 		end
 
-		SetWeatherTypeNow(GlobalState["Weather"])
-		SetWeatherTypePersist(GlobalState["Weather"])
-		SetWeatherTypeNowPersist(GlobalState["Weather"])
-
-		if not LocalPlayer["state"]["Active"] then
+		if LocalPlayer["state"]["Active"] then
 			NetworkOverrideClockTime(GlobalState["Hours"],GlobalState["Minutes"],0)
 		else
 			NetworkOverrideClockTime(12,0,0)
@@ -499,6 +508,36 @@ CreateThread(function()
 		EndTextCommandSetBlipName(Blip)
 
 		Wait(10)
+	end
+
+	local teleportData = {}
+	for _,v in ipairs(TELEPORT) do
+		table.insert(teleportData,{ v[1],2.5,"E","Pressione","para acessar" })
+	end
+
+	TriggerEvent("hoverfy:Insert",teleportData)
+
+	while true do
+		local TimeDistance = 999
+		local Ped = PlayerPedId()
+		if not IsPedInAnyVehicle(Ped) then
+			local Coords = GetEntityCoords(Ped)
+
+			for Number = 1,#TELEPORT do
+				if #(Coords - TELEPORT[Number][1]) <= 1.0 then
+					TimeDistance = 1
+
+					if IsControlJustPressed(1,38) then
+						SetEntityCoords(Ped,TELEPORT[Number][2])
+					end
+				end
+			end
+		end
+
+		InvalidateVehicleIdleCam()
+		InvalidateIdleCam()
+
+		Wait(TimeDistance)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

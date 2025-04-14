@@ -31,6 +31,18 @@ local Itens = {
 		["Percentage"] = 0.650,
 		["Permission"] = 0.850,
 		["Police"] = 475
+	},
+	["promissory25000"] = {
+		["Value"] = 25000,
+		["Percentage"] = 0.450,
+		["Permission"] = 0.650,
+		["Police"] = 375
+	},
+	["promissory50000"] = {
+		["Value"] = 50000,
+		["Percentage"] = 0.250,
+		["Permission"] = 0.550,
+		["Police"] = 275
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +52,7 @@ function Hensa.Washers(Value)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
-		if vRP.TakeItem(Passport,"wetdollar",Value) then
+		if vRP.TakeItem(Passport,DefaultMoneyTwo,Value) then
 			exports["vrp"]:CallPolice({
 				["Source"] = source,
 				["Passport"] = Passport,
@@ -56,7 +68,7 @@ function Hensa.Washers(Value)
 
 			return true
 		else
-			TriggerClientEvent("Notify",source,"Atenção","Você precisa de "..Value.."x "..ItemName(DefaultMoneyThree)..".","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa de "..Value.."x "..ItemName(DefaultMoneyTwo)..".","amarelo",5000)
 		end
 	end
 
@@ -74,9 +86,9 @@ AddEventHandler("moneywash:Swap",function()
 		for Item,v in pairs(Itens) do
 			local Consult = vRP.InventoryItemAmount(Passport,Item)
 			if Consult[1] > 0 and Consult[2] ~= "" and vRP.TakeItem(Passport,Consult[2],Consult[1]) then
-				local Value = v["Value"] * (vRP.HasGroup(Passport,"MoneyWash") and v["Permission"] or v["Percentage"])
+				local Value = v["Value"] * v["Percentage"]
 
-				vRP.GenerateItem(Passport,"dollar",Consult[1] * Value)
+				vRP.GenerateItem(Passport,DefaultMoneyOne,Consult[1] * Value,true)
 				Notification = true
 			end
 		end
@@ -84,7 +96,7 @@ AddEventHandler("moneywash:Swap",function()
 		if Notification then
 			TriggerClientEvent("Notify",source,"Sucesso","Troca concluída.","verde",5000)
 		else
-			TriggerClientEvent("Notify",source,"Aviso","Promissórias não encontradas.","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Atenção","Promissórias não encontradas.","amarelo",5000)
 		end
 	end
 end)

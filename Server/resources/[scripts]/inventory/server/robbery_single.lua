@@ -15,7 +15,7 @@ local Config = {
 		["Payment"] = {
 			["Multiplier"] = { ["Min"] = 1, ["Max"] = 1 },
 			["List"] = {
-				{ ["Item"] = "dirtydollar", ["Chance"] = 100, ["Min"] = 50000, ["Max"] = 75000 }
+				{ ["Item"] = DefaultMoneyTwo, ["Chance"] = 100, ["Min"] = 50000, ["Max"] = 75000 }
 			}
 		},
 		["Need"] = {
@@ -41,7 +41,7 @@ local Config = {
 		["Payment"] = {
 			["Multiplier"] = { ["Min"] = 1, ["Max"] = 1 },
 			["List"] = {
-				{ ["Item"] = "dirtydollar", ["Chance"] = 100, ["Min"] = 75000, ["Max"] = 100000 }
+				{ ["Item"] = DefaultMoneyTwo, ["Chance"] = 100, ["Min"] = 75000, ["Max"] = 100000 }
 			}
 		},
 		["Need"] = {
@@ -67,7 +67,7 @@ local Config = {
 		["Payment"] = {
 			["Multiplier"] = { ["Min"] = 1, ["Max"] = 1 },
 			["List"] = {
-				{ ["Item"] = "dirtydollar", ["Chance"] = 100, ["Min"] = 5225, ["Max"] = 6725 }
+				{ ["Item"] = DefaultMoneyTwo, ["Chance"] = 100, ["Min"] = 5225, ["Max"] = 6725 }
 			}
 		},
 		["Need"] = {

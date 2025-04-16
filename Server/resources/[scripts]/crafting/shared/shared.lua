@@ -632,6 +632,24 @@ List = {
 					["rubber"] = 40
 				}
 			},
+			["break01"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["rubber"] = 10
+				}
+			},
+			["break02"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["rubber"] = 20
+				}
+			},
+			["break03"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["rubber"] = 30
+				}
+			},
 			["plate"] = {
 				["Amount"] = 1,
 				["Required"] = {

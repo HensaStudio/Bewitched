@@ -252,7 +252,7 @@ CreateThread(function()
 
 			for _,v in pairs(Drops[Route]) do
 				if #(Coords - v["coords"]) <= 25 then
-					SetDrawOrigin(v["coords"]["x"],v["coords"]["y"],v["coords"]["z"] - 0.75)
+					SetDrawOrigin(v["coords"]["x"],v["coords"]["y"],v["coords"]["z"])
 					DrawSprite("Textures","Drop",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 					ClearDrawOrigin()
 

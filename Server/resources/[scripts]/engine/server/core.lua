@@ -81,34 +81,35 @@ AddEventHandler("engine:InsertBrakes",function(Vehicle,Brake)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
--- APPLYBRAKES
+-- ENGINE:APPLYBRAKES
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("engine:ApplyBrakes")
-AddEventHandler("engine:ApplyBrakes",function(Item,Vehicle,Brake,PlayerAround)
-	if Brakes[Vehicle] then
-		if Item == "graphite01" then
-			Brakes[Vehicle][1] = Brakes[Vehicle][1] + (Brake * 0.0090) + 0.0
-		elseif Item == "graphite02" then
-			Brakes[Vehicle][2] = Brakes[Vehicle][2] + (Brake * 0.0055) + 0.0
-		elseif Item == "graphite03" then
-			Brakes[Vehicle][3] = Brakes[Vehicle][3] + (Brake * 0.0075) + 0.0
-		end
+AddEventHandler("engine:ApplyBrakes", function(Item, Vehicle, Brake, PlayerAround)
+	local Config = BrakesConfig[Item]
+	if Config and Brakes[Vehicle] then
+		local i = Config.Index
+		Brakes[Vehicle][i] = math.min(Brakes[Vehicle][i] + (Brake * Config.Multiplier), Config.Max)
 
-		if Brakes[Vehicle][1] >= 0.90 then
-			Brakes[Vehicle][1] = 0.90
-		end
-
-		if Brakes[Vehicle][2] >= 0.55 then
-			Brakes[Vehicle][2] = 0.55
-		end
-
-		if Brakes[Vehicle][3] >= 0.75 then
-			Brakes[Vehicle][3] = 0.75
-		end
-
-		for _,v in ipairs(PlayerAround) do
+		for _, v in ipairs(PlayerAround) do
 			async(function()
-				TriggerClientEvent("engine:SyncBrakes",v,Vehicle,Brakes[Vehicle])
+				TriggerClientEvent("engine:SyncBrakes", v, Vehicle, Brakes[Vehicle])
+			end)
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ENGINE:MAXBRAKES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("engine:MaxBrakes")
+AddEventHandler("engine:MaxBrakes", function(Vehicle, PlayerAround)
+	if Brakes[Vehicle] then
+		Brakes[Vehicle][1] = 0.90
+		Brakes[Vehicle][2] = 0.55
+		Brakes[Vehicle][3] = 0.75
+
+		for _, v in ipairs(PlayerAround) do
+			async(function()
+				TriggerClientEvent("engine:SyncBrakes", v, Vehicle, Brakes[Vehicle])
 			end)
 		end
 	end

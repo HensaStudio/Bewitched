@@ -2,6 +2,96 @@
 -- USE
 -----------------------------------------------------------------------------------------------------------------------------------------
 Use = {
+	["break01"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if not Player(source)["state"]["Handcuff"] then
+			local Vehicle, Network, PlayerAround = vRPC.VehicleAround(source)
+			if Vehicle and not vRPC.InsideVehicle(source) then
+				vRPC.AnimActive(source)
+				Active[Passport] = os.time() + 10
+				Player(source)["state"]["Buttons"] = true
+				TriggerClientEvent("inventory:Close",source)
+				TriggerClientEvent("Progress", source, "Instalando", 10000)
+				vRPC.PlayAnim(source, false, { "mini@repair", "fixing_a_player" }, true)
+
+				repeat
+					if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+						vRPC.StopAnim(source)
+						Active[Passport] = nil
+						Player(source)["state"]["Buttons"] = false
+
+						if vRP.TakeItem(Passport,Full,1,true,Slot) then
+							TriggerEvent("engine:ApplyBrakes", Item, Network, Amount, PlayerAround)
+						end
+
+						TriggerClientEvent("Notify", source, "Mecânica", "Você usou <b>"..Dotted(Amount).."x "..ItemName(Item).."</b> com sucesso e atualizou em <b>"..Dotted(Amount).."%</b> o <b>Freio Integral</b> do veículo.", "mechanic", 10000)
+					end
+
+					Wait(100)
+				until not Active[Passport]
+			end
+		end
+	end,
+
+	["break02"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if not Player(source)["state"]["Handcuff"] then
+			local Vehicle, Network, PlayerAround = vRPC.VehicleAround(source)
+			if Vehicle and not vRPC.InsideVehicle(source) then
+				vRPC.AnimActive(source)
+				Active[Passport] = os.time() + 5
+				Player(source)["state"]["Buttons"] = true
+				TriggerClientEvent("inventory:Close",source)
+				TriggerClientEvent("Progress", source, "Instalando", 5000)
+				vRPC.PlayAnim(source, false, { "mini@repair", "fixing_a_player" }, true)
+
+				repeat
+					if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+						vRPC.StopAnim(source)
+						Active[Passport] = nil
+						Player(source)["state"]["Buttons"] = false
+
+						if vRP.TakeItem(Passport,Full,1,true,Slot) then
+							TriggerEvent("engine:ApplyBrakes", Item, Network, Amount, PlayerAround)
+						end
+
+						TriggerClientEvent("Notify", source, "Mecânica", "Você usou <b>"..Dotted(Amount).."x "..ItemName(Item).."</b> com sucesso e atualizou em <b>"..Dotted(Amount).."%</b> o <b>Freio Dianteiro</b> do veículo.", "mechanic", 10000)
+					end
+
+					Wait(100)
+				until not Active[Passport]
+			end
+		end
+	end,
+
+	["break03"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if not Player(source)["state"]["Handcuff"] then
+			local Vehicle, Network, PlayerAround = vRPC.VehicleAround(source)
+			if Vehicle and not vRPC.InsideVehicle(source) then
+				vRPC.AnimActive(source)
+				Active[Passport] = os.time() + 5
+				Player(source)["state"]["Buttons"] = true
+				TriggerClientEvent("inventory:Close",source)
+				TriggerClientEvent("Progress", source, "Instalando", 5000)
+				vRPC.PlayAnim(source, false, { "mini@repair", "fixing_a_player" }, true)
+
+				repeat
+					if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+						vRPC.StopAnim(source)
+						Active[Passport] = nil
+						Player(source)["state"]["Buttons"] = false
+
+						if vRP.TakeItem(Passport,Full,1,true,Slot) then
+							TriggerEvent("engine:ApplyBrakes", Item, Network, Amount, PlayerAround)
+						end
+
+						TriggerClientEvent("Notify", source, "Mecânica", "Você usou <b>"..Dotted(Amount).."x "..ItemName(Item).."</b> com sucesso e atualizou em <b>"..Dotted(Amount).."%</b> o <b>Freio Traseiro</b> do veículo.", "mechanic", 10000)
+					end
+
+					Wait(100)
+				until not Active[Passport]
+			end
+		end
+	end,
+
 	["bandage"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if (not Healths[Passport] or os.time() > Healths[Passport]) then
 			if vRP.GetHealth(source) > 100 and vRP.GetHealth(source) < 200 then

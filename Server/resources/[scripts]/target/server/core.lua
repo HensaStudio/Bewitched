@@ -153,3 +153,28 @@ AddEventHandler("target:Call", function(Service)
 		end
 	end
 end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TARGET:REPOSED
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("target:Reposed")
+AddEventHandler("target:Reposed",function(OtherSource)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local OtherPassport = vRP.Passport(OtherSource)
+	local Keyboard = vKEYBOARD.Primary(source,"Minutos.")
+	if Passport and OtherPassport and Keyboard and parseInt(Keyboard[1]) > 0 then
+		TriggerClientEvent("Notify",source,"Centro Médico","Adicionou "..Keyboard[1].." minutos de repouso.","hospital",5000)
+		TriggerEvent("Reposed",OtherSource,OtherPassport,parseInt(Keyboard[1]) * 60)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TARGET:SERVICE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("target:Service")
+AddEventHandler("target:Service",function(Permission)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasGroup(Passport,Permission) then
+		vRP.ServiceToggle(source,Passport,Permission,false)
+	end
+end)

@@ -24,7 +24,7 @@ CreateThread(function()
 		Plants = json.decode(Consult[1]["Information"])
 
 		for Index,v in pairs(Plants) do
-			if Index and Plants[Index] and Plants[Index]["Timer"] and (os.time() - Plants[Index]["Timer"]) > 3600 then
+			if Index and Plants[Index] and Plants[Index]["Timer"] and (os.time() - Plants[Index]["Timer"]) > 36000 then
 				Plants[Index] = nil
 			end
 		end
@@ -54,7 +54,7 @@ end)
 -- CHECKDEATH
 -----------------------------------------------------------------------------------------------------------------------------------------
 function CheckDeath(source,Number)
-	if Number and Plants[Number] and Plants[Number]["Timer"] and (os.time() - Plants[Number]["Timer"]) > 3600 then
+	if Number and Plants[Number] and Plants[Number]["Timer"] and (os.time() - Plants[Number]["Timer"]) > 36000 then
 		Plants[Number] = nil
 		TriggerClientEvent("dynamic:Close",source)
 		TriggerClientEvent("plants:Remove",-1,Number)
@@ -89,11 +89,11 @@ AddEventHandler("plants:Collect",function(Number)
 				Valuation = Valuation + (Valuation * Temporary["Fertilizer"])
 			end
 
-			if vRP.CheckWeight(Passport,Temporary["Item"],Temporary["Amount"]) then
-				vRP.GenerateItem(Passport,Temporary["Item"],Temporary["Amount"],true)
+			if vRP.CheckWeight(Passport,Temporary["Item"],Valuation) then
+				vRP.GenerateItem(Passport,Temporary["Item"],Valuation,true)
 			else
 				TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
-				exports["inventory"]:Drops(Passport,source,Temporary["Item"],Temporary["Amount"])
+				exports["inventory"]:Drops(Passport,source,Temporary["Item"],Valuation)
 			end
 
 			TriggerClientEvent("plants:Remove",-1,Number)
@@ -181,6 +181,18 @@ AddEventHandler("plants:Fertilizer",function(Number)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PLANTS:DESTROY
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("plants:Destroy")
+AddEventHandler("plants:Destroy",function(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and not Active[Passport] and Plants[Number] then
+		TriggerClientEvent("plants:Remove",-1,Number)
+		Plants[Number] = nil
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- INFORMATIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Informations(Number)
@@ -222,6 +234,10 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SAVESERVER
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("SaveServer",function()
+AddEventHandler("SaveServer",function(Silenced)
 	vRP.Query("entitydata/SetData",{ Name = "Plants", Information = json.encode(Plants) })
+
+	if not Silenced then
+		print("O resource ^2Plants^7 salvou os dados.")
+	end
 end)

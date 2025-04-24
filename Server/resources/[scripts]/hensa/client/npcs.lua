@@ -122,9 +122,15 @@ local List = {
 		["Model"] = "s_f_y_shop_mid",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
-	},{ -- Mechanic
+	},{ -- Mecanico
 		["Distance"] = 15,
 		["Coords"] = vec4(949.93,-957.36,39.5,93.55),
+		["Model"] = "s_m_y_xmech_02",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Mecanico Service
+		["Distance"] = 15,
+		["Coords"] = vec4(951.41,-968.59,39.5,274.97),
 		["Model"] = "mp_m_waremech_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
@@ -519,13 +525,28 @@ local List = {
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Hospital Service
 		["Distance"] = 30,
-		["Coords"] = vec4(312.35,-597.52,43.29,73.71),
+		["Coords"] = vec4(308.29,-595.46,43.29,70.87),
 		["Model"] = "s_m_m_paramedic_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Policia Service
+	},{ -- LSPD Service
 		["Distance"] = 30,
-		["Coords"] = vec4(445.05,-982.08,30.68,90.71),
+		["Coords"] = vec4(442.67,-981.87,30.68,87.88),
 		["Model"] = "mp_m_securoguard_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- SSPD Service
+		["Distance"] = 30,
+		["Coords"] = vec4(1851.97,3687.96,34.22,215.44),
+		["Model"] = "s_m_y_sheriff_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- PBPD Service
+		["Distance"] = 30,
+		["Coords"] = vec4(-448.33,6013.96,32.28,223.94),
+		["Model"] = "s_m_y_ranger_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- PRPD Service
+		["Distance"] = 30,
+		["Coords"] = vec4(384.84,794.41,187.45,269.3),
+		["Model"] = "s_m_y_hwaycop_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Garagem Prisão
 		["Distance"] = 50,
@@ -576,6 +597,11 @@ local List = {
 		["Distance"] = 50,
 		["Coords"] = vec4(-545.31,-203.74,38.22,212.6),
 		["Model"] = "u_m_m_jewelsec_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Restaurante
+		["Distance"] = 10,
+		["Coords"] = vec4(-269.97,236.14,90.57,90.71),
+		["Model"] = "csb_chef",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	}
 }

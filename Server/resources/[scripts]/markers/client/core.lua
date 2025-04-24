@@ -17,16 +17,47 @@ local Active = false
 -- INFORMATION
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Information = {
-	["Policia"] = {
-		["Chefe"] = 3,
-		["Capitão"] = 18,
-		["Tenente"] = 6,
-		["Sargento"] = 32,
-		["Oficial"] = 42,
-		["Cadete"] = 53
+	["LSPD"] = {
+		["Comandante"] = 31,
+		["Capitão"] = 31,
+		["Tenente"] = 31,
+		["Sargento"] = 31,
+		["Oficial"] = 31,
+		["Cadete"] = 31
+	},
+	["PBPD"] = {
+		["Xerife"] = 21,
+		["Tenente"] = 21,
+		["Sargento"] = 21,
+		["Oficial"] = 21,
+		["Cadete"] = 21
+	},
+	["SSPD"] = {
+		["Xerife"] = 16,
+		["Tenente"] = 16,
+		["Sargento"] = 16,
+		["Oficial"] = 16,
+		["Cadete"] = 16
+	},
+	["PRPD"] = {
+		["Chefe"] = 52,
+		["Fiscal"] = 52,
+		["Sargento"] = 52,
+		["Patrulheiro"] = 52,
+		["Aspirante"] = 52,
+		["Estagiário"] = 52
 	},
 	["Paramedico"] = {
-		["Paramedico"] = 1
+		["Chefe"] = 49,
+		["Médico"] = 49,
+		["Enfermeiro"] = 49,
+		["Residente"] = 49
+	},
+	["Mecanico"] = {
+		["Chefe"] = 18,
+		["Mecânico"] = 18,
+		["Borracheiro"] = 18,
+		["Estagiário"] = 18
 	},
 	["Corredor"] = {
 		["Corredor"] = 8

@@ -13,24 +13,6 @@ vSERVER = Tunnel.getInterface("dynamic")
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Dynamic = false
 -----------------------------------------------------------------------------------------------------------------------------------------
--- SERVICES
------------------------------------------------------------------------------------------------------------------------------------------
-local Services = {
-	{
-		["Permission"] = "Policia",
-		["Coords"] = vec3(445.05, -982.08, 30.68),
-		["Distance"] = 2.0
-	}, {
-		["Permission"] = "Paramedico",
-		["Coords"] = vec3(312.35, -597.52, 43.29),
-		["Distance"] = 2.0
-	}, {
-		["Permission"] = "Mecanico",
-		["Coords"] = vec3(949.69, -957.4, 39.83),
-		["Distance"] = 2.0
-	}
-}
------------------------------------------------------------------------------------------------------------------------------------------
 -- ADDBUTTON
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("AddButton",function(title,description,trigger,param,parent_id,server,back)
@@ -187,7 +169,9 @@ RegisterCommand("EmergencyFunctions",function()
 		local Health = GetEntityHealth(Ped)
 
 		if CheckPolice() then
-			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Policia", false, true)
+			if GlobalState["HensaPerimeters"] then
+				exports["dynamic"]:AddButton("Perímetros", "Abrir painel de perímetros.", "perimeters:Open", "", false, false)
+			end
 
 			exports["dynamic"]:AddMenu("Ações", "Clique para mais informações.", "actions")
 			exports["dynamic"]:AddButton("Placa", "Verificar <rare>Emplacamento</rare>.", "police:Plate", "", "actions", true)
@@ -223,8 +207,6 @@ RegisterCommand("EmergencyFunctions",function()
 			exports["dynamic"]:Open()
 		elseif LocalPlayer["state"]["Paramedico"] then
 			if Health > 100 and not IsPedInAnyVehicle(Ped) then
-				exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:Service", "Paramedico", false, true)
-
 				exports["dynamic"]:AddButton("Companheiros", "Verifique seus companheiros em serviço.", "admin:Dynamic", "statsParamedico", false, true)
 
 				exports["dynamic"]:AddMenu("Jogador", "Pessoa mais próxima de você.", "player")
@@ -240,22 +222,7 @@ RegisterCommand("EmergencyFunctions",function()
 				exports["dynamic"]:AddButton("Medical Center", "Fardamento de paramédico.", "player:Preset", "6", "preMedic", true)
 				exports["dynamic"]:AddButton("Medical Center", "Fardamento de paramédico interno.", "player:Preset", "7", "preMedic", true)
 
-				exports["dynamic"]:AddButton("Computador", "Computador de bordo policial.", "paramedic:Open", "", false, false)
-
 				exports["dynamic"]:Open()
-			end
-		elseif LocalPlayer["state"]["Mecanico"] then
-			exports["dynamic"]:AddButton("Serviço", "Finalizar expediente de trabalho.", "dynamic:ExitService", "Mecanico", false, true)
-			exports["dynamic"]:Open()
-		else
-			local Coords = GetEntityCoords(Ped)
-			for Permission,v in pairs(Services) do
-				if #(Coords - v["Coords"]) <= v["Distance"] then
-					exports["dynamic"]:AddButton("Serviço", "Iniciar expediente de trabalho.", "dynamic:Service", v["Permission"], false, true)
-					exports["dynamic"]:Open()
-
-					break
-				end
 			end
 		end
 	end

@@ -21,17 +21,38 @@ local Actived = false
 -- DISMANTLE
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Dismantle = {
-	vec3(2363.23,2644.88,47.53)
+	vec3(943.23,-1497.87,30.11),
+	vec3(-1172.57,-2037.65,13.75),
+	vec3(-524.94,-1680.63,19.21),
+	vec3(1358.14,-2095.41,52.0),
+	vec3(602.47,-437.82,24.75),
+	vec3(-413.86,-2179.29,10.31),
+	vec3(146.51,320.62,112.14),
+	vec3(520.91,169.14,99.36),
+	vec3(1137.99,-794.32,57.59),
+	vec3(-93.07,-2549.6,6.0),
+	vec3(820.07,-488.43,30.46),
+	vec3(1078.62,-2325.56,30.25),
+	vec3(1204.69,-3116.71,5.50)
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- TOWED
+-- TOWEDSOUTH
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Towed = PolyZone:Create({
+local TowedSouth = PolyZone:Create({
 	vec2(409.48,-1629.45),
 	vec2(402.95,-1624.08),
 	vec2(393.87,-1634.91),
 	vec2(400.25,-1640.29)
-},{ name = "Towed" })
+},{ name = "TowedSouth" })
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TOWEDNORTH
+-----------------------------------------------------------------------------------------------------------------------------------------
+local TowedNorth = PolyZone:Create({
+	vec2(1992.2,3777.87),
+	vec2(1974.84,3769.01),
+	vec2(1966.07,3784.13),
+	vec2(1983.1,3793.9)
+},{ name = "TowedNorth" })
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TYRES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -761,7 +782,7 @@ function TargetEnable()
 						Selected[6] = true
 						Menu[#Menu + 1] = { event = "engine:Supply", label = "Abastecer", tunnel = "client" }
 					else
-						if Towed:isPointInside(HitCoords) and not Entity(Entitys)["state"]["Tow"] then
+						if (TowedSouth:isPointInside(HitCoords) or TowedNorth:isPointInside(HitCoords)) and not Entity(Entitys)["state"]["Tow"] then
 							Menu[#Menu + 1] = { event = "towed:Payment", label = "Entregar", tunnel = "paramedic" }
 						else
 							if GlobalState["Plates"][Plate] then
@@ -778,7 +799,7 @@ function TargetEnable()
 									end
 								end
 
-								if not IsPedArmed(Ped,6) and GetVehicleDoorLockStatus(Entitys) <= 1 then
+								if not IsPedArmed(Ped,7) and GetVehicleDoorLockStatus(Entitys) <= 1 then
 									if VehicleWeight(Selected[2]) > 0 then
 										Menu[#Menu + 1] = { event = "trunkchest:OpenTrunk", label = "Abrir Porta-Malas", tunnel = "server" }
 									end
@@ -806,13 +827,13 @@ function TargetEnable()
 									Menu[#Menu + 1] = { event = "player:RollVehicle", label = "Desvirar", tunnel = "server" }
 								end
 
-								if GetEntityBoneIndexByName(Entitys,"boot") ~= -1 and not IsPedArmed(Ped,6) and GetVehicleDoorLockStatus(Entitys) <= 1 then
+								if GetEntityBoneIndexByName(Entitys,"boot") ~= -1 and not IsPedArmed(Ped,7) and GetVehicleDoorLockStatus(Entitys) <= 1 then
 									Menu[#Menu + 1] = { event = "player:checkTrunk", label = "Checar Porta-Malas", tunnel = "server" }
 									Menu[#Menu + 1] = { event = "player:enterTrunk", label = "Entrar no Porta-Malas", tunnel = "client" }
 								end
 							end
 
-							if (GetEntityArchetypeName(Vehicle) == "flatbed" or GetEntityArchetypeName(Vehicle) == "wrdeliveryst") and Selected[2] ~= "flatbed" and Selected[2] ~= "wrdeliveryst" then
+							if GetEntityArchetypeName(Vehicle) == "flatbed" and Selected[2] ~= "flatbed" then
 								Menu[#Menu + 1] = { event = "inventory:Tow", label = "Rebocar", tunnel = "client" }
 							end
 

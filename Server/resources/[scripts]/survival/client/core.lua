@@ -160,7 +160,7 @@ CreateThread(function()
 								Death["Timer"] = DeathTimer
 								LocalPlayer["state"]:set("Crawl",false,true)
 								SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"] } })
-								LocalPlayer["state"]:set("Blastoise",true,false)
+								LocalPlayer["state"]:set("Hensa",true,false)
 								NetworkSetFriendlyFireOption(false)
 								SetEntityInvincible(Ped,false)
 								SetLocalPlayerAsGhost(true)
@@ -263,7 +263,7 @@ function FinishSurvival()
 	SetEntityInvincible(Ped,false)
 	ClearFacialIdleAnimOverride(Ped)
 	NetworkSetFriendlyFireOption(true)
-	LocalPlayer["state"]:set("Blastoise",false,false)
+	LocalPlayer["state"]:set("Hensa",false,false)
 
 	TriggerEvent("paramedic:Reset")
 	exports["pma-voice"]:Mute(false)
@@ -290,7 +290,7 @@ exports("Revive",function(Health)
 
 	SetEntityInvincible(Ped,false)
 	SetEntityHealth(Ped,Health or 101)
-	LocalPlayer["state"]:set("Blastoise",false,false)
+	LocalPlayer["state"]:set("Hensa",false,false)
 
 	if Death["Status"] then
 		if Crawl["Timer"] > 0 then

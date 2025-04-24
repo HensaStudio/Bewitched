@@ -16,7 +16,10 @@ local BLIPS = {
 
 	{ 300.16,-584.9,43.29, 80, 49, "Hospital", 0.5 },
 
-	{ 435.47,-981.86,30.68, 60, 10, "Departamento Policial", 0.6 },
+	{ 435.47,-981.86,30.68, 60, 31, "LS: Departamento Policial", 0.6 },
+	{ -438.61,6012.81,32.28, 60, 21, "PB: Departamento Policial", 0.6 },
+	{ 1854.64,3684.22,34.22, 60, 16, "SS: Departamento Policial", 0.6 },
+	{ 386.85,793.81,187.45, 60, 52, "PR: Departamento Policial", 0.6 },
 
 	{ 945.82,-984.14,39.5, 402, 18, "Mecânica AutoCare", 0.8 },
 

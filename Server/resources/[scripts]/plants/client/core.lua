@@ -64,10 +64,14 @@ end)
 AddEventHandler("plants:Informations",function(Number)
 	local Informations = vSERVER.Informations(Number)
 	if Informations then
-		exports["dynamic"]:AddButton("Germinação","Tipo de Frutos: <b>"..ItemName(Informations[3]).."</b>","","",false,false)
-		exports["dynamic"]:AddButton("Crescimento","Processo de Crescimento: <b>"..Informations[1].."%</b>","plants:Collect",Number,false,true)
-		exports["dynamic"]:AddButton("Clonagem","Processo de Clonagem: <b>"..Informations[2].."%</b>","plants:Cloning",Number,false,true)
-		exports["dynamic"]:AddButton("Fertilização","Fortificação do Adubo: <b>"..math.floor(Informations[4] * 100).."%</b>","plants:Fertilizer",Number,false,true)
+		exports["dynamic"]:AddButton("Germinação","Tipo de Frutos: <rare>"..ItemName(Informations[3]).."</rare>","","",false,false)
+		exports["dynamic"]:AddButton("Crescimento","Processo de Crescimento: <rare>"..Informations[1].."%</rare>","plants:Collect",Number,false,true)
+		exports["dynamic"]:AddButton("Clonagem","Processo de Clonagem: <rare>"..Informations[2].."%</rare>","plants:Cloning",Number,false,true)
+		exports["dynamic"]:AddButton("Fertilização","Fortificação do Adubo: <rare>"..math.floor(Informations[4] * 100).."%</rare>","plants:Fertilizer",Number,false,true)
+
+		if CheckPolice() then
+			exports["dynamic"]:AddButton("Destruir",Informations[1],"plants:Destroy",Number,false,true)
+		end
 
 		exports["dynamic"]:Open()
 	end

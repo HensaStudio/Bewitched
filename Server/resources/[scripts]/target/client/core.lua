@@ -699,7 +699,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function TargetEnable()
 	local Ped = PlayerPedId()
-	if (not LocalPlayer["state"]["Admin"] and LocalPlayer["state"]["Invisible"]) or LocalPlayer["state"]["Cancel"] or LocalPlayer["state"]["Camera"] or LocalPlayer["state"]["Freecam"] or LocalPlayer["state"]["Carry"] or not LocalPlayer["state"]["Active"] or IsPauseMenuActive() or not MumbleIsConnected() or LocalPlayer["state"]["Buttons"] or LocalPlayer["state"]["Commands"] or LocalPlayer["state"]["Handcuff"] or Sucess or IsPedInAnyVehicle(Ped) then
+	if (not LocalPlayer["state"]["Admin"] and LocalPlayer["state"]["Invisible"]) or LocalPlayer["state"]["Arena"] or LocalPlayer["state"]["Cancel"] or LocalPlayer["state"]["Camera"] or LocalPlayer["state"]["Freecam"] or LocalPlayer["state"]["Carry"] or not LocalPlayer["state"]["Active"] or IsPauseMenuActive() or not MumbleIsConnected() or LocalPlayer["state"]["Buttons"] or LocalPlayer["state"]["Commands"] or LocalPlayer["state"]["Handcuff"] or Sucess or IsPedInAnyVehicle(Ped) then
 		return
 	end
 

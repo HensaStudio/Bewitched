@@ -413,7 +413,7 @@ local HashWeapons = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("gameEventTriggered",function(Event,Message)
 	local Victim,Attacker,Index,Weapon = Message[1],Message[2],NetworkGetPlayerIndexFromPed(Message[2]),Message[7]
-	if Event == "CEventNetworkEntityDamage" and not DeathUpdate and Victim == PlayerPedId() and IsEntityAPed(Victim) and GetEntityHealth(Victim) <= 100 and NetworkIsPlayerConnected(Index) then
+	if Event == "CEventNetworkEntityDamage" and not LocalPlayer["state"]["Arena"] and not DeathUpdate and Victim == PlayerPedId() and IsEntityAPed(Victim) and GetEntityHealth(Victim) <= 100 and NetworkIsPlayerConnected(Index) then
 		TriggerServerEvent("player:Death",GetPlayerServerId(Index),HashWeapons[Weapon] or "Desconhecido")
 		DeathUpdate = false
 	end

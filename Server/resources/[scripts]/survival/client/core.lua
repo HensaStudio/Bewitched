@@ -11,11 +11,11 @@ Tunnel.bindInterface("survival",Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
+local Login = false	
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- LOCALPLAYER
+-----------------------------------------------------------------------------------------------------------------------------------------
 LocalPlayer["state"]:set("Crawl",false,true)
------------------------------------------------------------------------------------------------------------------------------------------
--- VARIABLES
------------------------------------------------------------------------------------------------------------------------------------------
-local Login = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DEATH
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ CreateThread(function()
 
 					if not Login then
 						LocalPlayer["state"]:set("Crawl",true,true)
-						Crawl["Timer"] = Crawl["Default"]
+						Crawl["Timer"] = not LocalPlayer["state"]["Arena"] and Crawl["Default"] or 1
 					else
 						Login = false
 						Crawl["Timer"] = 1
@@ -150,19 +150,21 @@ CreateThread(function()
 							SendNUIMessage({ Action = "Update", Payload = { Crawl["Title"],Crawl["Text"],Crawl["Timer"] } })
 
 							if Crawl["Timer"] <= 0 then
-								exports["pma-voice"]:Mute(true)
+								if not LocalPlayer["state"]["Arena"] then
+									exports["pma-voice"]:Mute(true)
+								end
 
 								local DeathTimer = Death["Default"]
 								if LocalPlayer["state"]["Premium"] then
 									DeathTimer = (LocalPlayer["state"]["Premium"] and (DeathTimer * 0.3))
 								end
 
-								Death["Timer"] = DeathTimer
 								LocalPlayer["state"]:set("Crawl",false,true)
+								Death["Timer"] = not LocalPlayer["state"]["Arena"] and DeathTimer or 5
 								SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"] } })
 								LocalPlayer["state"]:set("Hensa",true,false)
 								NetworkSetFriendlyFireOption(false)
-								SetEntityInvincible(Ped,false)
+								SetEntityInvincible(Ped,true)
 								SetLocalPlayerAsGhost(true)
 							end
 						elseif Death["Timer"] > 0 then
@@ -170,7 +172,12 @@ CreateThread(function()
 							SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"] } })
 
 							if Death["Timer"] <= 0 then
-								SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"],"Segure [E] por 10 segundos" } })
+								if LocalPlayer["state"]["Arena"] then
+									SendNUIMessage({ Action = "Update", Payload = { "Ferido","Aguarde os primeiros socorros",0,"Pressione [E] para levantar" } })
+								else
+									SendNUIMessage({ Action = "Update", Payload = { Death["Title"],Death["Text"],Death["Timer"],"Segure [E] por 10 segundos" } })
+								end
+
 								SetFacialIdleAnimOverride(Ped,"mood_sleeping_1",0)
 							end
 						end
@@ -210,11 +217,16 @@ CreateThread(function()
 					end
 
 					if Death["Status"] and Death["Timer"] <= 0 and Crawl["Timer"] <= 0 and not LocalPlayer["state"]["Carry"] and IsControlPressed(0,38) then
-						Death["Pressed"] = Death["Pressed"] + 1
+						if LocalPlayer["state"]["Arena"] then
+							TriggerEvent("arena:ResetStreek")
+							TriggerEvent("arena:Respawn")
+						else
+							Death["Pressed"] = Death["Pressed"] + 1
 
-						if Death["Pressed"] >= 1000 then
-							TriggerServerEvent("player:Survival")
-							FinishSurvival()
+							if Death["Pressed"] >= 1000 then
+								TriggerServerEvent("player:Survival")
+								FinishSurvival()
+							end
 						end
 					end
 				end
@@ -258,7 +270,7 @@ function FinishSurvival()
 	local Ped = PlayerPedId()
 
 	ClearPedTasks(Ped)
-	SetEntityHealth(Ped,160)
+	SetEntityHealth(Ped,150)
 	SetLocalPlayerAsGhost(false)
 	SetEntityInvincible(Ped,false)
 	ClearFacialIdleAnimOverride(Ped)
@@ -266,7 +278,11 @@ function FinishSurvival()
 	LocalPlayer["state"]:set("Hensa",false,false)
 
 	TriggerEvent("paramedic:Reset")
-	exports["pma-voice"]:Mute(false)
+
+	if not LocalPlayer["state"]["Arena"] then
+		exports["pma-voice"]:Mute(false)
+	end
+
 	SendNUIMessage({ Action = "Close" })
 	TriggerEvent("inventory:CleanWeapons")
 
@@ -275,9 +291,12 @@ function FinishSurvival()
 	end
 
 	DoScreenFadeOut(0)
+	SetEntityHeading(Ped,136.07)
+	SetEntityCoords(Ped,315.26,-1412.37,31.62)
 
 	SetTimeout(5000,function()
 		TriggerEvent("player:DeathUpdate",false)
+		exports["vrp"]:ReloadCharacter()
 		TriggerEvent("hud:Active",true)
 		DoScreenFadeIn(2500)
 	end)
@@ -285,12 +304,16 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REVIVE
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("Revive",function(Health)
+exports("Revive",function(Health,Arena)
 	local Ped = PlayerPedId()
 
 	SetEntityInvincible(Ped,false)
 	SetEntityHealth(Ped,Health or 101)
 	LocalPlayer["state"]:set("Hensa",false,false)
+
+	if Arena then
+		SetPedArmour(Ped,99)
+	end
 
 	if Death["Status"] then
 		if Crawl["Timer"] > 0 then
@@ -310,7 +333,12 @@ exports("Revive",function(Health)
 
 		TriggerEvent("paramedic:Reset")
 		TriggerEvent("hud:Active",true)
-		exports["pma-voice"]:Mute(false)
+
+		if not LocalPlayer["state"]["Arena"] then
+			exports["pma-voice"]:Mute(false)
+		end
+
+		exports["vrp"]:ReloadCharacter()
 		SendNUIMessage({ Action = "Close" })
 		TriggerEvent("player:DeathUpdate",false)
 	end
@@ -318,8 +346,8 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REVIVE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Revive(Health)
-	exports["survival"]:Revive(Health)
+function Hensa.Revive(Health,Arena)
+	exports["survival"]:Revive(Health,Arena)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- LOGIN

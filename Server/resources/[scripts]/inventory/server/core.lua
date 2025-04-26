@@ -21,6 +21,7 @@ vFARMER = Tunnel.getInterface("farmer")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
+Arena = {}
 Drugs = {}
 Drops = {}
 Carry = {}
@@ -1230,6 +1231,30 @@ AddEventHandler("inventory:Loot",function(Number,Box)
 
 			Wait(100)
 		until not Active[Passport]
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:SAVEARENA
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("inventory:SaveArena",function(Passport, Attachs, Ammos)
+	if not Arena[Passport] then
+		Arena[Passport] = {
+			["Ammos"] = Users["Ammos"][Passport] or {},
+			["Attachs"] = Users["Attachs"][Passport] or {}
+		}
+
+		Users["Attachs"][Passport] = Attachs or {}
+		Users["Ammos"][Passport] = Ammos or {}
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:APPLYARENA
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("inventory:ApplyArena",function(Passport)
+	if Arena[Passport] and Users["Ammos"][Passport] and Users["Attachs"][Passport] then
+		Users["Attachs"][Passport] = Arena[Passport]["Attachs"]
+		Users["Ammos"][Passport] = Arena[Passport]["Ammos"]
+		Arena[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

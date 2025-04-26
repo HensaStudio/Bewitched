@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `Lastname` varchar(50) DEFAULT 'Rewritten',
   `Sex` varchar(1) DEFAULT NULL,
   `Skin` varchar(50) NOT NULL DEFAULT 'mp_m_freemode_01',
+  `Killed` int(9) NOT NULL DEFAULT 0,
+  `Death` int(9) NOT NULL DEFAULT 0,
   `Bank` int(20) NOT NULL DEFAULT 5000,
   `Blood` int(1) NOT NULL DEFAULT 1,
   `Prison` int(10) NOT NULL DEFAULT 0,

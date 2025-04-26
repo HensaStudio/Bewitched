@@ -106,7 +106,7 @@ end)
 -- STORE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Store",function(Data,Callback)
-	if MumbleIsConnected() and not TakeWeapon and not StoreWeapon then
+	if MumbleIsConnected() and not TakeWeapon and not StoreWeapon and not LocalPlayer["state"]["Arena"] then
 		vSERVER.Drops(Data["item"],Data["slot"],Data["amount"])
 	end
 

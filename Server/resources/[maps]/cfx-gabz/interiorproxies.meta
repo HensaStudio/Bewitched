@@ -1,29 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SInteriorOrderData>
-	<startFrom value="2500" />
+	<startFrom value="2446" />
 	<proxies>
-		<!-- HOSPITAL -->
-		<Item>gabz_pillbox_milo_</Item>
+		<!-- ./input/cfx-gabz -->
+		<Item>apa_distlodlights_small031</Item>
+		<Item>apa_lodlights_small031</Item>
+		<Item>hei_distlodlights_small031</Item>
+		<Item>hei_lodlights_small031</Item>
 		<Item>gabz_pillbox_dlc_milo_</Item>
-
-		<!-- DELEGACIA SUL -->
-		<Item>gabz_mrpd_milo_</Item>
-
-		<!-- MECANICA -->
+		<Item>gabz_pillbox_ext</Item>
+		<Item>gabz_pillbox_milo_</Item>
+		<Item>hei_dt1_06_long_0</Item>
+		<Item>hei_dt1_06_strm_0</Item>
+		<Item>hei_dt1_occl_07</Item>
+		<Item>hei_dt1_rd1_long_1</Item>
+		<Item>hei_dt1_rd1_strm_4</Item>
+		<Item>hei_fwy_04_strm_0</Item>
 		<Item>gabz_imp_impexp_interior_placement_interior_1_impexp_intwaremed_milo_</Item>
-
-		<!-- DELEGACIA SANDY -->
-		<Item>hedwig_sheriff_milo_</Item>
-		<Item>hedwig_sheriff_garage_placement</Item>
-		<Item>hedwig_sheriff_garage_milo</Item>
-		
-		<!-- DELEGACIA RANGER -->
-		<Item>sanhje_parkranger_placement</Item>
-
-		<!-- DELEGACIA PALETO -->
-		<Item>gabz_paletopd_occl</Item>
-		<Item>gabz_paletopd_milo_</Item>
-		<Item>gabz_paletopd_lod</Item>
+		<Item>gabz_imp_stuff</Item>
+		<Item>hei_id2_15_strm_0</Item>
+		<Item>hei_id2_rd_strm_4</Item>
+		<Item>apa_ch2_occl_06</Item>
+		<Item>bkr_id1_occl_02</Item>
+		<Item>bkr_id1_occl_03</Item>
+		<Item>ch1_far_occl_00</Item>
+		<Item>cs1_occl_09</Item>
+		<Item>cs1_occl_10</Item>
+		<Item>cs1_occl_15</Item>
+		<Item>cs4_occl_03</Item>
+		<Item>cs6_occl_02</Item>
 		<Item>gabz_paletopd_ext</Item>
+		<Item>gabz_paletopd_lod</Item>
+		<Item>gabz_paletopd_milo_</Item>
+		<Item>gabz_paletopd_occl</Item>
+		<Item>hei_cs1_16</Item>
+		<Item>hei_cs1_16_critical_0</Item>
+		<Item>hei_cs1_16_interior_v_sheriff2_milo_</Item>
+		<Item>hei_cs1_16_long_1</Item>
+		<Item>hei_cs1_16_strm_1</Item>
+		<Item>hei_cs1_16_strm_2</Item>
+		<Item>hei_cs1_roads_pb_strm_2</Item>
+		<Item>hei_dt1_occl_02</Item>
+		<Item>hei_dt1_occl_04</Item>
+		<Item>hei_dt1_occl_05</Item>
+		<Item>hei_dt1_occl_07</Item>
+		<Item>hei_hw1_occl_01</Item>
+		<Item>hei_id2_occl_00</Item>
+		<Item>hei_id2_occl_01</Item>
+		<Item>hei_id2_occl_02</Item>
+		<Item>hei_id2_occl_03</Item>
+		<Item>hei_kt1_occl_02</Item>
+		<Item>hei_po1_occl_00</Item>
+		<Item>hw1_occl_01</Item>
+		<Item>kt1_occl_00</Item>
+		<Item>kt1_occl_02</Item>
+		<Item>lr_sc1_occl_02</Item>
+		<Item>lr_sc1_occl_03</Item>
+		<Item>vb_occl_00</Item>
+		<Item>apa_distlodlights_medium019</Item>
+		<Item>apa_distlodlights_small029</Item>
+		<Item>apa_lodlights_medium019</Item>
+		<Item>apa_lodlights_small029</Item>
+		<Item>gabz_mrpd_ext</Item>
+		<Item>gabz_mrpd_milo_</Item>
+		<Item>hei_ch3_04_strm_0</Item>
+		<Item>hei_dt1_19</Item>
+		<Item>hei_dt1_19_critical_0</Item>
+		<Item>hei_dt1_19_interior_0_heist_police_dlc_milo_</Item>
+		<Item>hei_dt1_19_strm_0</Item>
+		<Item>hei_dt1_occl_05</Item>
+		<Item>hei_dt1_rd1_critical_1</Item>
+		<Item>hei_dt1_rd1_strm_5</Item>
+		<Item>hei_dt1_rd1_strm_6</Item>
+		<Item>hei_dt1_rd1_strm_7</Item>
+		<Item>hei_id2_occl_00</Item>
+		<Item>apa_ch2_04_strm_2</Item>
+		<Item>apa_ch2_04_strm_3</Item>
+		<Item>apa_ch2_occl_06</Item>
+		<Item>sanhje_parkranger_placement</Item>
+		<Item>cs4_10_grass_0</Item>
+		<Item>cs4_occl_03</Item>
+		<Item>hedwig_sheriff_garage_milo</Item>
+		<Item>hedwig_sheriff_garage_placement</Item>
+		<Item>hedwig_sheriff_milo_</Item>
+		<Item>lr_cs4_10</Item>
+		<Item>lr_cs4_10_interior_v_sheriff_milo_</Item>
+		<Item>lr_cs4_10_strm_0</Item>
+		<Item>lr_cs4_roads</Item>
+		<Item>lr_cs4_roads_critical_1</Item>
+		<Item>lr_cs4_roads_critical_4</Item>
+		<Item>lr_cs4_roads_strm_0</Item>
+		<Item>vw_distlodlights_medium028</Item>
 	</proxies>
 </SInteriorOrderData>

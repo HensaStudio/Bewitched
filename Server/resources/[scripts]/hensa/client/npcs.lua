@@ -122,12 +122,17 @@ local List = {
 		["Model"] = "s_f_y_shop_mid",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
-	},{ -- Mecanico
+	},{ -- Mecanico Craft
 		["Distance"] = 15,
 		["Coords"] = vec4(949.93,-957.36,39.5,93.55),
 		["Model"] = "s_m_y_xmech_02",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
+	},{ -- Mecanico Service Garagem
+		["Distance"] = 50,
+		["Coords"] = vec4(911.21,-975.11,39.5,274.97),
+		["Model"] = "mp_f_bennymech_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Mecanico Service
 		["Distance"] = 15,
 		["Coords"] = vec4(951.41,-968.59,39.5,274.97),
@@ -233,10 +238,20 @@ local List = {
 		["Coords"] = vec4(46.7,-1749.71,29.62,51.03),
 		["Model"] = "ig_dale",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Clandestine
+	},{ -- Arriba
+		["Distance"] = 15,
+		["Coords"] = vec4(371.73,-344.63,46.78,340.16),
+		["Model"] = "g_m_m_mexboss_01",
+		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
+	},{ -- Clandestine Shops
 		["Distance"] = 50,
 		["Coords"] = vec4(179.9,2779.98,45.7,189.93),
 		["Model"] = "csb_paige",
+		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
+	},{ -- Clandestine Drugs
+		["Distance"] = 50,
+		["Coords"] = vec4(713.56,-1861.99,19.55,175.75),
+		["Model"] = "csb_chin_goon",
 		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
 	},{ -- MoneyWash
 		["Distance"] = 50,
@@ -418,61 +433,6 @@ local List = {
 		["Coords"] = vec4(813.9,-2153.2,29.62,90.71),
 		["Model"] = "s_m_m_ammucountry",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(1692.27,3760.91,34.69,226.78),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(253.8,-50.47,69.94,65.2),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(842.54,-1035.25,28.19,0.0),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(-331.67,6084.86,31.46,223.94),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(-662.37,-933.58,21.82,181.42),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(-1304.12,-394.56,36.7,73.71),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(-1118.98,2699.73,18.55,221.11),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(2567.98,292.62,108.73,0.0),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(-3173.51,1088.35,20.84,246.62),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(22.53,-1105.52,29.79,155.91),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Ammu-Nation Store
-		["Distance"] = 15,
-		["Coords"] = vec4(810.22,-2158.99,29.62,0.0),
-		["Model"] = "s_m_y_ammucity_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Pharmacy Store
 		["Distance"] = 30,
 		["Coords"] = vec4(-172.89,6381.32,31.48,223.94),
@@ -564,44 +524,37 @@ local List = {
 		["Model"] = "mp_m_securoguard_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Garagem Polícia
-		["Distance"] = 30,
+		["Distance"] = 50,
 		["Coords"] = vec4(455.97,-986.07,43.69,0.0),
 		["Model"] = "s_m_y_airworker",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Garagem Ballas
-		["Distance"] = 20,
+		["Distance"] = 50,
 		["Coords"] = vec4(86.33,-1964.12,20.74,240.95),
 		["Model"] = "ig_ballasog",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
 	},{ -- Garagem Families
-		["Distance"] = 20,
-		["Coords"] = vec4(-20.07,-1436.9,30.65,90.71),
+		["Distance"] = 50,
+		["Coords"] = vec4(-198.17,-1710.67,32.65,133.23),
 		["Model"] = "g_f_y_families_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
 	},{ -- Garagem Vagos
-		["Distance"] = 20,
+		["Distance"] = 50,
 		["Coords"] = vec4(335.86,-2031.24,21.42,147.41),
 		["Model"] = "g_f_y_vagos_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Garagem Aztecas
-		["Distance"] = 50,
-		["Coords"] = vec4(503.23,-1801.84,28.49,62.37),
-		["Model"] = "g_m_y_azteca_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Garagem Bloods
-		["Distance"] = 50,
-		["Coords"] = vec4(235.36,-1761.56,29.0,311.82),
-		["Model"] = "g_m_m_armlieut_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- DigitalDen
+		["Distance"] = 30,
+		["Coords"] = vec4(-505.63,282.49,83.29,70.87),
+		["Model"] = "cs_movpremmale",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Prefeitura
 		["Distance"] = 50,
 		["Coords"] = vec4(-545.31,-203.74,38.22,212.6),
 		["Model"] = "u_m_m_jewelsec_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Restaurante
-		["Distance"] = 10,
-		["Coords"] = vec4(-269.97,236.14,90.57,90.71),
-		["Model"] = "csb_chef",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	}
 }

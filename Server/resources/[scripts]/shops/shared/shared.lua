@@ -34,63 +34,83 @@ Location = {
 	{
 		["Coords"] = vec3(24.51,-1346.75,29.49),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(2556.77,380.87,108.61),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1164.81,-323.61,69.2),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-706.16,-914.55,19.21),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-47.35,-1758.59,29.42),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(372.7,326.89,103.56),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-3242.7,1000.05,12.82),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1728.08,6415.6,35.03),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(549.09,2670.89,42.16),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1959.87,3740.44,32.33),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(2677.65,3279.66,55.23),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1697.32,4923.46,42.06),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-1819.52,793.48,138.08),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1391.62,3605.95,34.98),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-2966.41,391.52,15.05),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-3039.42,584.42,7.9),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1134.32,-983.09,46.4),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(1165.32,2710.79,38.15),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-1486.72,-377.61,40.15),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-1221.48,-907.93,12.32),
 		["Mode"] = "Departament",
+		["Sound"] = true
 	},{
 		["Coords"] = vec3(-1816.64,-1193.73,14.31),
 		["Mode"] = "Fishing"
@@ -102,8 +122,7 @@ Location = {
 		["Mode"] = "Paramedico"
 	},{
 		["Coords"] = vec3(487.59,-997.15,30.48),
-		["Mode"] = "Policia",
-		["Circle"] = 0.1
+		["Mode"] = "Policia"
 	},{
 		["Coords"] = vec3(-628.79,-238.7,38.05),
 		["Mode"] = "Miners"
@@ -114,6 +133,10 @@ Location = {
 		["Coords"] = vec3(46.7,-1749.71,29.62),
 		["Mode"] = "Megamall"
 	},{
+		["Coords"] = vec3(371.73,-344.63,46.78),
+		["Mode"] = "Arriba",
+		["Service"] = "Arriba"
+	},{
 		["Coords"] = vec3(-545.17,-203.94,38.51),
 		["Mode"] = "CityHall",
 		["CityHall"] = true
@@ -123,6 +146,22 @@ Location = {
 -- LIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 List = {
+	["Arriba"] = {
+		["Mode"] = "Buy",
+		["Type"] = "Cash",
+		["List"] = {
+			["nigirizushi"] = 120,
+			["sushi"] = 120,
+			["cupcake"] = 90,
+			["applelove"] = 70,
+			["cookies"] = 90,
+			["hamburger2"] = 250,
+			["hamburger3"] = 250,
+			["pizzamozzarella"] = 350,
+			["pizzabanana"] = 350,
+			["pizzachocolate"] = 350
+		}
+	},
 	["CityHall"] = {
 		["Mode"] = "Buy",
 		["Type"] = "Cash",
@@ -134,18 +173,20 @@ List = {
 		["Mode"] = "Buy",
 		["Type"] = "Cash",
 		["List"] = {
+			["camera"] = 425,
+			["radio"] = 1075,
+			["radiomhz"] = 4835,
+			["cellphone"] = 1200,
 			["postit"] = 20,
 			["cigarette"] = 15,
-			["cellphone"] = 1200,
 			["vape"] = 4750,
-			["camera"] = 425,
 			["binoculars"] = 425,
-			["radio"] = 800,
 			["lighter"] = 225,
 			["emptybottle"] = 15,
 			["sugarbox"] = 35,
 			["condensedmilk"] = 25,
 			["mayonnaise"] = 20,
+			["energetic"] = 550,
 			["ryebread"] = 20,
 			["ricebag"] = 105
 		}

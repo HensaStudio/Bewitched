@@ -37,7 +37,7 @@ function circleStart(name, radius, useZ)
   local center = GetEntityCoords(PlayerPedId())
   useZ = useZ or false
   createdZone = CircleZone:Create(center, radius, {name = tostring(name), useZ = useZ})
-  CreateThread(function()
+  Citizen.CreateThread(function()
     while createdZone do
       radius, center, useZ = handleInput(radius, center, useZ)
       createdZone:setRadius(radius)

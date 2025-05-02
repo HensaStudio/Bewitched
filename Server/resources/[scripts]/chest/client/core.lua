@@ -19,7 +19,11 @@ local Opened = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Chests = {
 	{ ["Name"] = "Policia", ["Coords"] = vec3(485.05,-999.46,30.47), ["Mode"] = "1" },
+	{ ["Name"] = "Mecanico", ["Coords"] = vec3(948.25,-972.38,40.02), ["Mode"] = "2" },
 	{ ["Name"] = "Paramedico", ["Coords"] = vec3(353.0,-1427.67,32.67), ["Mode"] = "2" },
+
+	{ ["Name"] = "Arriba", ["Coords"] = vec3(371.74,-332.68,48.71), ["Mode"] = "2" },
+	{ ["Name"] = "Arriba", ["Coords"] = vec3(361.11,-343.37,47.06), ["Mode"] = "3" },
 
 	{ ["Name"] = "Ballas", ["Coords"] = vec3(94.78,-1984.04,20.42), ["Mode"] = "2" },
 	{ ["Name"] = "Families", ["Coords"] = vec3(-30.35,-1434.34,31.47), ["Mode"] = "2" },
@@ -51,12 +55,25 @@ local Labels = {
 	["2"] = {
 		{
 			event = "chest:Open",
+			label = "Compartimento Geral",
+			tunnel = "client",
+			service = "Normal"
+		},{
+			event = "chest:Open",
+			label = "Compartimento Pessoal",
+			tunnel = "client",
+			service = "Personal"
+		}
+	},
+	["3"] = {
+		{
+			event = "chest:Open",
 			label = "Abrir",
 			tunnel = "client",
 			service = "Normal"
 		}
 	},
-	["3"] = {
+	["4"] = {
 		{
 			event = "chest:Open",
 			label = "Abrir",

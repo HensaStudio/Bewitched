@@ -27,8 +27,20 @@ end
 function Hensa.Permission(Name)
 	local source = source
 	local Passport = vRP.Passport(source)
+	if not Passport then
+		return false
+	end
 
-	return Passport and List[Name] and (not List[Name]["Permission"] or (List[Name]["Permission"] and vRP.HasPermission(Passport,List[Name]["Permission"]))) or false
+	if List[Name] then
+		if not List[Name]["Permission"] or vRP.HasPermission(Passport, List[Name]["Permission"]) then
+			return true
+		else
+			TriggerClientEvent("Notify", source, vRP.GroupName(Name) or Name, "Você não possui permissões suficientes.", "amarelo", 5000)
+			return false
+		end
+	end
+
+	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- MOUNT

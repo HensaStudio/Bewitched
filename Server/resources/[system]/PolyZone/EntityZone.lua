@@ -37,12 +37,12 @@ local function _initDebug(zone, options)
     return
   end
 
-  CreateThread(function()
+  Citizen.CreateThread(function()
     local entity = zone.entity
     local shouldDraw = options.debugPoly
     while not zone.destroyed do
       UpdateOffsets(entity, zone)
-      if shouldDraw then zone:draw() end
+      if shouldDraw then zone:draw(false) end
       Citizen.Wait(0)
     end
   end)
@@ -93,10 +93,12 @@ function UpdateOffsets(entity, zone)
   if zone.debugBlip then SetBlipCoords(zone.debugBlip, pos.x, pos.y, 0.0) end
 end
 
+
 -- Helper functions
 function EntityZone:isPointInside(point)
   local entity = self.entity
-  if not entity then
+  if entity == nil then
+    print("[PolyZone] Error: Called isPointInside on Entity zone with no entity {name=" .. self.name .. "}")
     return false
   end
 
@@ -107,16 +109,18 @@ end
 function EntityZone:onEntityDamaged(onDamagedCb)
   local entity = self.entity
   if not entity then
+    print("[PolyZone] Error: Called onEntityDamage on Entity Zone with no entity {name=" .. self.name .. "}")
     return
   end
 
-  self.damageEventHandlers[#self.damageEventHandlers + 1] = AddEventHandler('gameEventTriggered', function (name, Message)
+  self.damageEventHandlers[#self.damageEventHandlers + 1] = AddEventHandler('gameEventTriggered', function (name, args)
     if self.destroyed or self.paused then
       return
     end
 
     if name == 'CEventNetworkEntityDamage' then
-      local victim, attacker, victimDied, weaponHash, isMelee = Message[1], Message[2], Message[4], Message[5], Message[10]
+      local victim, attacker, victimDied, weaponHash, isMelee = args[1], args[2], args[4], args[5], args[10]
+      --print(entity, victim, attacker, victimDied, weaponHash, isMelee)
       if victim ~= entity then return end
       onDamagedCb(victimDied == 1, attacker, weaponHash, isMelee == 1)
     end
@@ -125,6 +129,7 @@ end
 
 function EntityZone:destroy()
   for i=1, #self.damageEventHandlers do
+    print("Destroying damageEventHandler:", self.damageEventHandlers[i])
     RemoveEventHandler(self.damageEventHandlers[i])
   end
   self.damageEventHandlers = {}

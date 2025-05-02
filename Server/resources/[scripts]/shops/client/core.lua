@@ -57,13 +57,18 @@ end)
 AddEventHandler("shops:Open",function(Number)
 	if vSERVER.Check() then
 		if Location[Number] then
+			if Location[Number]["Service"] and vSERVER.HasService(Location[Number]["Service"]) then
+				TriggerEvent("Notify","Atenção","Existem pessoas em serviço no momento, procure por um atendente.","amarelo",5000)
+				return false
+			end
+
 			if vSERVER.Permission(Location[Number]["Mode"]) then
 				Opened = Location[Number]["Mode"]
 
 				TriggerEvent("inventory:Open",{
 					Type = "Shops",
 					Mode = List[Opened]["Mode"],
-					Item = (List[Opened]["Item"] or "dollar"),
+					Item = (List[Opened]["Item"] or DefaultMoneyOne),
 					Resource = "shops"
 				})
 
@@ -78,7 +83,7 @@ AddEventHandler("shops:Open",function(Number)
 				TriggerEvent("inventory:Open",{
 					Type = "Shops",
 					Mode = List[Opened]["Mode"],
-					Item = (List[Opened]["Item"] or "dollar"),
+					Item = (List[Opened]["Item"] or DefaultMoneyOne),
 					Resource = "shops"
 				})
 			end

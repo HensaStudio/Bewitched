@@ -19,7 +19,7 @@ end
 
 function BoxZone.calculateMinAndMaxZ(minZ, maxZ, scaleZ, offsetZ)
   local minScaleZ, maxScaleZ, minOffsetZ, maxOffsetZ = scaleZ[1] or 1.0, scaleZ[2] or 1.0, offsetZ[1] or 0.0, offsetZ[2] or 0.0
-  if (not minZ and not maxZ) or (minScaleZ == 1.0 and maxScaleZ == 1.0 and minOffsetZ == 0.0 and maxOffsetZ == 0.0) then
+  if (minZ == nil and maxZ == nil) or (minScaleZ == 1.0 and maxScaleZ == 1.0 and minOffsetZ == 0.0 and maxOffsetZ == 0.0) then
     return minZ, maxZ
   end
 
@@ -29,6 +29,12 @@ function BoxZone.calculateMinAndMaxZ(minZ, maxZ, scaleZ, offsetZ)
       local centerZ = minZ + halfHeight
       minZ = centerZ - halfHeight * minScaleZ
       maxZ = centerZ + halfHeight * maxScaleZ
+    else
+      print(string.format(
+        "[PolyZone] Warning: The minZ/maxZ of a BoxZone can only be scaled if both minZ and maxZ are non-nil (minZ=%s, maxZ=%s)",
+        tostring(minZ),
+        tostring(maxZ)
+      ))
     end
   end
 
@@ -88,9 +94,9 @@ local function _initDebug(zone, options)
     return
   end
 
-  CreateThread(function()
+  Citizen.CreateThread(function()
     while not zone.destroyed do
-      zone:draw()
+      zone:draw(false)
       Citizen.Wait(0)
     end
   end)
@@ -151,6 +157,7 @@ end
 -- Helper functions
 function BoxZone:isPointInside(point)
   if self.destroyed then
+    print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
     return false
   end
 

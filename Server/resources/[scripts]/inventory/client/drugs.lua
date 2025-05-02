@@ -8,6 +8,16 @@ local Timer = 0
 local Cocaine = 0
 local CocaineTimer = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- Energetic
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Energetic = 0
+local EnergeticTimer = 0
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- Drunk
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Drunk = 0
+local DrunkTimer = 0
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- METHAMPHETAMINE
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Methamphetamine = 0
@@ -164,16 +174,48 @@ function ClosestPed(Radius)
 	return Selected
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- SETDRUNK
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("setDrunkTime")
+AddEventHandler("setDrunkTime",function(Tempo)
+	Drunk = Drunk + Tempo
+
+	if LoadMovement("move_m@drunk@verydrunk") then
+		SetPedMovementClipset(PlayerPedId(),"move_m@drunk@verydrunk",0.25)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ENERGETIC
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("Energetic")
+AddEventHandler("Energetic",function(Timer,Number)
+    Energetic = Energetic + Timer
+    SetRunSprintMultiplierForPlayer(PlayerId(),Number)
+
+    if not AnimpostfxIsRunning("HeistTripSkipFade") then
+        AnimpostfxPlay("HeistTripSkipFade",0,true)
+    end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- COCAINE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("Cocaine")
-AddEventHandler("Cocaine",function()
+AddEventHandler("Cocaine",function(Timer)
+    if AnimpostfxIsRunning("MinigameTransitionIn") then
+        AnimpostfxStop("MinigameTransitionIn")
+    end
+
+    AnimpostfxPlay("MinigameTransitionIn",0,true)
+    Cocaine = Cocaine + Timer
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- REMOVE COCAINE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("remCocaine")
+AddEventHandler("remCocaine",function()
 	if AnimpostfxIsRunning("MinigameTransitionIn") then
 		AnimpostfxStop("MinigameTransitionIn")
 	end
-
-	AnimpostfxPlay("MinigameTransitionIn",0,true)
-	Cocaine = Cocaine + 30
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- METHAMPHETAMINE
@@ -248,7 +290,7 @@ AddEventHandler("Joint",function()
 	end
 
 	AnimpostfxPlay("DeathFailMPIn",0,true)
-	Joint = Joint + 30
+	Joint = Joint + 60
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- OXYCONTIN
@@ -373,6 +415,33 @@ CreateThread(function()
 				end
 
 				Oxycontin = 0
+			end
+		end
+
+		if Drunk > 0 and GetGameTimer() >= DrunkTimer then
+			Drunk = Drunk - 1
+			DrunkTimer = GetGameTimer() + 1000
+			if Drunk <= 0 or Health <= 100 then
+				ResetPedMovementClipset(PlayerPedId(),0.25)
+			end
+		end
+
+		if Energetic > 0 and GetGameTimer() >= EnergeticTimer then
+			Energetic = Energetic - 1
+			RestorePlayerStamina(Pid,1.0)
+			EnergeticTimer = GetGameTimer() + 1000
+
+			if Energetic <= 0 or Health <= 100 then
+				if AnimpostfxIsRunning("HeistTripSkipFade") then
+					AnimpostfxStop("HeistTripSkipFade")
+				end
+
+				if AnimpostfxIsRunning("MinigameTransitionIn") then
+					AnimpostfxStop("MinigameTransitionIn")
+				end
+
+				SetRunSprintMultiplierForPlayer(Pid,1.0)
+				Energetic = 0
 			end
 		end
 

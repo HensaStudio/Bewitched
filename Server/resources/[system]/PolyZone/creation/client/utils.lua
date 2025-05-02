@@ -3,7 +3,7 @@ function GetUserInput(windowTitle, defaultText, maxInputLength)
   -- Create the window title string.
   local resourceName = string.upper(GetCurrentResourceName())
   local textEntry = resourceName .. "_WINDOW_TITLE"
-  if not windowTitle then
+  if windowTitle == nil then
     windowTitle = "Enter:"
   end
   AddTextEntry(textEntry, windowTitle)
@@ -57,7 +57,7 @@ function handleArrowInput(center, heading)
 end
 
 function disableControlKeyInput()
-  CreateThread(function()
+  Citizen.CreateThread(function()
     while drawZone do
       DisableControlAction(0, 36, true)   -- Ctrl
       DisableControlAction(0, 19, true)   -- Alt

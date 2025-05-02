@@ -18,6 +18,15 @@ local Selected = {}
 local Sucess = false
 local Actived = false
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- REANIMAR
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Reanimar = {
+	vec3(-471.17,6287.35,13.72),
+	vec3(-196.47,-1728.96,32.65),
+	vec3(97.68,-1982.13,20.54),
+	vec3(353.62,-2050.23,21.82),
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- DISMANTLE
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Dismantle = {
@@ -884,7 +893,9 @@ function TargetEnable()
 
 				Selected = { source }
 
-				Menu[#Menu + 1] = { event = "inspect:Player", label = "Revistar", tunnel = "paramedic" }
+				if GlobalState["Roubos"] then
+					Menu[#Menu + 1] = { event = "inspect:Player", label = "Revistar", tunnel = "paramedic" }
+				end
 
 				if GetEntityHealth(Entitys) <= 100 then
 					if Player(source)["state"]["Crawl"] then
@@ -893,6 +904,13 @@ function TargetEnable()
 
 					if LocalPlayer["state"]["Paramedico"] then
 						Menu[#Menu + 1] = { event = "paramedic:Revive", label = "Reanimar", tunnel = "paramedic" }
+					else
+						for _,v in pairs(Reanimar) do
+							if #(Coords - v) <= 20 then
+								Menu[#Menu + 1] = { event = "paramedic:Revive", label = "Reanimar", tunnel = "paramedic" }
+								break
+							end
+						end
 					end
 				else
 					Menu[#Menu + 1] = { event = "player:Demand", label = "Cobrança", tunnel = "paramedic" }

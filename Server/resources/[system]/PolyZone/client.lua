@@ -33,7 +33,7 @@ end
 
 function addBlip(pos)
   local blip = AddBlipForCoord(pos.x, pos.y, 0.0)
-  SetBlipColour(blip, 77)
+  SetBlipColour(blip, 7)
   SetBlipDisplay(blip, 8)
   SetBlipScale(blip, 1.0)
   SetBlipAsShortRange(blip, true)
@@ -42,7 +42,7 @@ end
 
 function clearTbl(tbl)
   -- Only works with contiguous (array-like) tables
-  if not tbl then return end
+  if tbl == nil then return end
   for i=1, #tbl do
     tbl[i] = nil
   end
@@ -51,7 +51,7 @@ end
 
 function copyTbl(tbl)
   -- Only a shallow copy, and only works with contiguous (array-like) tables
-  if not tbl then return end
+  if tbl == nil then return end
   local ret = {}
   for i=1, #tbl do
     ret[i] = tbl[i]
@@ -125,7 +125,9 @@ function PolyZone:TransformPoint(point)
   return point
 end
 
-function PolyZone:draw()
+function PolyZone:draw(forceDraw)
+  if not forceDraw and not self.debugPoly and not self.debugGrid then return end
+  
   local zDrawDist = 45.0
   local oColor = self.debugColors.outline or defaultColorOutline
   local oR, oG, oB = oColor[1], oColor[2], oColor[3]
@@ -156,8 +158,8 @@ function PolyZone:draw()
   end
 end
 
-function PolyZone.drawPoly(poly)
-  PolyZone.draw(poly)
+function PolyZone.drawPoly(poly, forceDraw)
+  PolyZone.draw(poly, forceDraw)
 end
 
 -- Debug drawing all grid cells that are completly within the polygon
@@ -217,7 +219,7 @@ local function _pointInPoly(point, poly)
     local gridCellX = (gridPosX * gridDivisions) // size.x
     local gridCellY = (gridPosY * gridDivisions) // size.y
     local gridCellValue = grid[gridCellY + 1][gridCellX + 1]
-    if not gridCellValue and poly.lazyGrid then
+    if gridCellValue == nil and poly.lazyGrid then
       gridCellValue = _isGridCellInsidePoly(gridCellX, gridCellY, poly)
       grid[gridCellY + 1][gridCellX + 1] = gridCellValue
     end
@@ -350,7 +352,7 @@ local function _createGrid(poly, options)
   poly.gridArea = 0.0
   poly.gridCellWidth = poly.size.x / poly.gridDivisions
   poly.gridCellHeight = poly.size.y / poly.gridDivisions
-  CreateThread(function()
+  Citizen.CreateThread(function()
     -- Calculate all grid cells that are entirely inside the polygon
     local isInside = {}
     local gridCellArea = poly.gridCellWidth * poly.gridCellHeight
@@ -371,8 +373,10 @@ local function _createGrid(poly, options)
 
     if options.debugGrid then
       local coverage = string.format("%.2f", poly.gridCoverage * 100)
+      print("[PolyZone] Debug: Grid Coverage at " .. coverage .. "% with " .. poly.gridDivisions
+      .. " divisions. Optimal coverage for memory usage and startup time is 80-90%")
 
-      CreateThread(function()
+      Citizen.CreateThread(function()
         poly.lines = _calculateLinesForDrawingGrid(poly)
         -- A lot of memory is used by this pre-calc. Force a gc collect after to clear it out
         collectgarbage("collect")
@@ -428,9 +432,9 @@ local function _initDebug(poly, options)
     return
   end
 
-  CreateThread(function()
+  Citizen.CreateThread(function()
     while not poly.destroyed do
-      poly:draw()
+      poly:draw(false)
       if options.debugGrid and poly.lines then
         _drawGrid(poly)
       end
@@ -441,14 +445,18 @@ end
 
 function PolyZone:new(points, options)
   if not points then
+    print("[PolyZone] Error: Passed nil points table to PolyZone:Create() {name=" .. options.name .. "}")
     return
+  end
+  if #points < 3 then
+    print("[PolyZone] Warning: Passed points table with less than 3 points to PolyZone:Create() {name=" .. options.name .. "}")
   end
 
   options = options or {}
   local useGrid = options.useGrid
-  if not useGrid then useGrid = true end
+  if useGrid == nil then useGrid = true end
   local lazyGrid = options.lazyGrid
-  if not lazyGrid then lazyGrid = true end
+  if lazyGrid == nil then lazyGrid = true end
   local poly = {
     name = tostring(options.name) or nil,
     points = points,
@@ -483,6 +491,7 @@ end
 
 function PolyZone:isPointInside(point)
   if self.destroyed then
+    print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
     return false
   end
 
@@ -491,6 +500,9 @@ end
 
 function PolyZone:destroy()
   self.destroyed = true
+  if self.debugPoly or self.debugGrid then
+    print("[PolyZone] Debug: Destroying zone {name=" .. self.name .. "}")
+  end
 end
 
 -- Helper functions
@@ -522,7 +534,7 @@ function PolyZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
   local _waitInMS = 500
   if waitInMS ~= nil then _waitInMS = waitInMS end
 
-  CreateThread(function()
+  Citizen.CreateThread(function()
     local isInside = false
     while not self.destroyed do
       if not self.paused then
@@ -543,7 +555,7 @@ function PolyZone:onPlayerInOut(onPointInOutCb, waitInMS)
 end
 
 function PolyZone:addEvent(eventName)
-  if not self.events then self.events = {} end
+  if self.events == nil then self.events = {} end
   local internalEventName = eventPrefix .. eventName
   RegisterNetEvent(internalEventName)
   self.events[eventName] = AddEventHandler(internalEventName, function (...)

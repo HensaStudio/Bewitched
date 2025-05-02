@@ -99,7 +99,7 @@ function Hensa.Permissions(Name,Mode,Item)
 
 				return true
 			else
-				TriggerClientEvent("Notify",source,Name,"Você não possui permissões suficientes.","amarelo",5000)
+				TriggerClientEvent("Notify",source,vRP.GroupName(Name) or Name,"Você não possui permissões suficientes.","amarelo",5000)
 			end
 		elseif Mode == "Tray" then
 			Open[Passport] = {
@@ -139,7 +139,7 @@ function Hensa.Permissions(Name,Mode,Item)
 			if ChestItens[Previous] then
 				if ChestItens[Previous]["Permission"] then
 					if not vRP.HasService(Passport,ChestItens[Previous]["Permission"]) then
-						TriggerClientEvent("Notify",source,"Atenção","Você não possui permissões suficientes.","amarelo",5000)
+						TriggerClientEvent("Notify",source,vRP.GroupName(ChestItens[Previous]["Permission"]) or ChestItens[Previous]["Permission"],"Você não possui permissões suficientes.","amarelo",5000)
 
 						return false
 					end
@@ -179,7 +179,7 @@ function Hensa.Permissions(Name,Mode,Item)
 
 				return true
 			else
-				TriggerClientEvent("Notify",source,Name,"Você não possui permissões suficientes.","amarelo",5000)
+				TriggerClientEvent("Notify",source,vRP.GroupName(Name) or Name,"Você não possui permissões suficientes.","amarelo",5000)
 			end
 		end
 	end

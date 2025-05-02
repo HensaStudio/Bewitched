@@ -893,7 +893,7 @@ function TargetEnable()
 
 				Selected = { source }
 
-				if GlobalState["Roubos"] then
+				if GlobalState["Roubos"] or CheckPolice() then
 					Menu[#Menu + 1] = { event = "inspect:Player", label = "Revistar", tunnel = "paramedic" }
 				end
 

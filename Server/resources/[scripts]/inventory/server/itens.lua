@@ -393,7 +393,7 @@ Use = {
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,120)
 					vRP.DowngradeStress(Passport,20)
-					TriggerClientEvent("Cocaine",source)
+					TriggerClientEvent("Cocaine",source,30)
 				end
 			end
 
@@ -917,6 +917,9 @@ Use = {
 							elseif math.random(100) >= 75 then
 								SetVehicleDoorsLocked(Networked,1)
 							end
+
+							TriggerEvent("PlateEveryone",Plate)
+							TriggerEvent("PlayersPlate",Plate,Passport)
 						end
 					end
 
@@ -966,6 +969,9 @@ Use = {
 									elseif math.random(100) >= 75 then
 										SetVehicleDoorsLocked(Networked,1)
 									end
+
+									TriggerEvent("PlateEveryone",Plate)
+									TriggerEvent("PlayersPlate",Plate,Passport)
 								end
 							end
 
@@ -1021,6 +1027,34 @@ Use = {
 		TriggerClientEvent("postit:initPostit",source)
 	end,
 
+	["energetic"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		vRPC.AnimActive(source)
+		Active[Passport] = os.time() + 10
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("inventory:Close",source)
+		TriggerClientEvent("Progress",source,"Bebendo",10000)
+		vRPC.CreateObjects(source,"mp_player_intdrink","loop_bottle","vw_prop_casino_water_bottle_01a",49,60309,0.0,0.0,-0.06,0.0,0.0,130.0)
+
+		repeat
+			if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+				Active[Passport] = nil
+				vRPC.Destroy(source,"one")
+				Player(source)["state"]["Buttons"] = false
+
+				if vRP.TakeItem(Passport,Full,1,true,Slot) then
+					vRP.UpgradeThirst(Passport,15)
+
+					if vCLIENT.Restaurant(source) then
+						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
+					end
+				end
+			end
+
+			Wait(100)
+		until not Active[Passport]
+	end,
+
 	["coffeemilk"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		vRPC.AnimActive(source)
 		Active[Passport] = os.time() + 10
@@ -1036,16 +1070,30 @@ Use = {
 				Player(source)["state"]["Buttons"] = false
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
-					vRP.UpgradeThirst(Passport,40)
+					vRP.UpgradeThirst(Passport,30)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
 
 			Wait(100)
 		until not Active[Passport]
+	end,
+
+	["coffeeclone"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("inventory:Close",source)
+
+		local Hash = "bkr_prop_weed_med_01a"
+		local Application,Coords = vRPC.ObjectControlling(source,Hash)
+		if Application and Coords and not vCLIENT.ObjectExists(source,Coords,Hash) and vRP.TakeItem(Passport,Full,1,true,Slot) then
+			exports["plants"]:Plants(Hash,Coords,GetPlayerRoutingBucket(source),"coffee",{ ["Min"] = 4, ["Max"] = 6 })
+		end
+
+		Player(source)["state"]["Buttons"] = false
 	end,
 
 	["water"] = function(source,Passport,Amount,Slot,Full,Item,Split)
@@ -1090,6 +1138,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1117,6 +1166,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1145,6 +1195,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1172,6 +1223,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1199,6 +1251,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1226,6 +1279,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1253,6 +1307,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1280,6 +1335,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1307,6 +1363,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1334,6 +1391,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -1361,6 +1419,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -2267,19 +2326,6 @@ Use = {
 		Player(source)["state"]["Buttons"] = false
 	end,
 
-	["coffeeclone"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		Player(source)["state"]["Buttons"] = true
-		TriggerClientEvent("inventory:Close",source)
-
-		local Hash = "bkr_prop_weed_med_01a"
-		local Application,Coords = vRPC.ObjectControlling(source,Hash)
-		if Application and Coords and not vCLIENT.ObjectExists(source,Coords,Hash) and vRP.TakeItem(Passport,Full,1,true,Slot) then
-			exports["plants"]:Plants(Hash,Coords,GetPlayerRoutingBucket(source),"coffee",{ ["Min"] = 4, ["Max"] = 6 })
-		end
-
-		Player(source)["state"]["Buttons"] = false
-	end,
-
 	["barrier"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		Player(source)["state"]["Buttons"] = true
 		TriggerClientEvent("inventory:Close",source)
@@ -2507,6 +2553,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end
@@ -2534,6 +2581,7 @@ Use = {
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
+						TriggerClientEvent("Notify",source,"Sucesso","Você ganhou uma bonificação por consumir algo na área do restaurante.","verde",5000)
 					end
 				end
 			end

@@ -124,7 +124,7 @@ Location = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 List = {
 	["FoodRestaurante"] = {
-		["Permission"] = "Restaurante",
+		["Permission"] = "Arriba",
 		["List"] = {
 			["nigirizushi"] = {
 				["Amount"] = 3,
@@ -209,7 +209,7 @@ List = {
 		}
 	},
 	["DrinkRestaurante"] = {
-		["Permission"] = "Restaurante",
+		["Permission"] = "Arriba",
 		["List"] = {
 			["milkshake"] = {
 				["Amount"] = 1,

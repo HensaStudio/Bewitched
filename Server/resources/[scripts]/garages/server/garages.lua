@@ -11,14 +11,14 @@ Garages = {
 	["7"] = { name = "Garage", payment = true },
 	["8"] = { name = "Garage", payment = true },
 
-	-- Paramedico
+	-- Paramédico
 	["41"] = { name = "Paramedico", payment = false, perm = "Paramedico" },
 	["42"] = { name = "heliParamedico", payment = false, perm = "Paramedico" },
 	["43"] = { name = "Paramedico", payment = false, perm = "Paramedico" },
 	["44"] = { name = "heliParamedico", payment = false, perm = "Paramedico" },
 	["45"] = { name = "Paramedico", payment = false, perm = "Paramedico" },
 
-	-- Policia
+	-- Polícia
 	["61"] = { name = "Policia", payment = false, perm = "Policia" },
 	["62"] = { name = "heliPolicia", payment = false, perm = "Policia" },
 
@@ -26,12 +26,13 @@ Garages = {
 	["67"] = { name = "Policia", payment = false, perm = "Policia" },
 	["68"] = { name = "busPolicia", payment = false, perm = "Policia" },
 
+	-- Mecânica
+	["70"] = { name = "Mecanica", payment = false, perm = "Mecanico" },
+
 	-- Gangs
 	["91"] = { name = "Ballas", payment = false, perm = "Ballas" },
 	["92"] = { name = "Families", payment = false, perm = "Families" },
 	["93"] = { name = "Vagos", payment = false, perm = "Vagos" },
-	["94"] = { name = "Aztecas", payment = false, perm = "Aztecas" },
-	["95"] = { name = "Bloods", payment = false, perm = "Bloods" },
 
 	-- Works
 	["141"] = { name = "Lumberman", payment = false, license = false },

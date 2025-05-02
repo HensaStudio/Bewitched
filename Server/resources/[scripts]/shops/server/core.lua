@@ -31,6 +31,15 @@ function Hensa.Permission(Name)
 	return Passport and List[Name] and (not List[Name]["Permission"] or (List[Name]["Permission"] and vRP.HasService(Passport,List[Name]["Permission"]))) or false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- HASSERVICE
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.HasService(Service)
+	local source = source
+	local Passport = vRP.Passport(source)
+
+	return Passport and vRP.AmountService(Service) > 0 or false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- MOUNT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Mount(Name)

@@ -26,6 +26,10 @@ Works = {
 		"pbus",
 		"riot"
 	},
+	["Mecanica"] = {
+		"flatbed",
+		"towtruck2"
+	},
 	["Driver"] = {
 		"bus"
 	},

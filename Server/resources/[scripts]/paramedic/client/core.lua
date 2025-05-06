@@ -128,3 +128,15 @@ end)
 function Hensa.Diagnostic()
 	return Damaged,Bleedings
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PARAMEDIC:CLANDESTINEWAYPOINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("paramedic:ClandestineWayPoint")
+AddEventHandler("paramedic:ClandestineWayPoint", function()
+	if CheckGang() then
+		TriggerEvent("Notify","Hospital Clandestino","Você marcou o local.","hospital",5000)
+		SetNewWaypoint(-471.17,6287.35)
+	else
+		TriggerEvent("Notify","Atenção","Você não tem permissões para isso.","amarelo",5000)
+	end
+end)

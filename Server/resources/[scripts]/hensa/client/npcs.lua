@@ -243,6 +243,11 @@ local List = {
 		["Coords"] = vec4(371.73,-344.63,46.78,340.16),
 		["Model"] = "g_m_m_mexboss_01",
 		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
+	},{ -- Garagem Hunt
+		["Distance"] = 100,
+		["Coords"] = vec4(-766.65,5580.45,33.6,96.38),
+		["Model"] = "s_m_y_airworker",
+		["Anim"] = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
 	},{ -- Clandestine Shops
 		["Distance"] = 50,
 		["Coords"] = vec4(179.9,2779.98,45.7,189.93),
@@ -377,6 +382,11 @@ local List = {
 		["Distance"] = 15,
 		["Coords"] = vec4(-1221.48,-907.93,12.32,31.19),
 		["Model"] = "mp_m_shopkeep_01",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Hunt Store
+		["Distance"] = 15,
+		["Coords"] = vec4(-773.7,5604.59,33.73,172.92),
+		["Model"] = "cs_hunter",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Ammu-Nation Craft
 		["Distance"] = 15,

@@ -152,3 +152,15 @@ CreateThread(function()
 		end
 	end
 end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SHOPS:CLANDESTINEWAYPOINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("shops:ClandestineWayPoint")
+AddEventHandler("shops:ClandestineWayPoint", function()
+	if CheckGang() then
+		TriggerEvent("Notify","Sucesso","Você marcou o local da <b>Loja Clandestina</b>.","verde",5000)
+		SetNewWaypoint(179.9,2779.98)
+	else
+		TriggerEvent("Notify","Atenção","Você não tem permissões para isso.","amarelo",5000)
+	end
+end)

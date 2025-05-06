@@ -40,11 +40,26 @@ Location = {
 	{
 		["Coords"] = vec3(1272.51,-1713.05,54.63),
 		["Mode"] = "Lester",
-		["Circle"] = 0.1
+		["Circle"] = 0.5
+	},{
+		["Coords"] = vec3(102.99,-1983.88,20.62),
+		["Mode"] = "Ballas",
+		["Circle"] = 0.5,
+		["Gang"] = true
+	},{
+		["Coords"] = vec3(348.21,-2051.03,21.58),
+		["Mode"] = "Vagos",
+		["Circle"] = 0.5,
+		["Gang"] = true
+	},{
+		["Coords"] = vec3(-191.13,-1727.67,32.41),
+		["Mode"] = "Families",
+		["Circle"] = 0.5,
+		["Gang"] = true
 	},{
 		["Coords"] = vec3(949.69,-957.4,39.83),
 		["Mode"] = "Mecanico",
-		["Circle"] = 0.1
+		["Circle"] = 0.5
 	},{
 		["Coords"] = vec3(174.99,-1323.47,29.65),
 		["Mode"] = "PawnShop",
@@ -108,7 +123,7 @@ Location = {
 	},{
 		["Coords"] = vec3(1110.8,-2008.75,31.43),
 		["Mode"] = "Furnace",
-		["Circle"] = 0.1
+		["Circle"] = 0.5
 	},{
 		["Coords"] = vec3(360.66,-346.5,46.99),
 		["Mode"] = "FoodRestaurante",
@@ -384,6 +399,60 @@ List = {
 	},
 	["Ammunation"] = {
 		["List"] = {
+			["ATTACH_FLASHLIGHT"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["scotchtape"] = 1,
+					["insulatingtape"] = 1,
+					["batteryaa"] = 1,
+					["batteryaaplus"] = 1,
+					["glass"] = 75,
+					["plastic"] = 75
+				}
+			},
+			["ATTACH_CROSSHAIR"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["scotchtape"] = 1,
+					["insulatingtape"] = 1,
+					["batteryaa"] = 1,
+					["batteryaaplus"] = 1,
+					["glass"] = 95,
+					["plastic"] = 95,
+					["copper"] = 25
+				}
+			},
+			["ATTACH_SILENCER"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["scotchtape"] = 5,
+					["insulatingtape"] = 5,
+					["water"] = 1,
+					["toothpaste"] = 1,
+					["plastic"] = 200,
+					["copper"] = 200
+				}
+			},
+			["ATTACH_MAGAZINE"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["scotchtape"] = 1,
+					["insulatingtape"] = 1,
+					["rubber"] = 95,
+					["plastic"] = 95,
+					["aluminum"] = 25
+				}
+			},
+			["ATTACH_GRIP"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["scotchtape"] = 1,
+					["insulatingtape"] = 1,
+					["electroniccomponents"] = 1,
+					["rubber"] = 65,
+					["plastic"] = 65
+				}
+			},
 			["WEAPON_HATCHET"] = {
 				["Amount"] = 1,
 				["Required"] = {
@@ -592,6 +661,14 @@ List = {
 	},
 	["Mecanico"] = {
 		["List"] = {
+			["lockpick"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["copper"] = 10,
+					["aluminum"] = 10,
+					["sheetmetal"] = 1
+				}
+			},
 			["odb2"] = {
 				["Amount"] = 1,
 				["Required"] = {
@@ -1553,6 +1630,84 @@ List = {
 					["plastic"] = 85
 				}
 			},
+			["blueprint_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 60,
+					["scrapmetal"] = 30,
+					["plastic"] = 20
+				}
+			},
+			["drugs_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 60,
+					["scrapmetal"] = 30,
+					["plastic"] = 20
+				}
+			},
+		}
+	},
+	["Ballas"] = {
+		["Permission"] = "Ballas",
+		["List"] = {
+			["spray_ballas"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["aluminum"] = 10,
+					["plastic"] = 10
+				}
+			},
+			["pistol_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["smg_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["rifle_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["blueprint_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["drugs_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["vest"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["tarp"] = 3,
+					["sheetmetal"] = 3,
+					["roadsigns"] = 3,
+					["copper"] = 15,
+					["aluminum"] = 15
+				}
+			},
 			["WEAPON_SHOTGUN_AMMO"] = {
 				["Amount"] = 10,
 				["Required"] = {
@@ -1581,60 +1736,186 @@ List = {
 					["gunpowder"] = 1
 				}
 			},
-			["ATTACH_FLASHLIGHT"] = {
+		}
+	},
+	["Vagos"] = {
+		["Permission"] = "Vagos",
+		["List"] = {
+			["spray_vagos"] = {
 				["Amount"] = 1,
 				["Required"] = {
-					["scotchtape"] = 1,
-					["insulatingtape"] = 1,
-					["batteryaa"] = 1,
-					["batteryaaplus"] = 1,
-					["glass"] = 75,
-					["plastic"] = 75
+					["aluminum"] = 10,
+					["plastic"] = 10
 				}
 			},
-			["ATTACH_CROSSHAIR"] = {
+			["pistol_bench"] = {
 				["Amount"] = 1,
 				["Required"] = {
-					["scotchtape"] = 1,
-					["insulatingtape"] = 1,
-					["batteryaa"] = 1,
-					["batteryaaplus"] = 1,
-					["glass"] = 95,
-					["plastic"] = 95,
-					["copper"] = 25
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
 				}
 			},
-			["ATTACH_SILENCER"] = {
+			["smg_bench"] = {
 				["Amount"] = 1,
 				["Required"] = {
-					["scotchtape"] = 5,
-					["insulatingtape"] = 5,
-					["water"] = 1,
-					["toothpaste"] = 1,
-					["plastic"] = 200,
-					["copper"] = 200
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
 				}
 			},
-			["ATTACH_MAGAZINE"] = {
+			["rifle_bench"] = {
 				["Amount"] = 1,
 				["Required"] = {
-					["scotchtape"] = 1,
-					["insulatingtape"] = 1,
-					["rubber"] = 95,
-					["plastic"] = 95,
-					["aluminum"] = 25
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
 				}
 			},
-			["ATTACH_GRIP"] = {
+			["blueprint_bench"] = {
 				["Amount"] = 1,
 				["Required"] = {
-					["scotchtape"] = 1,
-					["insulatingtape"] = 1,
-					["electroniccomponents"] = 1,
-					["rubber"] = 65,
-					["plastic"] = 65
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
 				}
-			}
+			},
+			["drugs_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["vest"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["tarp"] = 3,
+					["sheetmetal"] = 3,
+					["roadsigns"] = 3,
+					["copper"] = 15,
+					["aluminum"] = 15
+				}
+			},
+			["WEAPON_SHOTGUN_AMMO"] = {
+				["Amount"] = 10,
+				["Required"] = {
+					["dollar"] = 375,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_PISTOL_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 325,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_SMG_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 475,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_RIFLE_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 625,
+					["gunpowder"] = 1
+				}
+			},
+		}
+	},
+	["Families"] = {
+		["Permission"] = "Families",
+		["List"] = {
+			["spray_families"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["aluminum"] = 10,
+					["plastic"] = 10
+				}
+			},
+			["pistol_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["smg_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["rifle_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["blueprint_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["drugs_bench"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["woodlog"] = 30,
+					["scrapmetal"] = 15,
+					["plastic"] = 10
+				}
+			},
+			["vest"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["tarp"] = 3,
+					["sheetmetal"] = 3,
+					["roadsigns"] = 3,
+					["copper"] = 15,
+					["aluminum"] = 15
+				}
+			},
+			["WEAPON_SHOTGUN_AMMO"] = {
+				["Amount"] = 10,
+				["Required"] = {
+					["dollar"] = 375,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_PISTOL_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 325,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_SMG_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 475,
+					["gunpowder"] = 1
+				}
+			},
+			["WEAPON_RIFLE_AMMO"] = {
+				["Amount"] = 30,
+				["Required"] = {
+					["dollar"] = 625,
+					["gunpowder"] = 1
+				}
+			},
 		}
 	}
 }

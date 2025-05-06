@@ -4,8 +4,7 @@
 Sprays = {
 	["spray_ballas"] = { "Ballas", 50 },
 	["spray_vagos"] = { "Vagos", 60 },
-	["spray_families"] = { "Families", 69 },
-	["spray_aztecas"] = { "Aztecas", 69 }
+	["spray_families"] = { "Families", 69 }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SINGLE

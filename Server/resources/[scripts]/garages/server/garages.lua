@@ -10,6 +10,7 @@ Garages = {
 	["6"] = { name = "Garage", payment = true },
 	["7"] = { name = "Garage", payment = true },
 	["8"] = { name = "Garage", payment = true },
+	["9"] = { name = "Garage", payment = true },
 
 	-- Paramédico
 	["41"] = { name = "Paramedico", payment = false, perm = "Paramedico" },

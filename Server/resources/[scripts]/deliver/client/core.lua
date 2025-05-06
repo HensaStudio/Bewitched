@@ -29,7 +29,7 @@ CreateThread(function()
 				{
 					event = "deliver:Init",
 					tunnel = "client",
-					label = "Trabalhar"
+					label = v["Label"]
 				}
 			}
 		})
@@ -43,10 +43,15 @@ AddEventHandler("deliver:Init",function(Service)
 		if Progress then
 			Worked = nil
 			Progress = false
-			TriggerEvent("Notify","Central de Empregos","Você acaba finalizar sua jornada de trabalho, esperamos que você tenha aprendido bastante hoje.","default",5000)
 
-			for Name,_ in pairs(List) do
-				exports["target"]:LabelText("Deliver:"..Name,"Trabalhar")
+			if List[Service]["Gang"] then
+				TriggerEvent("Notify","Atenção","Você finalizou o trabalho para o seu grupo.","amarelo",5000)
+			else
+				TriggerEvent("Notify","Central de Empregos","Você acaba finalizar sua jornada de trabalho, esperamos que você tenha aprendido bastante hoje.","default",5000)
+			end
+
+			for Name,v in pairs(List) do
+				exports["target"]:LabelText("Deliver:"..Name,v["Label"])
 			end
 
 			if Blip and DoesBlipExist(Blip) then
@@ -54,10 +59,22 @@ AddEventHandler("deliver:Init",function(Service)
 				Blip = nil
 			end
 		else
+			if List[Service]["Gang"] then
+				if not CheckGang() then
+					TriggerEvent("Notify","Atenção","Você não tem permissões para isso.","amarelo",5000)
+					return
+				end
+			end
+
 			Progress = true
 			Worked = Service
 			BlipMarkerService()
-			TriggerEvent("Notify","Central de Empregos","Você acaba de dar inicio a sua jornada de trabalho, lembrando que a sua vida não se resume só a isso.","default",5000)
+
+			if List[Service]["Gang"] then
+				TriggerEvent("Notify","Sucesso","Você iniciou um trabalho para o seu grupo.","verde",5000)
+			else
+				TriggerEvent("Notify","Central de Empregos","Você acaba de dar inicio a sua jornada de trabalho, lembrando que a sua vida não se resume só a isso.","default",5000)
+			end
 
 			for Name,_ in pairs(List) do
 				exports["target"]:LabelText("Deliver:"..Name,"Finalizar")
@@ -131,3 +148,16 @@ function BlipMarkerService()
 		EndTextCommandSetBlipName(Blip)
 	end
 end
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- DELIVER:MATERIALSWAYPOINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("deliver:MaterialsWayPoint")
+AddEventHandler("deliver:MaterialsWayPoint", function()
+	if CheckGang() then
+		TriggerEvent("Notify","Sucesso","Você marcou o local da <b>Coleta de Materiais</b>.","verde",5000)
+		SetNewWaypoint(713.56,-1861.99)
+	else
+		TriggerEvent("Notify","Atenção","Você não tem permissões para isso.","amarelo",5000)
+	end
+end)

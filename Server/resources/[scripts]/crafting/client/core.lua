@@ -73,20 +73,46 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
 	for Number,v in pairs(Location) do
-		exports["target"]:AddCircleZone("Crafting:"..Number,v["Coords"],v["Circle"],{
-			name = "Crafting:"..Number,
-			heading = 0.0,
-			useZ = true
-		},{
-			shop = Number,
-			Distance = 2.0,
-			options = {
-				{
-					event = "crafting:Open",
-					label = "Abrir",
-					tunnel = "client"
+		if v["Gang"] then
+			exports["target"]:AddCircleZone("Crafting:"..Number,v["Coords"],v["Circle"],{
+				name = "Crafting:"..Number,
+				heading = 0.0,
+				useZ = true
+			},{
+				shop = Number,
+				Distance = 2.0,
+				options = {
+					{
+						event = "crafting:Open",
+						label = "Criações",
+						tunnel = "client"
+					}, {
+						event = "shops:ClandestineWayPoint",
+						label = "Loja Clandestina",
+						tunnel = "client"
+					}, {
+						event = "deliver:MaterialsWayPoint",
+						label = "Coleta de Materiais",
+						tunnel = "client"
+					}
 				}
-			}
-		})
+			})
+		else
+			exports["target"]:AddCircleZone("Crafting:"..Number,v["Coords"],v["Circle"],{
+				name = "Crafting:"..Number,
+				heading = 0.0,
+				useZ = true
+			},{
+				shop = Number,
+				Distance = 2.0,
+				options = {
+					{
+						event = "crafting:Open",
+						label = "Abrir",
+						tunnel = "client"
+					}
+				}
+			})
+		end
 	end
 end)

@@ -89,6 +89,10 @@ end)
 RegisterCommand("PlayerFunctions",function()
 	local Ped = PlayerPedId()
 	if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not LocalPlayer["state"]["Prison"] and not Dynamic and not IsPauseMenuActive() and GetEntityHealth(Ped) > 100 then
+		if CheckGang() then
+			exports["dynamic"]:AddButton("Hospital Clandestino", "Marque a localização no mapa.", "paramedic:ClandestineWayPoint", "", false, false)
+		end
+
 		exports["dynamic"]:AddMenu("Armário","Abrir lista com todas as vestimentas.","wardrobe")
 		exports["dynamic"]:AddButton("Guardar","Salvar vestimentas do corpo.","dynamic:Clothes","Save","wardrobe",true)
 

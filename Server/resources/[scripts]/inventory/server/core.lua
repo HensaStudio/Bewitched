@@ -772,6 +772,40 @@ function Hensa.Deliver(Work)
 			else
 				TriggerClientEvent("Notify",source,"Aviso","Você precisa de <b>"..TransporterItemAmount.."x "..ItemName(TransporterItem).."</b>.","vermelho",5000)
 			end
+		elseif Work == "Drugs" then
+			local Drops = {
+				{ ["Item"] = "plastic", ["Chance"] = 75, ["Min"] = 2, ["Max"] = 4, ["Addition"] = 0.050 },
+				{ ["Item"] = "glass", ["Chance"] = 75, ["Min"] = 2, ["Max"] = 4, ["Addition"] = 0.050 },
+				{ ["Item"] = "rubber", ["Chance"] = 75, ["Min"] = 2, ["Max"] = 4, ["Addition"] = 0.050 },
+				{ ["Item"] = "aluminum", ["Chance"] = 25, ["Min"] = 1, ["Max"] = 2, ["Addition"] = 0.025 },
+				{ ["Item"] = "copper", ["Chance"] = 25, ["Min"] = 1, ["Max"] = 2, ["Addition"] = 0.025 }
+			}
+
+			local Result = RandPercentage(Drops)
+			local Valuation = Result["Valuation"]
+
+			if exports["inventory"]:Buffs("Dexterity",Passport) then
+				Valuation = Valuation + (Valuation * 0.1)
+			end
+
+			vRP.GenerateItem(Passport,Result["Item"],Valuation,true)
+			vRP.UpgradeStress(Passport,2)
+
+			exports["vrp"]:CallPolice({
+				["Source"] = source,
+				["Passport"] = Passport,
+				["Permission"] = "Policia",
+				["Name"] = "Coleta de Materiais",
+				["Percentage"] = Valuation,
+				["Marker"] = 30,
+				["Wanted"] = 60,
+				["Code"] = 20,
+				["Color"] = 16
+			})
+
+			Active[Passport] = nil
+
+			return true
 		end
 
 		Active[Passport] = nil

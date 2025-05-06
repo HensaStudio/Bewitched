@@ -2796,6 +2796,19 @@ Use = {
 		vRPC.AnimActive(source)
 	end,
 
+	["radiomhz"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		TriggerClientEvent("inventory:Close",source)
+
+		local Keyboard = vKEYBOARD.Options(source,"Frequência",{ "Ballas","Vagos","Families" })
+		if Keyboard then
+			local Frequency = sanitizeString(Keyboard[1],"0123456789")
+			if not exports["radio"]:Exist(Frequency) and string.len(Frequency) == 3 and vRP.TakeItem(Passport,Full,1,false,Slot) then
+				TriggerClientEvent("Notify",source,"Sucesso","Frequência adicionada.","verde",5000)
+				exports["radio"]:Add(Frequency,Keyboard[2])
+			end
+		end
+	end,
+
 	["scuba"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		TriggerClientEvent("inventory:Scuba",source)
 	end,
@@ -3004,6 +3017,71 @@ for Model,v in pairs(VehicleList()) do
 					TriggerClientEvent("inventory:Update",source)
 				end
 			end
+		end
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SPRAYS
+-----------------------------------------------------------------------------------------------------------------------------------------
+for NameItem,v in pairs(Sprays) do
+	Use[NameItem] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		if vCLIENT.CheckInterior(source) then
+			TriggerClientEvent("Notify",source,"Atenção","Só pode ser posicionado fora de interiores.","amarelo",5000)
+			return false
+		end
+
+		for Index,Info in pairs(SaveObjects) do
+			if Info.Permission and Info.Permission == v[1] and Info.Mode == "Sprays" then
+				TriggerClientEvent("Notify",source,"Atenção","O grupo já possui um spray aplicado.","amarelo",5000)
+				return false
+			end
+		end
+
+		if vRPC.SprayExist(source,500) then
+			TriggerClientEvent("Notify",source,"Atenção","No momento você não pode prosseguir porque outro grupo está dominando a localidade.","amarelo",5000)
+			return false
+		end
+
+		TriggerClientEvent("inventory:Close",source)
+
+		local Application,Coords = vCLIENT.SprayControlling(source,NameItem)
+		if Application and Coords then
+			Active[Passport] = os.time() + 999
+			Player(source)["state"]["Buttons"] = true
+			TriggerClientEvent("Progress",source,"Agitando",5000)
+			vRPC.CreateObjects(source,"switch@franklin@lamar_tagging_wall","lamar_tagging_wall_loop_lamar","prop_cs_spray_can",1,28422)
+
+			SetTimeout(5000,function()
+				if Active[Passport] then
+					Active[Passport] = os.time() + 10
+					TriggerClientEvent("Progress",source,"Colocando",10000)
+					TriggerClientEvent("sounds:Private",source,"sprays",0.5)
+					vRPC.CreateObjects(source,"switch@franklin@lamar_tagging_wall","lamar_tagging_exit_loop_lamar","prop_cs_spray_can",1,28422)
+
+					repeat
+						if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+							vRPC.Destroy(source)
+							Active[Passport] = nil
+
+							if not vRPC.SprayExist(source,500) and vRP.TakeItem(Passport,Full,1,true,Slot) then
+								repeat
+									Selected = GenerateString("DDLLDDLL")
+								until Selected and not Objects[Selected]
+
+								Objects[Selected] = { Coords = Coords, Object = NameItem, Mode = "Sprays", Timer = os.time() + 1800, Ground = true, Color = v[2], Permission = v[1], Bucket = GetPlayerRoutingBucket(source) }
+								exports["discord"]:Embed("Sprays","**[PASSAPORTE]:** "..Passport.."\n**[Item]:** "..NameItem.."\n**[Coords]:** "..Coords[1]..","..Coords[2]..","..Coords[3].."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
+								SaveObjects[Selected] = Objects[Selected]
+
+								TriggerClientEvent("objects:Adicionar",-1,Selected,Objects[Selected])
+							end
+						end
+
+						Wait(100)
+					until not Active[Passport]
+				end
+
+				Player(source)["state"]["Buttons"] = false
+			end)
 		end
 	end
 end

@@ -133,6 +133,9 @@ Location = {
 		["Coords"] = vec3(46.7,-1749.71,29.62),
 		["Mode"] = "Megamall"
 	},{
+		["Coords"] = vec3(-505.63,282.49,83.29),
+		["Mode"] = "DigitalDen"
+	},{
 		["Coords"] = vec3(371.73,-344.63,46.78),
 		["Mode"] = "Arriba",
 		["Service"] = "Arriba"
@@ -162,6 +165,16 @@ List = {
 			["pizzachocolate"] = 350
 		}
 	},
+	["DigitalDen"] = {
+		["Mode"] = "Buy",
+		["Type"] = "Cash",
+		["List"] = {
+			["camera"] = 425,
+			["radio"] = 1075,
+			["radiomhz"] = 4835,
+			["cellphone"] = 1200
+		}
+	},
 	["CityHall"] = {
 		["Mode"] = "Buy",
 		["Type"] = "Cash",
@@ -173,10 +186,6 @@ List = {
 		["Mode"] = "Buy",
 		["Type"] = "Cash",
 		["List"] = {
-			["camera"] = 425,
-			["radio"] = 1075,
-			["radiomhz"] = 4835,
-			["cellphone"] = 1200,
 			["postit"] = 20,
 			["cigarette"] = 15,
 			["vape"] = 4750,

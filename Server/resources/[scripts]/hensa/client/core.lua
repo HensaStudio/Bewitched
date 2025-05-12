@@ -16,6 +16,8 @@ local BLIPS = {
 
 	{ 300.16,-584.9,43.29, 80, 49, "Hospital", 0.5 },
 
+	{ -505.63,282.49,83.29, 355, 50, "DigitalDen", 0.6 },
+
 	{ 435.47,-981.86,30.68, 60, 31, "LS: Departamento Policial", 0.6 },
 	{ -438.61,6012.81,32.28, 60, 21, "PB: Departamento Policial", 0.6 },
 	{ 1854.64,3684.22,34.22, 60, 16, "SS: Departamento Policial", 0.6 },

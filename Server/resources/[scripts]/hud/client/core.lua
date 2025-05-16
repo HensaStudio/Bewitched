@@ -253,16 +253,34 @@ CreateThread(function()
 			end
 
 			if GetEntityHealth(Ped) > 100 then
-				if Hunger <= 10 and HungerTimer <= GetGameTimer() then
-					ApplyDamageToPed(Ped,1,false)
+				if Hunger <= 15 and HungerTimer <= GetGameTimer() then
+					ClearTimecycleModifier()
+
+					ApplyDamageToPed(Ped, 1, false)
 					HungerTimer = GetGameTimer() + 60000
-					TriggerEvent("Notify","Alimentação","Sofrendo com a <b>fome</b>.","fome",2500)
+					TriggerEvent("Notify", "Alimentação", "Sofrendo com a <b>fome</b>.", "fome", 2500)
+
+					SetTimecycleModifier("Drunk")
+					SetTimecycleModifierStrength(0.8)
+					ShakeGameplayCam("DRUNK_SHAKE", 0.3)
+					Wait(3000)
+					ClearTimecycleModifier()
+					StopGameplayCamShaking(true)
 				end
 
-				if Thirst <= 10 and ThirstTimer <= GetGameTimer() then
-					ApplyDamageToPed(Ped,1,false)
+				if Thirst <= 15 and ThirstTimer <= GetGameTimer() then
+					ClearTimecycleModifier()
+
+					ApplyDamageToPed(Ped, 1, false)
 					ThirstTimer = GetGameTimer() + 60000
-					TriggerEvent("Notify","Hidratação","Sofrendo com a <b>sede</b>.","sede",2500)
+					TriggerEvent("Notify", "Hidratação", "Sofrendo com a <b>sede</b>.", "sede", 2500)
+
+					SetTimecycleModifier("BarryFadeOut")
+					SetTimecycleModifierStrength(0.8)
+					ShakeGameplayCam("DRUNK_SHAKE", 0.3)
+					Wait(3000)
+					ClearTimecycleModifier()
+					StopGameplayCamShaking(true)
 				end
 
 				if Stress ~= 999 and Stress >= 50 and StressTimer <= GetGameTimer() then

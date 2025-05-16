@@ -161,6 +161,8 @@ RegisterCommand("PlayerFunctions",function()
 		exports["dynamic"]:AddButton("Ferimentos", "Verificar ferimentos no corpo.", "paramedic:Injuries", "", "others", false)
 		exports["dynamic"]:AddButton("Desbugar", "Recarregar o personagem.", "player:Debug", "", "others", true)
 
+		TriggerEvent("animals:Dynamic")
+
 		exports["dynamic"]:Open()
 	end
 end)

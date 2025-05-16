@@ -7,6 +7,19 @@ local CONTROLS = { 37,204,211,349,192,157,158,159,160,161,162,163,164,165 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 local BUNNYHOPE = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PROOFS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local PROOFS = {
+	bulletProof = false,
+	fireProof = false,
+	explosionProof = false,
+	collisionProof = false,
+	meleeProof = false,
+	steamProof = false,
+	drownProof = false,
+	bulletImpactProof = false
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- BLIPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 local BLIPS = {
@@ -402,10 +415,8 @@ CreateThread(function()
 		SetPlayerLockonRangeOverride(Pid,0.0)
 		SetCreateRandomCopsOnScenarios(false)
 		SetCreateRandomCopsNotOnScenarios(false)
-		SetEntityProofs(Ped,false,true,true,false,false,false,false,false)
 		SetPedInfiniteAmmoClip(Ped,LocalPlayer["state"]["Arena"] and true or false)
-		N_0x4757f00bc6323cfe(-1553120962,0.0)
-		N_0x4757f00bc6323cfe(539292904,0.0)
+		SetEntityProofs(Ped,PROOFS.bulletProof,PROOFS.fireProof,PROOFS.explosionProof,PROOFS.collisionProof,PROOFS.meleeProof,PROOFS.steamProof,PROOFS.drownProof,PROOFS.bulletImpactProof)
 
 		if IsPlayerWantedLevelGreater(Pid,0) then
 			ClearPlayerWantedLevel(Pid)

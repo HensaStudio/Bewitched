@@ -359,6 +359,12 @@ List = {
 				["Required"] = {
 					["chalcopyrite"] = 1
 				}
+			},
+			["c4"] = {
+				["Amount"] = 1,
+				["Required"] = {
+					["gunpowder"] = 10
+				}
 			}
 		}
 	},

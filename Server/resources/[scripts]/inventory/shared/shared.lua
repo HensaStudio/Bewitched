@@ -146,22 +146,5 @@ Multiplier = {
 	{ ["Coords"] = vec3(-290.98,6199.91,31.68), ["Mode"] = "Register" },
 	{ ["Coords"] = vec3(173.1,-1322.21,29.54), ["Mode"] = "Register" },
 	{ ["Coords"] = vec3(-272.78,238.42,90.8), ["Mode"] = "Register" },
-	{ ["Coords"] = vec3(-775.12,5604.2,33.8), ["Mode"] = "Register" },
-
-	{ ["Coords"] = vec3(33.19,-1348.80,29.49), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(2559.05,389.47,108.62), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(1153.11,-326.90,69.20), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(-718.26,-915.71,19.21), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(-57.40,-1751.74,29.42), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(380.65,322.84,103.56), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(-3240.02,1008.54,12.83), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(1735.01,6410.00,35.03), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(540.22,2671.68,42.15), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(1968.39,3743.07,32.34), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(2683.59,3286.30,55.24), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(1703.31,4934.05,42.06), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(-1827.68,784.46,138.31), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(-3040.20,593.29,7.90), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(314.7,-593.6,43.38), ["Mode"] = "Eletronic" },
-	{ ["Coords"] = vec3(471.91,-1001.64,30.78), ["Mode"] = "Eletronic" }
+	{ ["Coords"] = vec3(-775.12,5604.2,33.8), ["Mode"] = "Register" }
 }

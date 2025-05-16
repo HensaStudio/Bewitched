@@ -1,8 +1,9 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
-local Tunnel = module("vrp", "lib/Tunnel")
-local Proxy = module("vrp", "lib/Proxy")
+local Tunnel = module("vrp","lib/Tunnel")
+local Proxy = module("vrp","lib/Proxy")
+vRPC = Tunnel.getInterface("vRP")
 vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
@@ -14,6 +15,13 @@ Tunnel.bindInterface("bank", Hensa)
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Active = {}
 local Cooldown = 0
+local AtmTimers = {}
+local Explosives = {}
+local NeedPolice = false
+local ExplosiveTimers = {}
+local NeedPoliceAmount = 2
+local ExplosiveItem = "c4"
+local NeedItem = "ssddrive"
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADACTIVES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -30,15 +38,103 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Hensa.Check()
+function Hensa.Check(Number)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
-		return true
+	if Passport then
+		if Number and Explosives[Number] then
+			Explosives[Number] = nil
+
+			local Coords = vRP.GetEntityCoords(source)
+			TriggerClientEvent("Hensa:Explosion", source, Coords["x"], Coords["y"], Coords["z"], 2, 1.0, true, false, 1.0, true)
+
+			TriggerClientEvent("Notify", source, "Aviso", "Este ATM estava sabotado.", "vermelho", 5000)
+
+			return false
+		end
+
+		if not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
+			return true
+		end
 	end
 
 	return false
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BANK:SABOTAGE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("bank:Sabotage")
+AddEventHandler("bank:Sabotage",function(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if not Passport or Active[Passport] then return end
+
+	if Explosives[Number] then
+		TriggerClientEvent("Notify",source,"Aviso","Este ATM já está sabotado.","vermelho",5000)
+		return
+	end
+
+	if ExplosiveTimers[Number] and os.time() < ExplosiveTimers[Number] then
+		TriggerClientEvent("Notify",source,"Atenção","Aguarde "..CompleteTimers(ExplosiveTimers[Number] - os.time())..".","amarelo",5000)
+		return
+	end
+
+	if vRP.ConsultItem(Passport,ExplosiveItem,1) then
+		if vRP.Request(source,"ATM","Você realmente deseja implementar uma <b>"..ItemName(ExplosiveItem).."</b> e causar uma <b>Explosão</b> quando alguém for <b>Abrir</b> o sistema neste <b>ATM</b>?") then
+			Active[Passport] = true
+			Player(source)["state"]["Buttons"] = true
+
+			vRPC.PlayAnim(source,false,{"amb@medic@standing@tendtodead@idle_a","idle_a"},true)
+			TriggerClientEvent("Progress", source, "Sabotando", 30000)
+
+			ExplosiveTimers[Number] = os.time() + 3600
+
+			SetTimeout(30000, function()
+				if vRP.TakeItem(Passport,ExplosiveItem,1,true) then
+					Explosives[Number] = true
+					TriggerClientEvent("Notify",source,"Sucesso","ATM sabotado com sucesso.","verde",5000)
+				end
+
+				exports["vrp"]:CallPolice({
+					Source = source,
+					Passport = Passport,
+					Permission = "Policia",
+					Name = "Sabotagem de ATM",
+					Wanted = 1800,
+					Code = 31,
+					Color = 22
+				})
+
+				vRPC.StopAnim(source)
+				Active[Passport] = nil
+				Player(source)["state"]["Buttons"] = false
+			end)
+		end
+	else
+		TriggerClientEvent("Notify",source,"Atenção","Você precisa de 1x "..ItemName(ExplosiveItem)..".","amarelo",5000)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BANK:DISARM
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("bank:Disarm")
+AddEventHandler("bank:Disarm",function(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if not Passport or Active[Passport] then return end
+
+	if vRP.HasGroup(Passport,"Policia") then
+		if Explosives[Number] then
+			Explosives[Number] = nil
+
+			TriggerClientEvent("Notify",source,"Sucesso","Este ATM havia sido sabotado e você desativou com sucesso o sistema explosivo.","verde",5000)
+		else
+			TriggerClientEvent("Notify",source,"Aviso","Este ATM não está sabotado.","vermelho",5000)
+		end
+	else
+		TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- HOME
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -491,6 +587,78 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("AddFines",function(Passport,OtherPassport,Valuation,Message)
 	vRP.Query("fines/Add",{ Passport = Passport, Name = vRP.FullName(OtherPassport), Date = os.date("%d/%m/%Y"), Hour = os.date("%H:%M"), Price = Valuation, Message = Message })
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BANK:EXPLODEATM
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("bank:ExplodeAtm")
+AddEventHandler("bank:ExplodeAtm",function(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if not Passport or Active[Passport] then return end
+
+	if NeedPolice and vRP.AmountService("Policia") < NeedPoliceAmount then
+		TriggerClientEvent("Notify",source,"Atenção","Contingente indisponível.","amarelo",5000)
+		return
+	end
+
+	if AtmTimers[Number] and os.time() < AtmTimers[Number] then
+		TriggerClientEvent("Notify",source,"Atenção","Aguarde "..CompleteTimers(AtmTimers[Number] - os.time())..".","amarelo",5000)
+		return
+	end
+
+	if vRP.ConsultItem(Passport,NeedItem,1) then
+		local Coords = vRP.GetEntityCoords(source)
+
+		Active[Passport] = true
+		Player(source)["state"]["Buttons"] = true
+
+		if not vRP.Safecrack(source,1) then
+			TriggerClientEvent("Hensa:Explosion",source,Coords.x,Coords.y,Coords.z,2,1.0,true,false,1.0,true)
+			Active[Passport] = nil
+			Player(source)["state"]["Buttons"] = false
+			return
+		end
+
+		vRPC.PlayAnim(source, false, { "mini@repair", "fixing_a_player" }, true)
+		TriggerClientEvent("Progress", source, "Vasculhando", 20000)
+
+		AtmTimers[Number] = os.time() + 3600
+
+		SetTimeout(10000, function()
+			if math.random(100) >= 95 then
+				TriggerClientEvent("Notify",source,"Polícia","Um segurança foi acionado.","policia",5000)
+				TriggerClientEvent("bank:SpawnSecurity",source)
+			end
+
+			exports["vrp"]:CallPolice({
+				Source = source,
+				Passport = Passport,
+				Permission = "Policia",
+				Name = "Explosão de ATM",
+				Wanted = 1800,
+				Code = 31,
+				Color = 22
+			})
+		end)
+
+		SetTimeout(20000, function()
+			if vRP.TakeItem(Passport,NeedItem,1,true) then
+				TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","roxo",5000)
+				exports["inventory"]:Drops(Passport,source,DefaultMoneyTwo,math.random(275,550))
+				TriggerClientEvent("player:Residual",source,"Resquício de Línter")
+				vRP.UpgradeStress(Passport,5)
+
+				TriggerClientEvent("Hensa:Explosion",source,Coords.x,Coords.y,Coords.z,70,1.0,true,false,1.0,true)
+			end
+
+			vRPC.StopAnim(source)
+			Active[Passport] = nil
+			Player(source)["state"]["Buttons"] = false
+		end)
+	else
+		TriggerClientEvent("Notify",source,"Atenção","Você precisa de 1x "..ItemName(NeedItem)..".","amarelo",5000)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISCONNECT

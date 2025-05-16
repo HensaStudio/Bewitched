@@ -91,15 +91,8 @@ function Hensa.Invite(OtherPassport)
 	local OtherSource = vRP.Source(OtherPassport)
 	if Passport and Identity and OtherSource and Information[Passport] and Passport ~= OtherPassport and vRP.HasGroup(Passport,Information[Passport],HierarchyButtons) then
 		local Permission = Information[Passport]
-		local GroupType = vRP.GroupType(Permission)
 
-		if GroupType == "Work" and Identity["Groups"] >= os.time() then
-			TriggerClientEvent("Notify",source,"Atenção","O passaporte escolhido não pode ser convidado para um grupo no momento.","amarelo",5000)
-
-			return false
-		end
-
-		if not GroupType or GroupType ~= "Work" or (GroupType == "Work" and not vRP.UserHasGroups(OtherPassport,"Work")) then
+		if not vRP.UserHasGroups(OtherPassport,"Work") then
 			if vRP.Request(OtherSource,"Grupos","Você foi convidado(a) para participar do grupo <b>"..Permission.."</b>, gostaria de estar entrando do mesmo?") then
 				vRP.SetPermission(OtherPassport,Permission)
 				TriggerClientEvent("Notify",source,"Sucesso","Passaporte adicionado.","verde",5000)
@@ -126,6 +119,8 @@ function Hensa.Invite(OtherPassport)
 		else
 			TriggerClientEvent("Notify",source,"Atenção","O passaporte já pertence a outro grupo.","amarelo",5000)
 		end
+	else
+		TriggerClientEvent("Notify",source,"Atenção","Aconteceu algum erro inesperado ou provavelmente o passaporte não está na cidade no momento e não é possível enviar uma solicitação de permissão.","amarelo",10000)
 	end
 
 	return false

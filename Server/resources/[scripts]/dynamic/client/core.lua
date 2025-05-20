@@ -146,6 +146,19 @@ RegisterCommand("PlayerFunctions",function()
 			exports["dynamic"]:AddButton("Capô", "Abrir capô.", "player:Doors", "6", "doors", true)
 		end
 
+		local Painels = 0
+		for Permission,v in pairs(Groups) do
+			if not v.Block and LocalPlayer["state"][Permission] then
+				if Painels == 0 then
+					exports["dynamic"]:AddMenu("Computador","Abrir o software dos grupos.","painel")
+				end
+
+				exports["dynamic"]:AddButton(v.Name or Permission,"Painel de Controle do usuário.","painel:Opened",Permission,"painel",false)
+
+				Painels = Painels + 1
+			end
+		end
+
 		local Stats = vSERVER.PedStats()
 		if Stats then
 			exports["dynamic"]:AddMenu("Estatísticas", "Estatísticas do seu personagem.", "Stats")

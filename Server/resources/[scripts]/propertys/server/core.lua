@@ -228,6 +228,49 @@ function RouteNumber(Name)
 	return parseInt(Route)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- VIP
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Vip()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		if vRP.UserPremium(Passport) then
+			TriggerClientEvent("Notify",source,"Propriedades","Você acessou uma propriedade <b>Vip</b>.","verde",5000)
+			return true
+		else
+			TriggerClientEvent("Notify",source,"Atenção","Você não tem permissões para isso.","amarelo",5000)
+		end
+
+		return false
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PROPERTYS:DORBELL
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("propertys:Dorbell")
+AddEventHandler("propertys:Dorbell",function(Name)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local Consult = vRP.Query("propertys/Exist",{ Name = Name })
+	if Passport and Consult[1] then
+		local OtherSource = vRP.Source(Consult[1]["Passport"])
+		if OtherSource then
+			if vRP.Request(OtherSource,"Propriedades","<b>"..vRP.FullName(Passport).."</b> está tocando a campainha, deseja responder?") then
+				local Keyboard = vKEYBOARD.Area(source,"Recado:")
+				if Keyboard then
+					TriggerClientEvent("Notify",source,"Campainha",Keyboard[1],"announcement",10000)
+
+					TriggerClientEvent("Notify",source,"Sucesso","Você deixou uma reposta na campainha.","verde",5000)
+				end
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Campainha não atendida.","amarelo",5000)
+			end
+		else
+			TriggerClientEvent("Notify",source,"Aviso","Não há ninguém em casa no momento.","vermelho",5000)
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- PROPERTYS:BUY
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("propertys:Buy")

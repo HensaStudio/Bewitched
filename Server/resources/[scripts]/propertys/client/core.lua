@@ -25,6 +25,7 @@ CreateThread(function()
 		local Pid = PlayerId()
 		local TimeDistance = 999
 		local Ped = PlayerPedId()
+
 		if not IsPedInAnyVehicle(Ped) then
 			local Coords = GetEntityCoords(Ped)
 
@@ -35,36 +36,17 @@ CreateThread(function()
 
 						if IsControlJustPressed(1,38) then
 							local Consult = vSERVER.Propertys(Name)
-
 							if Consult then
 								if Consult == "Nothing" then
-									if not Propertys[Name]["Galpão"] then
-										exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","propertys:Robbery",Name,false,true)
+									if v["Vip"] then
+										vSERVER.Vip(function(isVip)
+											if isVip then
+												ShowPropertys(Name)
+											end
+										end)
+									else
+										ShowPropertys(Name)
 									end
-
-									for Line,v in pairs(Informations) do
-										if (Propertys[Name]["Galpão"] and Line == "Galpão") or (not Propertys[Name]["Galpão"] and Line ~= "Galpão") then
-											exports["dynamic"]:AddMenu(Line,"Informações sobre o interior.",Line)
-
-											if v["Vault"] then
-												exports["dynamic"]:AddButton("Baú","Total de <yellow>"..v["Vault"].."Kg</yellow> no compartimento.","","",Line,false)
-											end
-
-											if v["Fridge"] then
-												exports["dynamic"]:AddButton("Geladeira","Total de <yellow>"..v["Fridge"].."Kg</yellow> no compartimento.","","",Line,false)
-											end
-
-											exports["dynamic"]:AddButton("Credenciais","Máximo <yellow>1</yellow> proprietário e <yellow>3</yellow> adicionais.","","",Line,false)
-
-											if not Propertys[Name]["Vip"] then
-												exports["dynamic"]:AddButton("Comprar com Dinheiro","Custo de <yellow>"..Currency..""..Dotted(v["Price"]).."</yellow>.","propertys:Buy",Name.."-"..Line.."-Dollar",Line,true)
-											end
-
-											exports["dynamic"]:AddButton("Comprar com Diamantes","Custo de <yellow>"..Dotted(v["Gemstone"]).."</yellow>.","propertys:Buy",Name.."-"..Line.."-Gemstone",Line,true)
-										end
-									end
-
-									exports["dynamic"]:Open()
 								else
 									if Consult ~= "Hotel" then
 										exports["dynamic"]:AddButton("Entrar","Adentrar a propriedade.","propertys:Enter",Name,false,false)
@@ -84,11 +66,11 @@ CreateThread(function()
 										exports["dynamic"]:Open()
 									else
 										Interior = "Hotel"
-
 										TriggerEvent("propertys:Enter",Name,false)
 									end
 								end
 							elseif not Propertys[Name]["Galpão"] and Name ~= "Hotel" then
+								exports["dynamic"]:AddButton("Campainha","Tocar a campainha.","propertys:Dorbell",Name,false,true)
 								exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","propertys:Robbery",Name,false,true)
 								exports["dynamic"]:Open()
 							end
@@ -142,6 +124,38 @@ CreateThread(function()
 		Wait(TimeDistance)
 	end
 end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SHOWPROPERTYS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function ShowPropertys(Name)
+	if not Propertys[Name]["Galpão"] then
+		exports["dynamic"]:AddButton("Invadir","Forçar a fechadura.","propertys:Robbery",Name,false,true)
+	end
+
+	for Line,v in pairs(Informations) do
+		if (Propertys[Name]["Galpão"] and Line == "Galpão") or (not Propertys[Name]["Galpão"] and Line ~= "Galpão") then
+			exports["dynamic"]:AddMenu(Line,"Informações sobre o interior.",Line)
+
+			if v["Vault"] then
+				exports["dynamic"]:AddButton("Baú","Total de <yellow>"..v["Vault"].."Kg</yellow> no compartimento.","","",Line,false)
+			end
+
+			if v["Fridge"] then
+				exports["dynamic"]:AddButton("Geladeira","Total de <yellow>"..v["Fridge"].."Kg</yellow> no compartimento.","","",Line,false)
+			end
+
+			exports["dynamic"]:AddButton("Credenciais","Máximo <yellow>1</yellow> proprietário e <yellow>3</yellow> adicionais.","","",Line,false)
+
+			if not Propertys[Name]["Vip"] then
+				exports["dynamic"]:AddButton("Comprar com Dinheiro","Custo de <yellow>"..Currency..""..Dotted(v["Price"]).."</yellow>.","propertys:Buy",Name.."-"..Line.."-Dollar",Line,true)
+			end
+
+			exports["dynamic"]:AddButton("Comprar com Diamantes","Custo de <yellow>"..Dotted(v["Gemstone"]).."</yellow>.","propertys:Buy",Name.."-"..Line.."-Gemstone",Line,true)
+		end
+	end
+
+	exports["dynamic"]:Open()
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CLOTHESMENU
 -----------------------------------------------------------------------------------------------------------------------------------------

@@ -11,11 +11,20 @@ Hensa = {}
 Tunnel.bindInterface("painel",Hensa)
 vSERVER = Tunnel.getInterface("painel")
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PAINEL:OPENED
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("painel:Opened")
+AddEventHandler("painel:Opened", function(Group)
+	vSERVER.Department(Group)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Open(Data)
 	SetNuiFocus(true,true)
 	SetCursorLocation(0.5,0.5)
+	TriggerEvent("dynamic:Close")
+	TriggerEvent("hud:Active",false)
 	SendNUIMessage({ Action = "Open", Payload = Data })
 
 	vRP.CreateObjects("amb@code_human_in_bus_passenger_idles@female@tablet@idle_a","idle_a","prop_cs_tablet",49,28422,-0.05,0.0,0.0,0.0,0.0, 0.0)
@@ -24,6 +33,7 @@ end
 -- CLOSE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Close",function(Data,Callback)
+	TriggerEvent("hud:Active",true)
 	SetNuiFocus(false,false)
 	vRP.Destroy()
 

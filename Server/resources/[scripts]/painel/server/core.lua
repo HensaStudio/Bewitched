@@ -17,17 +17,18 @@ local Active = {}
 local Information = {}
 local HierarchyButtons = 2
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PAINEL
+-- DEPARTMENT
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("painel",function(source,Message)
+function Hensa.Department(Group)
+	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and not Player(source)["state"]["Buttons"] then
 		local Permission = vRP.GetUserGroup(Passport,"Work")
 
-		if Message[1] then
-			Permission = Message[1]
+		if Group then
+			Permission = Group
 
-			if vRP.GroupType(Permission) == "Work" or not vRP.HasPermission(Passport,Permission) then
+			if not vRP.HasPermission(Passport,Permission) then
 				return false
 			end
 		end
@@ -65,7 +66,7 @@ RegisterCommand("painel",function(source,Message)
 			vCLIENT.Open(source,{ Permission,Members,Passport,vRP.HasPermission(Passport,Permission),HierarchyButtons,#Hierarchy })
 		end
 	end
-end)
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISMISS
 -----------------------------------------------------------------------------------------------------------------------------------------

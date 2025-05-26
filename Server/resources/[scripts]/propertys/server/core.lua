@@ -20,6 +20,7 @@ local Inside = {}
 local Active = {}
 local Robbery = {}
 local CountClothes = {}
+local DorbellCooldown = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GLOBALSTATE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -248,25 +249,35 @@ end
 -- PROPERTYS:DORBELL
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("propertys:Dorbell")
-AddEventHandler("propertys:Dorbell",function(Name)
+AddEventHandler("propertys:Dorbell", function(Name)
 	local source = source
+	local CurrentTime = os.time()
 	local Passport = vRP.Passport(source)
-	local Consult = vRP.Query("propertys/Exist",{ Name = Name })
-	if Passport and Consult[1] then
-		local OtherSource = vRP.Source(Consult[1]["Passport"])
-		if OtherSource then
-			if vRP.Request(OtherSource,"Propriedades","<b>"..vRP.FullName(Passport).."</b> está tocando a campainha, deseja responder?") then
-				local Keyboard = vKEYBOARD.Area(source,"Recado:")
-				if Keyboard then
-					TriggerClientEvent("Notify",source,"Campainha",Keyboard[1],"announcement",10000)
+	if Passport then
+		if DorbellCooldown[Passport] and CurrentTime - DorbellCooldown[Passport] < 300 then
+			local Cooldown = 300 - (CurrentTime - DorbellCooldown[Passport])
+			TriggerClientEvent("Notify",source,"Atenção","Aguarde <b>"..Cooldown.." segundos</b> para tocar a campainha novamente.","amarelo",5000)
+			return
+		end
 
-					TriggerClientEvent("Notify",source,"Sucesso","Você deixou uma reposta na campainha.","verde",5000)
+		local Consult = vRP.Query("propertys/Exist",{ Name = Name })
+		if Consult[1] then
+			local OtherSource = vRP.Source(Consult[1]["Passport"])
+			if OtherSource then
+				if vRP.Request(OtherSource,"Propriedades","<b>"..vRP.FullName(Passport).."</b> está tocando a campainha, deseja responder?") then
+					local Keyboard = vKEYBOARD.Area(source,"Recado:")
+					if Keyboard then
+						TriggerClientEvent("Notify",OtherSource,"Campainha","Recado de <b>"..vRP.FullName(Passport).."</b>: "..Keyboard[1],"announcement",10000)
+						TriggerClientEvent("Notify",source,"Sucesso","Você deixou uma resposta na campainha.","verde",5000)
+					end
+				else
+					TriggerClientEvent("Notify",source,"Atenção","Campainha não atendida.","amarelo",5000)
 				end
 			else
-				TriggerClientEvent("Notify",source,"Atenção","Campainha não atendida.","amarelo",5000)
+				TriggerClientEvent("Notify",source,"Aviso","Não há ninguém em casa no momento.","vermelho",5000)
 			end
-		else
-			TriggerClientEvent("Notify",source,"Aviso","Não há ninguém em casa no momento.","vermelho",5000)
+
+			DorbellCooldown[Passport] = CurrentTime
 		end
 	end
 end)

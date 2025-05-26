@@ -115,8 +115,11 @@ Location = {
 		["Coords"] = vec3(-1816.64,-1193.73,14.31),
 		["Mode"] = "Fishing"
 	},{
-		["Coords"] = vec3(-1593.08,5202.9,4.31),
-		["Mode"] = "Hunting"
+		["Coords"] = vec3(-773.76,5604.35,34.06),
+		["Mode"] = "HuntingSell"
+	},{
+		["Coords"] = vec3(-775.68,5602.9,34.06),
+		["Mode"] = "HuntingStore"
 	},{
 		["Coords"] = vec3(-1266.4,349.82,65.66),
 		["Mode"] = "Paramedico"
@@ -348,7 +351,7 @@ List = {
 			["adrenaline"] = 3225
 		}
 	},
-	["Hunting"] = {
+	["HuntingSell"] = {
 		["Mode"] = "Sell",
 		["Type"] = "Cash",
 		["List"] = {
@@ -364,6 +367,14 @@ List = {
 			["mtlion1star"] = 275,
 			["mtlion2star"] = 300,
 			["mtlion3star"] = 325
+		}
+	},
+	["HuntingStore"] = {
+		["Mode"] = "Buy",
+		["Type"] = "Cash",
+		["List"] = {
+			["ration"] = 175,
+			["WEAPON_SWITCHBLADE"] = 1055
 		}
 	},
 	["Fishing"] = {

@@ -1960,27 +1960,39 @@ Use = {
 	end,
 
 	["ration"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		if not vRPC.InsideVehicle(source) and not vCLIENT.CheckRation(source) then
-			Active[Passport] = os.time() + 10
-			Player(source)["state"]["Buttons"] = true
-			TriggerClientEvent("inventory:Close",source)
-			TriggerClientEvent("Progress",source,"Colocando",10000)
-			vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
+		for _,Zone in pairs(HunterInfluences) do
+			local PlayerCoords = vRP.GetEntityCoords(source)
+			local TargetCoords = vec3(table.unpack(Zone["Coords"]))
+			local Distance = #(PlayerCoords - TargetCoords)
 
-			repeat
-				if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
-					vRPC.Destroy(source)
-					Active[Passport] = nil
-					Player(source)["state"]["Buttons"] = false
+			if Distance <= Zone["Area"] then
+				if not vRPC.InsideVehicle(source) and not vCLIENT.CheckRation(source) then
+					Active[Passport] = os.time() + 10
+					Player(source)["state"]["Buttons"] = true
+					TriggerClientEvent("inventory:Close",source)
+					TriggerClientEvent("Progress",source,"Colocando",10000)
+					vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
-					if vRP.TakeItem(Passport,Full,1,true,Slot) then
-						TriggerClientEvent("inventory:Ration",source)
-					end
+					repeat
+						if Active[Passport] and os.time() >= parseInt(Active[Passport]) then
+							vRPC.Destroy(source)
+							Active[Passport] = nil
+							Player(source)["state"]["Buttons"] = false
+
+							if vRP.TakeItem(Passport,Full,1,true,Slot) then
+								TriggerClientEvent("inventory:Ration",source)
+							end
+						end
+
+						Wait(100)
+					until not Active[Passport]
 				end
 
-				Wait(100)
-			until not Active[Passport]
+				return
+			end
 		end
+
+		TriggerClientEvent("Notify",source,"Atenção","Só pode ser posicionada dentro das áreas de caça.","amarelo",5000)
 	end,
 
 	["pistol_bench"] = function(source,Passport,Amount,Slot,Full,Item,Split)

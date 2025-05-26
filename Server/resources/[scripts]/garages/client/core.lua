@@ -90,11 +90,7 @@ function Hensa.CreateVehicle(Model, Network, Engine, Health, Customize, Windows,
 	if NetworkDoesNetworkIdExist(Network) then
 		local Vehicle = NetToEnt(Network)
 		if DoesEntityExist(Vehicle) then
-
-			if Customize ~= nil then
-				local Mods = json.decode(Customize)
-				VehicleMods(Vehicle, Mods)
-			end
+			TriggerEvent("lscustoms:Apply",Vehicle,Customize)
 
 			if Brakes[1] ~= nil then
 				if Brakes[1] > 0.90 then

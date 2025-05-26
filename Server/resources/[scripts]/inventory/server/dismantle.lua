@@ -57,6 +57,7 @@ function Hensa.CreateVehicle(Model,Coords)
 			local Plate = exports["inventory"]:GeneratePlate()
 
 			SetVehicleNumberPlateText(Vehicle,Plate)
+			SetEntityIgnoreRequestControlFilter(Vehicle,true)
 			SetVehicleCustomPrimaryColour(Vehicle,math.random(255),math.random(255),math.random(255))
 			SetVehicleCustomSecondaryColour(Vehicle,math.random(255),math.random(255),math.random(255))
 
@@ -64,15 +65,20 @@ function Hensa.CreateVehicle(Model,Coords)
 			Entity(Vehicle)["state"]:set("Fuel",100,true)
 			Entity(Vehicle)["state"]:set("Tower",true,true)
 
+			SetVehicleDoorsLocked(Vehicle,2)
+
 			Dismantle[Plate] = source
 
-			local Service = vRP.NumPermission("Policia")
-			for Passports,Sources in pairs(Service) do
-				async(function()
-					TriggerClientEvent("sounds:Private",Sources,"crime",0.5)
-					TriggerClientEvent("NotifyPush",Sources,{ code = 31, title = "Desmanche de Veículo", x = Coords["x"], y = Coords["y"], z = Coords["z"], vehicle = VehicleName(Model).." - "..Plate, color = 44 })
-				end)
-			end
+			exports["vrp"]:CallPolice({
+				["Source"] = source,
+				["Passport"] = Passport,
+				["Permission"] = "Policia",
+				["Name"] = "Desmanche de Veículo",
+				["Vehicle"] = VehicleName(Model).." - "..Plate,
+				["Coords"] = Coords,
+				["Code"] = 31,
+				["Color"] = 44
+			})
 
 			return NetworkGetNetworkIdFromEntity(Vehicle)
 		end
@@ -89,22 +95,20 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 	local Plate = Entity[1]
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] and Dismantle[Plate] then
-		vRP.FreezePlayer(source,true)
-		Active[Passport] = os.time() + 60
+		Active[Passport] = os.time() + 30
 		Player(source)["state"]["Buttons"] = true
-		TriggerClientEvent("Progress",source,"Desmanchando",60000)
+		TriggerClientEvent("Progress",source,"Desmanchando",30000)
 		vRPC.PlayAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
 		repeat
 			if Active[Passport] and os.time() >= parseInt(Active[Passport]) and Dismantle[Plate] then
 				vRPC.Destroy(source)
 				Active[Passport] = nil
-				vRP.FreezePlayer(source,false)
 				Player(source)["state"]["Buttons"] = false
 				TriggerClientEvent("dismantle:Reset",source)
 				TriggerEvent("garages:Delete",Entity[4],Plate)
-				TriggerClientEvent("player:Residual",source,"Resíduo de Borracha")
 
+				local Stress = 5
 				local GainExperience = 3
 				local Amount = math.random(1125,1375)
 				local Experience = vRP.GetExperience(Passport,"Dismantle")
@@ -115,17 +119,11 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 				end
 
 				if vRP.UserPremium(Passport) then
-					local Bonification = 0.050
 					local Hierarchy = vRP.LevelPremium(Passport)
+					local Bonification = (Hierarchy == 1 and 0.100) or (Hierarchy == 2 and 0.075) or (Hierarchy >= 3 and 0.050)
 		
-					if Hierarchy == 1 then
-						Bonification = 0.100
-					elseif Hierarchy == 2 then
-						Bonification = 0.075
-					end
-		
-					GainExperience = GainExperience + 2
 					Valuation = Valuation + (Valuation * Bonification)
+					GainExperience = GainExperience + 2
 				end
 
 				if exports["party"]:DoesExist(Passport) then
@@ -133,15 +131,15 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 
 					for Number = 1,AmountMembers do
 						if vRP.Passport(Consult[Number]["Source"]) then
-							vRP.UpgradeStress(Consult[Number]["Passport"],5)
+							vRP.UpgradeStress(Consult[Number]["Passport"],Stress)
 							vRP.PutExperience(Consult[Number]["Passport"],"Dismantle",GainExperience)
-							vRP.GenerateItem(Consult[Number]["Passport"],"dirtydollar",Valuation,true)
+							vRP.GenerateItem(Consult[Number]["Passport"],DefaultMoneyTwo,Valuation,true)
 						end
 					end
 				else
-					vRP.UpgradeStress(Passport,5)
+					vRP.UpgradeStress(Passport,Stress)
 					vRP.PutExperience(Passport,"Dismantle",GainExperience)
-					vRP.GenerateItem(Passport,"dirtydollar",Valuation,true)
+					vRP.GenerateItem(Passport,DefaultMoneyTwo,Valuation,true)
 				end
 			end
 
@@ -155,9 +153,6 @@ end)
 function Hensa.Experience()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport then
-		return vRP.GetExperience(Passport,"Dismantle")
-	end
 
-	return 0
+	return vRP.GetExperience(Passport,"Dismantle")
 end

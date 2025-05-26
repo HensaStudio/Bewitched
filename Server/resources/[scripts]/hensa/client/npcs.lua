@@ -383,10 +383,15 @@ local List = {
 		["Coords"] = vec4(-1221.48,-907.93,12.32,31.19),
 		["Model"] = "mp_m_shopkeep_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Hunt Store
+	},{ -- Hunt Sell
 		["Distance"] = 15,
 		["Coords"] = vec4(-773.7,5604.59,33.73,172.92),
 		["Model"] = "cs_hunter",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Hunt Store
+		["Distance"] = 15,
+		["Coords"] = vec4(-775.93,5602.94,33.73,257.96),
+		["Model"] = "cs_joeminuteman",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Ammu-Nation Craft
 		["Distance"] = 15,

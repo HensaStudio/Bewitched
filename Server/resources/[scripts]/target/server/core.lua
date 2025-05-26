@@ -15,7 +15,52 @@ vKEYBOARD = Tunnel.getInterface("keyboard")
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Calls = {}
+local Workout = {}
 local Announces = {}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- GLOBALSTATE
+-----------------------------------------------------------------------------------------------------------------------------------------
+for Number,_ in pairs(Academy) do
+	GlobalState["Academy-"..Number] = false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ACADEMY
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.Academy(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and not GlobalState["Academy-"..Number] and not Workout[Passport] then
+		Player(source)["state"]["Buttons"] = true
+		Player(source)["state"]["Cancel"] = true
+		GlobalState["Academy-"..Number] = true
+		Workout[Passport] = Number
+
+		return true
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ACADEMYWEIGHT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.AcademyWeight(Number)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport and GlobalState["Academy-"..Number] and Workout[Passport] == Number then
+		local MaxWeight = 72
+		if vRP.GetWeight(Passport) < MaxWeight then
+			vRP.SetWeight(Passport,2)
+			vRP.UpgradeStress(Passport,2)
+			vRP.DowngradeThirst(Passport,2)
+			TriggerClientEvent("Notify",source,"Academia","Sinto minha força alcançando novos patamares, não há limites quando se trata de determinação e dedicação.","verde",5000)
+		end
+
+		Player(source)["state"]["Buttons"] = false
+		Player(source)["state"]["Cancel"] = false
+		GlobalState["Academy-"..Number] = false
+		Workout[Passport] = nil
+	end
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKIN
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -176,5 +221,14 @@ AddEventHandler("target:Service",function(Permission)
 	local Passport = vRP.Passport(source)
 	if Passport and vRP.HasGroup(Passport,Permission) then
 		vRP.ServiceToggle(source,Passport,Permission,false)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- DISCONNECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("Disconnect",function(Passport)
+	if Workout[Passport] then
+		GlobalState["Academy-"..Workout[Passport]] = false
+		Workout[Passport] = nil
 	end
 end)

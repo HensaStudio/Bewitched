@@ -23,8 +23,10 @@ files {
 
 shared_scripts {
 	"@vrp/config/Item.lua",
+	"@vrp/config/Groups.lua",
 	"@vrp/config/Vehicle.lua",
 	"@vrp/config/Global.lua",
 	"@vrp/config/Drops.lua",
+	"@vrp/config/Influences.lua",
 	"shared/*"
 }

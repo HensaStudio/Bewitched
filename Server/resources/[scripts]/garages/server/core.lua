@@ -408,7 +408,7 @@ function Hensa.Sell(Name)
 					vRP.GiveBank(Passport, Price, true)
 
 					vRP.Query("vehicles/removeVehicles",{ Passport = Passport, Vehicle = Name })
-					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..Consult[1]["id"] })
+					vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
 					vRP.Query("entitydata/RemoveData",{ Name = "Chest:"..Passport..":"..Name })
 				end
 			end
@@ -451,10 +451,10 @@ function Hensa.Transfer(Name)
 							else
 								vRP.Query("vehicles/moveVehicles", { Passport = Passport, OtherPassport = parseInt(OtherPassport), Vehicle = Name })
 
-								local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..TheVehicle[1]["id"] })
+								local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name })
 								if parseInt(#Datatable) > 0 then
-									vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..OtherPassport..":"..Name..":"..TheVehicle[1]["id"], Information = Datatable[1]["Information"] })
-									vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..TheVehicle[1]["id"] })
+									vRP.Query("entitydata/SetData",{ Name = "LsCustoms:"..OtherPassport..":"..Name, Information = Datatable[1]["Information"] })
+									vRP.Query("entitydata/RemoveData",{ Name = "LsCustoms:"..Passport..":"..Name })
 								end
 
 								local Datatable = vRP.GetServerData("Chest:" .. Passport .. ":" .. Name)
@@ -597,11 +597,7 @@ function Hensa.Spawn(Name, Number)
 
 					local Coords = vCLIENT.SpawnPosition(source, Number)
 					if Coords then
-						local LsCustoms = nil
-						local Datatable = vRP.Query("entitydata/GetData",{ Name = "LsCustoms:"..Passport..":"..Name..":"..vehicle[1]["id"] })
-						if parseInt(#Datatable) > 0 then
-							LsCustoms = Datatable[1]["Information"]
-						end
+						local LsCustoms = vRP.GetServerData("LsCustoms:"..Passport..":"..Name)
 
 						if Garages[Number]["payment"] then
 							if vRP.UserPremium(Passport) then

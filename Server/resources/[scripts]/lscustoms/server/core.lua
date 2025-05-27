@@ -30,7 +30,7 @@ function Hensa.Save(Model,Plate,Initial)
 	local source = source
 	local Passport = vRP.Passport(source)
 	local Price = Calculate(Initial,Model)
-	if Passport and (Price <= 0 or vRP.PaymentFull(Passport,Price,true)) then
+	if Passport and (Price <= 0 or vRP.PaymentFull(Passport,Price)) then
 		local OtherPassport = vRP.PassportPlate(Plate)
 		if OtherPassport then
 			local Consult = vRP.GetServerData("LsCustoms:"..OtherPassport..":"..Model)

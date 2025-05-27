@@ -29,21 +29,22 @@ AddEventHandler("target:Academy", function(Number)
 
 		SetEntityHeading(Ped, Academy[Number]["Coords"]["w"])
 		SetEntityCoords(Ped, Academy[Number]["Coords"]["xyz"])
-		TriggerEvent("emotes", Academy[Number]["Anim"])
 
-		if vSERVER.Academy(Number) then
-			local Chance = math.random(1,100)
-			if Chance <= 30 then
-				vRP.Destroy()
+		local Chance = math.random(1,100)
+		if Chance <= 30 then
+			vRP.Destroy()
 
-				CreateThread(function()
-					ApplyDamageToPed(Ped,10,true,false,true)
-					SetPedToRagdoll(Ped,5000,5000,0,true,true,false)
-					TriggerEvent("Notify","Aviso","Você se acidentou durante o treino e desmaiou.","blood",5000)
-				end)
+			CreateThread(function()
+				ApplyDamageToPed(Ped,10,true,false,true)
+				SetPedToRagdoll(Ped,5000,5000,0,true,true,false)
+				TriggerEvent("Notify","Aviso","Você se acidentou durante o treino e desmaiou.","blood",5000)
+			end)
 
-				return
-			else
+			return
+		else
+			if vSERVER.Academy(Number) then
+				TriggerEvent("emotes", Academy[Number]["Anim"])
+
 				TriggerEvent("Progress","Malhando",30000)
 
 				SetTimeout(30000, function()

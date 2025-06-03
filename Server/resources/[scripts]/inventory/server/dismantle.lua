@@ -106,7 +106,7 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
 				TriggerClientEvent("dismantle:Reset",source)
-				TriggerEvent("garages:Delete",Entity[4],Plate)
+				TriggerEvent("garages:Deleted",Entity[4],Plate)
 
 				local Stress = 5
 				local GainExperience = 3

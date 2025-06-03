@@ -17,6 +17,7 @@ local Inside = false
 local Opened = false
 local Policed = false
 local Stealing = false
+local BlipsGalpoes = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSYSTEM
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -288,7 +289,7 @@ end)
 -- PROPERTYS:BLIPS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("propertys:Blips")
-AddEventHandler("propertys:Blips",function()
+AddEventHandler("propertys:Blips", function()
 	if json.encode(Blips) ~= "[]" then
 		for _,v in pairs(Blips) do
 			if DoesBlipExist(v) then
@@ -297,25 +298,46 @@ AddEventHandler("propertys:Blips",function()
 		end
 
 		Blips = {}
-
-		TriggerEvent("Notify","Propriedades","Marcações desativadas.","default",10000)
+		TriggerEvent("Notify", "Propriedades", "Marcações desativadas.", "amarelo", 10000)
 	else
 		for Name,v in pairs(Propertys) do
-			if Name ~= "Hotel" then
-				Blips[Name] = AddBlipForCoord(v["Coords"]["x"],v["Coords"]["y"],v["Coords"]["z"])
-
-				if v["Galpão"] then
-					SetBlipSprite(Blips[Name],473)
-				else
-					SetBlipSprite(Blips[Name],374)
-				end
-
-				SetBlipScale(Blips[Name],0.5)
-				SetBlipAsShortRange(Blips[Name],true)
-				SetBlipColour(Blips[Name],GlobalState["Markers"][Name] and 35 or 43)
+			if not v["Galpão"] and Name ~= "Hotel" then
+				Blips[Name] = AddBlipForCoord(v["Coords"]["x"], v["Coords"]["y"], v["Coords"]["z"])
+				SetBlipSprite(Blips[Name], 374)
+				SetBlipScale(Blips[Name], 0.5)
+				SetBlipAsShortRange(Blips[Name], true)
+				SetBlipColour(Blips[Name], GlobalState["Markers"][Name] and 35 or 43)
 			end
 		end
 
-		TriggerEvent("Notify","Propriedades","Marcações ativadas.","default",10000)
+		TriggerEvent("Notify", "Propriedades", "Marcações ativadas.", "verde", 10000)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PROPERTYS:BLIPSGALPOES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("propertys:BlipsGalpoes")
+AddEventHandler("propertys:BlipsGalpoes", function()
+	if json.encode(BlipsGalpoes) ~= "[]" then
+		for _,v in pairs(BlipsGalpoes) do
+			if DoesBlipExist(v) then
+				RemoveBlip(v)
+			end
+		end
+
+		BlipsGalpoes = {}
+		TriggerEvent("Notify", "Galpões", "Marcações desativadas.", "amarelo", 10000)
+	else
+		for Name,v in pairs(Propertys) do
+			if v["Galpão"] then
+				BlipsGalpoes[Name] = AddBlipForCoord(v["Coords"]["x"], v["Coords"]["y"], v["Coords"]["z"])
+				SetBlipSprite(BlipsGalpoes[Name], 473)
+				SetBlipScale(BlipsGalpoes[Name], 0.5)
+				SetBlipAsShortRange(BlipsGalpoes[Name], true)
+				SetBlipColour(BlipsGalpoes[Name], GlobalState["Markers"][Name] and 35 or 43)
+			end
+		end
+
+		TriggerEvent("Notify", "Galpões", "Marcações ativadas.", "verde", 10000)
 	end
 end)

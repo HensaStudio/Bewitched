@@ -247,10 +247,10 @@ local List = {
 	["227"] = vec3(-2389.6,3286.8,33.6)
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- PROPERTYS:BLIPS
+-- WAREHOUSE:BLIPS
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("propertys:Blips")
-AddEventHandler("propertys:Blips",function()
+RegisterNetEvent("warehouse:Blips")
+AddEventHandler("warehouse:Blips",function()
 	if json.encode(Blips) ~= "[]" then
 		for _,v in pairs(Blips) do
 			if DoesBlipExist(v) then
@@ -259,6 +259,8 @@ AddEventHandler("propertys:Blips",function()
 		end
 
 		Blips = {}
+
+		TriggerEvent("Notify","Armazéns","Marcações desativadas.","amarelo",10000)
 	else
 		for Name,v in pairs(List) do
 			Blips[Name] = AddBlipForCoord(v["x"],v["y"],v["z"])
@@ -267,6 +269,8 @@ AddEventHandler("propertys:Blips",function()
 			SetBlipColour(Blips[Name],GlobalState["Warehouses"][Name] and 35 or 43)
 			SetBlipScale(Blips[Name],0.4)
 		end
+
+		TriggerEvent("Notify","Armazéns","Marcações ativadas.","verde",10000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

@@ -870,52 +870,62 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Delete(Network, Health, Engine, Body, Fuel, Doors, Windows, Tyres, Plate, Brake)
 	if Spawn[Plate] then
-		local Passport = Spawn[Plate][1]
-		local Vehicle = Spawn[Plate][2]
+		local Networked = NetworkGetEntityFromNetworkId(Network)
+		if DoesEntityExist(Networked) and not IsPedAPlayer(Networked) and GetEntityType(Networked) == 2 and GetVehicleNumberPlateText(Networked) == Plate then
+			local Passport = Spawn[Plate][1]
+			local Vehicle = Spawn[Plate][2]
 
-		if parseInt(Engine) <= 100 then
-			Engine = 100
-		end
+			if parseInt(Engine) <= 100 then
+				Engine = 100
+			end
 
-		if parseInt(Body) <= 100 then
-			Body = 100
-		end
+			if parseInt(Body) <= 100 then
+				Body = 100
+			end
 
-		if parseInt(Fuel) >= 100 then
-			Fuel = 100
-		end
+			if parseInt(Fuel) >= 100 then
+				Fuel = 100
+			end
 
-		if parseInt(Fuel) <= 0 then
-			Fuel = 0
-		end
+			if parseInt(Fuel) <= 0 then
+				Fuel = 0
+			end
 
-		local vehicle = vRP.Query("vehicles/selectVehicles", { Passport = Passport, Vehicle = Vehicle })
-		if vehicle[1] ~= nil then
-			vRP.Query("vehicles/updateVehicles",
-				{
-					Passport = Passport,
-					Vehicle = Vehicle,
-					Nitro = GlobalState["Nitro"][Plate] or 0,
-					Engine = parseInt(Engine),
-					Body = parseInt(Body),
-					Health = parseInt(Health),
-					Fuel = parseInt(Fuel),
-					Doors = json.encode(Doors),
-					Windows = json.encode(Windows),
-					Tyres = json.encode(Tyres),
-					Brakes = json.encode(Brake)
-				})
+			local vehicle = vRP.Query("vehicles/selectVehicles", { Passport = Passport, Vehicle = Vehicle })
+			if vehicle[1] ~= nil then
+				vRP.Query("vehicles/updateVehicles",
+					{
+						Passport = Passport,
+						Vehicle = Vehicle,
+						Nitro = GlobalState["Nitro"][Plate] or 0,
+						Engine = parseInt(Engine),
+						Body = parseInt(Body),
+						Health = parseInt(Health),
+						Fuel = parseInt(Fuel),
+						Doors = json.encode(Doors),
+						Windows = json.encode(Windows),
+						Tyres = json.encode(Tyres),
+						Brakes = json.encode(Brake)
+					})
+			end
 		end
 	end
 
 	TriggerEvent("garages:DeleteVehicle", Network, Plate)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- GARAGES:DELETED
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("garages:Deleted")
+AddEventHandler("garages:Deleted",function(Network,Plate)
+	Hensa.Delete(Network, 1000, 100, 100, 100, {}, {}, {}, Plate, {}) 
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- GARAGES:DELETEVEHICLE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("garages:DeleteVehicle")
 AddEventHandler("garages:DeleteVehicle", function(Network, Plate)
-	if Network ~= nil and Plate ~= nil then
+	if Network and Plate then
 		if GlobalState["Plates"][Plate] then
 			local Plates = GlobalState["Plates"]
 			Plates[Plate] = nil

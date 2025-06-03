@@ -169,8 +169,14 @@ RegisterCommand("PlayerFunctions",function()
 		end
 
 		exports["dynamic"]:AddMenu("Outros", "Todas as funções do personagem.", "others")
-		exports["dynamic"]:AddButton("Estatísticas da Cidade", "Tudo sobre nossa cidade.", "admin:Dynamic", "stats", "others", true)
+		if not CheckPolice() then
+			exports["dynamic"]:AddButton("Desmanche", "Marcar/Desmarcar desmanches no mapa.", "target:DismantleBlips", "", "others", false)
+		end
+
 		exports["dynamic"]:AddButton("Propriedades", "Marcar/Desmarcar propriedades no mapa.", "propertys:Blips", "", "others", false)
+		exports["dynamic"]:AddButton("Armazéns", "Marcar/Desmarcar armazéns no mapa.", "warehouse:Blips", "", "others", false)
+		exports["dynamic"]:AddButton("Galpões", "Marcar/Desmarcar galpões no mapa.", "propertys:BlipsGalpoes", "", "others", false)
+		exports["dynamic"]:AddButton("Estatísticas", "Tudo sobre nossa cidade.", "admin:Dynamic", "stats", "others", true)
 		exports["dynamic"]:AddButton("Ferimentos", "Verificar ferimentos no corpo.", "paramedic:Injuries", "", "others", false)
 		exports["dynamic"]:AddButton("Desbugar", "Recarregar o personagem.", "player:Debug", "", "others", true)
 

@@ -1547,7 +1547,7 @@ RegisterServerEvent("inventory:RemoveTyres")
 AddEventHandler("inventory:RemoveTyres",function(Entity)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and Entity[2] ~= "veto" and Entity[2] ~= "veto2" then
+	if Passport and not Active[Passport] and Entity[2] ~= "veto" and Entity[2] ~= "veto2" and VehicleMode(Entity[2]) ~= "Work" then
 		if not vCLIENT.CheckWeapon(source,"WEAPON_WRENCH") then
 			TriggerClientEvent("Notify",source,"Aviso","<b>Chave Inglesa</b> não encontrada.","vermelho",5000)
 

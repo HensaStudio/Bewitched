@@ -17,6 +17,7 @@ local Focus = false
 local Selected = {}
 local Sucess = false
 local Actived = false
+local DismantleBlips = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REANIMAR
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -201,6 +202,40 @@ local Fuels = {
 	vec3(-63.61,-1767.93,28.27),
 	vec3(-61.03,-1760.85,28.31)
 }
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TARGET:DISMANTLEBLIPS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("target:DismantleBlips")
+AddEventHandler("target:DismantleBlips", function()
+	if CheckPolice() then
+		TriggerEvent("Notify", "Atenção", "Você não tem permissões para isso.", "amarelo", 5000)
+	else
+		if json.encode(DismantleBlips) ~= "[]" then
+			for _,v in pairs(DismantleBlips) do
+				if DoesBlipExist(v) then
+					RemoveBlip(v)
+				end
+			end
+
+			DismantleBlips = {}
+			TriggerEvent("Notify", "Desmanche", "Marcações desativadas.", "amarelo", 10000)
+		else
+			for _,coords in ipairs(Dismantle) do
+				local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+				SetBlipSprite(blip, 380)
+				SetBlipScale(blip, 0.7)
+				SetBlipColour(blip, 1)
+				SetBlipAsShortRange(blip, true)
+				BeginTextCommandSetBlipName("STRING")
+				AddTextComponentString("Local de Desmanche")
+				EndTextCommandSetBlipName(blip)
+				table.insert(DismantleBlips, blip)
+			end
+
+			TriggerEvent("Notify", "Desmanche", "Marcações ativadas.", "verde", 10000)
+		end
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ONCLIENTRESOURCESTART
 -----------------------------------------------------------------------------------------------------------------------------------------

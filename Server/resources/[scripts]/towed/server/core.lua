@@ -89,33 +89,37 @@ RegisterServerEvent("towed:Payment")
 AddEventHandler("towed:Payment",function(Plate)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not Active[Passport] and Vehicles[Plate] then
-		Active[Passport] = true
+	if Passport and not Active[Passport] then
+		if Vehicles[Plate] then
+			Active[Passport] = true
 
-		local GainExperience = 2
-		local Result = RandPercentage(Drops)
-		local Experience = vRP.GetExperience(Passport,"Towed")
-		local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
+			local GainExperience = 2
+			local Result = RandPercentage(Drops)
+			local Experience = vRP.GetExperience(Passport,"Towed")
+			local Valuation = Result["Valuation"] + Result["Valuation"] * (Result["Addition"] * Experience)
 
-		if exports["inventory"]:Buffs("Dexterity",Passport) then
-			Valuation = Valuation + (Valuation * 0.1)
+			if exports["inventory"]:Buffs("Dexterity",Passport) then
+				Valuation = Valuation + (Valuation * 0.1)
+			end
+
+			if vRP.UserPremium(Passport) then
+				local Hierarchy = vRP.LevelPremium(Passport)
+				local Bonification = (Hierarchy == 1 and 0.100) or (Hierarchy == 2 and 0.075) or (Hierarchy >= 3 and 0.050)
+
+				Valuation = Valuation + (Valuation * Bonification)
+				GainExperience = GainExperience + 3
+			end
+
+			TriggerEvent("garages:DeleteVehicle",Vehicles[Plate]["Network"],Plate)
+			vRP.GenerateItem(Passport,Result["Item"],Valuation,true)
+			vRP.PutExperience(Passport,"Towed",GainExperience)
+			vRP.GenerateItem(Passport,"dollar",250,true)
+			vRP.UpgradeStress(Passport,5)
+
+			Active[Passport] = nil
+		else
+			TriggerClientEvent("Notify",source,"Reboque","Este veículo não está disponível para reboque no momento ou não pertence à sua lista autorizada.","mechanic",5000)
 		end
-
-		if vRP.UserPremium(Passport) then
-			local Hierarchy = vRP.LevelPremium(Passport)
-			local Bonification = (Hierarchy == 1 and 0.100) or (Hierarchy == 2 and 0.075) or (Hierarchy >= 3 and 0.050)
-
-			Valuation = Valuation + (Valuation * Bonification)
-			GainExperience = GainExperience + 3
-		end
-
-		TriggerEvent("garages:DeleteVehicle",Vehicles[Plate]["Network"],Plate)
-		vRP.GenerateItem(Passport,Result["Item"],Valuation,true)
-		vRP.PutExperience(Passport,"Towed",GainExperience)
-		vRP.GenerateItem(Passport,"dollar",250,true)
-		vRP.UpgradeStress(Passport,5)
-
-		Active[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

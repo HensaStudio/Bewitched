@@ -308,7 +308,7 @@ AddEventHandler("garages:Impound", function()
 	local Impound = vSERVER.Impound()
 	if parseInt(#Impound) > 0 then
 		for k,v in pairs(Impound) do
-			exports["dynamic"]:AddButton(v["Name"], "Clique para efetuar a liberação.", "garages:Impound", v["Model"], false, true)
+			exports["dynamic"]:AddButton(v["Name"], "Valor de liberação: <common><b>"..Currency..""..Dotted(v["Price"]).." "..ItemName(DefaultMoneyOne).."</b></common>.", "garages:Impound", v["Model"], false, true)
 		end
 
 		exports["dynamic"]:Open()

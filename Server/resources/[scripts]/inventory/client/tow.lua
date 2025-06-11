@@ -36,6 +36,10 @@ AddEventHandler("inventory:Tow",function(Selected)
 					Entity(Selected)["state"]:set("Tow",true,true)
 
 					TriggerServerEvent("inventory:Tow",VehToNet(Vehicle),VehToNet(Selected),true)
+
+					if LocalPlayer["state"]["Towed"] then
+						TriggerEvent("Notify","Reboque","Retorne com o veículo rebocado ao <b>Reboque</b>.","mechanic",5000)
+					end
 				end)
 			end
 		else

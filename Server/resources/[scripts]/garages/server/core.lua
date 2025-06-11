@@ -317,12 +317,23 @@ function Hensa.Impound()
 			if v["Arrest"] >= os.time() then
 				Vehicles[#Vehicles + 1] = {
 					["Model"] = Vehicle[Number]["Vehicle"],
-					["Name"] = VehicleName(Vehicle[Number]["Vehicle"])
+					["Name"] = VehicleName(Vehicle[Number]["Vehicle"]),
+					["Price"] = VehiclePrice(Vehicle[Number]["Vehicle"]) * PercentageArrest
 				}
 			end
 		end
 
 		return Vehicles
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- OSTIME
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.OsTime()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		return os.time()
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -336,8 +347,13 @@ AddEventHandler("garages:Impound", function(Name)
 		local VehiclePrice = VehiclePrice(Name) * PercentageArrest
 		TriggerClientEvent("dynamic:Close", source)
 
-		local Message = "A liberação do veículo <b>"..VehicleName(Name).."</b> tem o custo de <b>"..Currency..""..Dotted(VehiclePrice).." dólares</b>, deseja prosseguir com a liberação do mesmo?"
-		if vRP.Request(source, "Garagem", Message) then
+		TriggerClientEvent("emotes", source, "anotar")
+
+		Player(source)["state"]["Buttons"] = true
+		Player(source)["state"]["Cancel"] = true
+
+		local Message = "A liberação do veículo <b>"..VehicleName(Name).."</b> tem o custo de <b>"..Currency..""..Dotted(VehiclePrice).." "..ItemName(DefaultMoneyOne).."</b>, deseja prosseguir com a liberação do mesmo?"
+		if vRP.Request(source, "Reboque", Message) then
 			if vRP.PaymentFull(Passport, VehiclePrice) then
 				vRP.Query("vehicles/paymentArrest", { Passport = Passport, Vehicle = Name })
 				TriggerClientEvent("Notify", source, "Sucesso", "Veículo liberado.", "verde", 5000)
@@ -345,6 +361,11 @@ AddEventHandler("garages:Impound", function(Name)
 				TriggerClientEvent("Notify",source,"Aviso","<b>"..ItemName(DefaultMoneyOne).."</b> insuficientes.","vermelho",5000)
 			end
 		end
+
+		Player(source)["state"]["Buttons"] = false
+		Player(source)["state"]["Cancel"] = false
+
+		vRPC.Destroy(source)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

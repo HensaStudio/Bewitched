@@ -187,21 +187,10 @@ local List = {
 		["Model"] = "s_m_y_airworker",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
-	},{ -- Desmanche
-		["Distance"] = 100,
-		["Coords"] = vec4(778.49,-395.89,33.43,99.22),
-		["Model"] = "g_m_y_salvagoon_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
-		["Collision"] = true
-	},{ -- Towed
-		["Distance"] = 50,
-		["Coords"] = vec4(408.91,-1622.75,29.28,232.45),
+	},{ -- Towed Service
+		["Distance"] = 10,
+		["Coords"] = vec4(-193.25,-1162.39,23.67,272.13),
 		["Model"] = "u_m_o_finguru_01",
-		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
-	},{ -- Towed Impound
-		["Distance"] = 50,
-		["Coords"] = vec4(392.31,-1645.23,29.28,323.15),
-		["Model"] = "s_m_m_gardener_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Concessionária
 		["Distance"] = 25,

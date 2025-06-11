@@ -80,14 +80,32 @@ RegisterServerEvent("police:ArrestVehicles")
 AddEventHandler("police:ArrestVehicles",function(Entity)
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and vRP.Request(source,"Garagem","Apreender o veículo?") then
+	if Passport then
 		local OtherPassport = vRP.PassportPlate(Entity[1])
 		if OtherPassport then
 			local Vehicle = vRP.Query("vehicles/selectVehicles",{ Passport = OtherPassport, Vehicle = Entity[2] })
 			if Vehicle[1] then
 				if Vehicle[1]["Arrest"] == 0 then
-					vRP.Query("vehicles/arrestVehicles",{ Passport = OtherPassport, Vehicle = Entity[2] })
-					TriggerClientEvent("Notify",source,"Departamento Policial","Veículo apreendido.","policia",5000)
+					TriggerClientEvent("emotes",source,"anotar")
+
+					Player(source)["state"]["Buttons"] = true
+					Player(source)["state"]["Cancel"] = true
+
+					if vRP.Request(source,"Reboque","Tem certeza que deseja apreender o veículo de <b>"..vRP.FullName(Vehicle[1]["Passport"]).."</b>, placa <b>"..Vehicle[1]["Plate"].."</b>?") then
+						vRP.Query("vehicles/arrestVehicles",{ Passport = OtherPassport, Vehicle = Entity[2] })
+						TriggerClientEvent("Notify",source,"Departamento Policial","Veículo apreendido.","policia",5000)
+
+						local OtherSource = vRP.Source(Vehicle[1]["Passport"])
+						if OtherSource then
+							vRPC.PlaySound(OtherSource,"ATM_WINDOW","HUD_FRONTEND_DEFAULT_SOUNDSET")
+							TriggerClientEvent("Notify",OtherSource,"Departamento Policial","Seu veículo com a placa <b>"..Vehicle[1]["Plate"].."</b>, foi apreendido.","policia",5000)
+						end
+					end
+
+					Player(source)["state"]["Buttons"] = false
+					Player(source)["state"]["Cancel"] = false
+
+					vRPC.Destroy(source)
 				else
 					TriggerClientEvent("Notify",source,"Departamento Policial","Veículo já se encontra apreendido.","policia",5000)
 				end

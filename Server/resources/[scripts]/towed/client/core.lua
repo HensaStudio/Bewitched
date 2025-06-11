@@ -23,7 +23,6 @@ local VehiclePlate = false
 CreateThread(function()
 	exports["target"]:AddBoxZone("Towed",Init["xyz"],0.75,0.75,{
 		name = "Towed",
-		heading = Init["w"],
 		minZ = Init["z"] - 1.0,
 		maxZ = Init["z"] + 1.0
 	},{
@@ -47,17 +46,21 @@ AddEventHandler("towed:Init",function()
 	end
 
 	if Service then
-		TriggerEvent("Notify","Central de Empregos","Você acaba finalizar sua jornada de trabalho, esperamos que você tenha aprendido bastante hoje.","default",5000)
+		TriggerEvent("Notify","Central de Empregos","Você acaba finalizar sua jornada de trabalho, esperamos que você tenha aprendido bastante hoje.","mechanic",5000)
 		exports["target"]:LabelText("Towed","Iniciar Expediente")
 		Service = false
+
+		LocalPlayer["state"]["Towed"] = false
 	else
-		TriggerEvent("Notify","Central de Empregos","Você acaba de dar inicio a sua jornada de trabalho, lembrando que a sua vida não se resume só a isso.","default",5000)
+		TriggerEvent("Notify","Central de Empregos","Você acaba de dar inicio a sua jornada de trabalho, lembrando que a sua vida não se resume só a isso.","mechanic",5000)
 		exports["target"]:LabelText("Towed","Finalizar Expediente")
 		ModelSelected = Models[math.random(#Models)]
 		Destiny = math.random(#Locations)
 		VehiclePlate = nil
 		MarkedVehicle()
 		Service = true
+
+		LocalPlayer["state"]["Towed"] = true
 	end
 
 	vSERVER.Service()
@@ -143,4 +146,6 @@ function MarkedVehicle()
 	BeginTextCommandSetBlipName("STRING")
 	AddTextComponentString("Veiculo Quebrado")
 	EndTextCommandSetBlipName(Blip)
+	
+	TriggerEvent("Notify","Reboque","Veículo quebrado adicionado ao <b>GPS</b>.","mechanic",5000)
 end

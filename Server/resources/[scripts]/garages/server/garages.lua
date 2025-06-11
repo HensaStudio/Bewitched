@@ -11,6 +11,7 @@ Garages = {
 	["7"] = { name = "Garage", payment = true },
 	["8"] = { name = "Garage", payment = true },
 	["9"] = { name = "Garage", payment = true },
+	["10"] = { name = "Garage", payment = true },
 
 	-- Paramédico
 	["41"] = { name = "Paramedico", payment = false, perm = "Paramedico" },
@@ -40,6 +41,7 @@ Garages = {
 	["142"] = { name = "Driver", payment = false, license = false },
 	["143"] = { name = "Garbageman", payment = false, license = false },
 	["144"] = { name = "Transporter", payment = false, license = false },
+	["145"] = { name = "TowDriver", payment = false, license = false },
 	["146"] = { name = "TowDriver", payment = false, license = false },
 	["150"] = { name = "Taxi", payment = false, license = false },
 	["151"] = { name = "Trucker", payment = false, license = false },

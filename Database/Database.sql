@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `Premium` int(20) NOT NULL DEFAULT 0,
   `Discord` varchar(50) NOT NULL DEFAULT '0',
   `License` varchar(50) NOT NULL DEFAULT '0',
+  `Login` int(20) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `id` (`id`),
   KEY `Discord` (`Discord`),

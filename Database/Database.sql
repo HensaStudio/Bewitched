@@ -271,3 +271,12 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   KEY `Passport` (`Passport`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `permissions`;
+CREATE TABLE `permissions` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `Permission` varchar(50) NOT NULL DEFAULT '',
+  `Members` int(20) NOT NULL DEFAULT 0,
+  `Bank` int(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

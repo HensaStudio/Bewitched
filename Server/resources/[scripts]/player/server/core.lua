@@ -62,7 +62,7 @@ AddEventHandler("player:Survival",function()
 		vRP.UpgradeThirst(Passport,100)
 		vRP.UpgradeHunger(Passport,100)
 		vRP.DowngradeStress(Passport,100)
-		exports["discord"]:Embed("Airport","**Source:** "..source.."\n**Passaporte:** "..Passport.."\n**Coords:** "..vRP.GetEntityCoords(source),0xa3c846)
+		exports["discord"]:Embed("Airport","**Source:** "..source.."\n**Passaporte:** "..Passport.."\n**Coords:** "..vRP.GetEntityCoords(source))
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

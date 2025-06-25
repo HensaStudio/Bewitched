@@ -10,6 +10,7 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 Hensa = {}
 Tunnel.bindInterface("bank", Hensa)
+vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -54,12 +55,60 @@ function Hensa.Check(Number)
 		end
 
 		if not exports["hud"]:Reposed(Passport, source) and not exports["hud"]:Wanted(Passport, source) then
-			return true
+			local Consult = vRP.Query("characters/Person", { Passport = Passport })
+			if Consult[1] and Consult[1]["Password"] == 0 then
+				TriggerClientEvent("Notify", source, "Aviso", "Por segurança, crie uma senha de <b>4</b> a <b>20</b> números para acessar sua conta bancária.", "vermelho", 10000)
+
+				if vRP.Request(source, "Banco", "Você deseja criar uma senha de acesso agora?") then
+					local Keyboard = vKEYBOARD.Password(source, "Nova Senha")
+					if Keyboard then
+						local Password = sanitizeString(Keyboard[1],"0123456789")
+						if string.len(Password) >= 4 and string.len(Password) <= 20 then
+							vRP.Query("characters/BankPassword",{ Password = Password, Passport = Passport })
+							TriggerClientEvent("Notify",source,"Sucesso","Senha atualizada.","verde",5000)
+						else
+							TriggerClientEvent("Notify",source,"Atenção","Necessário possuir entre <b>4</b> e <b>20</b> números.","amarelo",5000)
+						end
+					end
+				end
+			else
+				local Keyboard = vKEYBOARD.Password(source,"Senha")
+				if Keyboard then
+					local BankAccess = vRP.Query("characters/BankAccess",{ Passport = Passport, Password = Keyboard[1] })
+					if BankAccess[1] then
+						return true
+					else
+						TriggerClientEvent("Notify",source,"Aviso","Senha incorreta.","vermelho",5000)
+					end
+				end
+			end
 		end
 	end
 
 	return false
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BANK:CHANGEPASSWORD
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("bank:ChangePassword")
+AddEventHandler("bank:ChangePassword",function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if not Passport then return end
+	local Consult = vRP.Query("characters/Person", { Passport = Passport })
+	if Consult[1] then
+		local Keyboard = vKEYBOARD.Password(source, "Nova Senha")
+		if Keyboard then
+			local Password = sanitizeString(Keyboard[1],"0123456789")
+			if string.len(Password) >= 4 and string.len(Password) <= 20 then
+				vRP.Query("characters/BankPassword",{ Password = Password, Passport = Passport })
+				TriggerClientEvent("Notify",source,"Sucesso","Senha atualizada.","verde",5000)
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Necessário possuir entre <b>4</b> e <b>20</b> números.","amarelo",5000)
+			end
+		end
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BANK:SABOTAGE
 -----------------------------------------------------------------------------------------------------------------------------------------

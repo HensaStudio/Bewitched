@@ -2712,8 +2712,9 @@ Use = {
 	["tyres"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if not vRPC.InsideVehicle(source) then
 			if not vCLIENT.CheckWeapon(source,"WEAPON_WRENCH") then
-				TriggerClientEvent("Notify",source,"Atenção","<b>Chave Inglesa</b> não encontrada.","amarelo",5000)
-				return
+				TriggerClientEvent("inventory:Notify",source,"Atenção","<b>Chave Inglesa</b> não encontrada.","vermelho")
+
+				return false
 			end
 
 			local Vehicle,Tyre,Network,Plate,Model = vCLIENT.Tyres(source)

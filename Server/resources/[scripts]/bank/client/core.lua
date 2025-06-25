@@ -58,6 +58,10 @@ CreateThread(function()
 					label = "Verificar",
 					tunnel = "proserver",
 					service = Number
+				}, {
+					event = "bank:ChangePassword",
+					label = "Atualizar senha",
+					tunnel = "server"
 				}
 			}
 		})

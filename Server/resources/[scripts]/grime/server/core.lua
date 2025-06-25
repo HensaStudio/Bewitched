@@ -48,7 +48,7 @@ function Hensa.Payment(Selected)
 
 			local Coords = vRP.GetEntityCoords(source)
 			if not Selected or #(Coords - Locations[Selected]) > 2.5 then
-				exports["discord"]:Embed("Hackers","**Passaporte:** "..Passport.."\n**Função:** Payment do Grime",0xa3c846,source)
+				exports["discord"]:Embed("Hackers","**Passaporte:** "..Passport.."\n**Função:** Payment do Grime",source)
 			end
 
 			local GainExperience = 3

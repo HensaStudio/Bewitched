@@ -35,7 +35,7 @@ function Hensa.Payment()
 
 		local Coords = vRP.GetEntityCoords(source)
 		if not vRPC.LastVehicle(source,"packer") or #(Coords - vec3(1256.59,-3239.63,5.17)) > 25 then
-			exports["discord"]:Embed("Hackers","**Passaporte:** "..Passport.."\n**Função:** Payment do Trucker",0xa3c846,source)
+			exports["discord"]:Embed("Hackers","**Passaporte:** "..Passport.."\n**Função:** Payment do Trucker",source)
 		end
 
 		local GainExperience = 15

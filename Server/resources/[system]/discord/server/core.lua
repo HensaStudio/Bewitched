@@ -2,33 +2,41 @@
 -- DISCORD
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Discord = {
-	["Connect"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Disconnect"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Services"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Salary"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Admin"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Garages"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Paramedic"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Payments"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Airport"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Deaths"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Gemstone"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Rename"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Roles"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Skins"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Marketplace"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Pause"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Boxes"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE",
-	["Hackers"] = "https://discord.com/api/webhooks/1293563732814856192/dvz03qWc3yTxbKKZn217-DZv13y5XksT2oTMDHS2hxg0HGt6pY3ztDQrSEcvGyuMs3NE"
+	["Connect"] = "https://ptb.discord.com/api/webhooks/1358862600632275045/Mc5ssFFb6XuHRqaICt4Af5GKOdsfdcofVYPHnZfamPguP6e1SfOYjDPnZfEp_QiT08AQ",
+	["Disconnect"] = "",
+	["Airport"] = "",
+	["Deaths"] = "",
+	["Gemstone"] = "",
+	["Rename"] = "",
+	["Roles"] = "",
+	["Weaponskins"] = "",
+	["Marketplace"] = "",
+	["Pause"] = "",
+	["Boxes"] = "",
+	["Hackers"] = "",
+	["Skin"] = "",
+	["ClearInv"] = "",
+	["Dima"] = "",
+	["God"] = "",
+	["Item"] = "",
+	["Delete"] = "",
+	["Kick"] = "",
+	["Ban"] = "",
+	["Group"] = "",
+	["AddCar"] = "",
+	["Print"] = "",
+	["Permissions"] = "",
+	["Sprays"] = "",
+	["Daily"] = ""
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EMBED
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("Embed",function(Hook,Message,Color,source)
+exports("Embed",function(Hook,Message,source)
 	PerformHttpRequest(Discord[Hook],function() end,"POST",json.encode({
 		username = ServerName,
 		embeds = {
-			{ color = (Color or 0xa3c846), description = Message }
+			{ color = 0x2b2d31, description = Message }
 		}
 	}),{ ["Content-Type"] = "application/json" })
 

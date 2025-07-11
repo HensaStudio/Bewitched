@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Tunnel = module("vrp","lib/Tunnel")
 local Proxy = module("vrp","lib/Proxy")
+vRPS = Tunnel.getInterface("vRP")
 vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
@@ -99,90 +100,27 @@ end)
 -- APPLY
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("Apply",function(Data,Ped)
-	if not Ped then
-		Ped = PlayerPedId()
-	end
+	Ped = Ped or PlayerPedId()
 
 	if Data then
 		Barbershop = Data
 	end
 
-	for Number = 1,46 do
+	for Number = 1,49 do
 		if not Barbershop[Number] then
-			if Number >= 6 and Number <= 9 then
-				Barbershop[Number] = -1
-			else
-				Barbershop[Number] = 0
-			end
+			Barbershop[Number] = (Number >= 6 and Number <= 9) and -1 or 0
 		end
 	end
 
-	SetPedHeadBlendData(Ped,Barbershop[1],Barbershop[2],0,Barbershop[5],Barbershop[5],0,Barbershop[3] + 0.0,0,0,false)
-
-	SetPedEyeColor(Ped,Barbershop[4])
-
-	SetPedComponentVariation(Ped,2,Barbershop[10],0,0)
-	SetPedHairColor(Ped,Barbershop[11],Barbershop[12])
-
-	SetPedHeadOverlay(Ped,0,Barbershop[7],1.0)
-	SetPedHeadOverlayColor(Ped,0,0,0,0)
-
-	SetPedHeadOverlay(Ped,1,Barbershop[22],Barbershop[23] + 0.0)
-	SetPedHeadOverlayColor(Ped,1,1,Barbershop[24],Barbershop[24])
-
-	SetPedHeadOverlay(Ped,2,Barbershop[19],Barbershop[20] + 0.0)
-	SetPedHeadOverlayColor(Ped,2,1,Barbershop[21],Barbershop[21])
-
-	SetPedHeadOverlay(Ped,3,Barbershop[9],1.0)
-	SetPedHeadOverlayColor(Ped,3,0,0,0)
-
-	SetPedHeadOverlay(Ped,4,Barbershop[13],Barbershop[14] + 0.0)
-	SetPedHeadOverlayColor(Ped,4,0,0,0)
-
-	SetPedHeadOverlay(Ped,5,Barbershop[25],Barbershop[26] + 0.0)
-	SetPedHeadOverlayColor(Ped,5,2,Barbershop[27],Barbershop[27])
-
-	SetPedHeadOverlay(Ped,6,Barbershop[6],1.0)
-	SetPedHeadOverlayColor(Ped,6,0,0,0)
-
-	SetPedHeadOverlay(Ped,8,Barbershop[16],Barbershop[17] + 0.0)
-	SetPedHeadOverlayColor(Ped,8,2,Barbershop[18],Barbershop[18])
-
-	SetPedHeadOverlay(Ped,9,Barbershop[8],1.0)
-	SetPedHeadOverlayColor(Ped,9,0,0,0)
-
-	SetPedFaceFeature(Ped,0,Barbershop[28] + 0.0)
-	SetPedFaceFeature(Ped,1,Barbershop[29] + 0.0)
-	SetPedFaceFeature(Ped,2,Barbershop[30] + 0.0)
-	SetPedFaceFeature(Ped,3,Barbershop[31] + 0.0)
-	SetPedFaceFeature(Ped,4,Barbershop[32] + 0.0)
-	SetPedFaceFeature(Ped,5,Barbershop[33] + 0.0)
-	SetPedFaceFeature(Ped,6,Barbershop[44] + 0.0)
-	SetPedFaceFeature(Ped,7,Barbershop[34] + 0.0)
-	SetPedFaceFeature(Ped,8,Barbershop[36] + 0.0)
-	SetPedFaceFeature(Ped,9,Barbershop[35] + 0.0)
-	SetPedFaceFeature(Ped,10,Barbershop[45] + 0.0)
-	SetPedFaceFeature(Ped,11,Barbershop[15] + 0.0)
-	SetPedFaceFeature(Ped,12,Barbershop[42] + 0.0)
-	SetPedFaceFeature(Ped,13,Barbershop[46] + 0.0)
-	SetPedFaceFeature(Ped,14,Barbershop[37] + 0.0)
-	SetPedFaceFeature(Ped,15,Barbershop[38] + 0.0)
-	SetPedFaceFeature(Ped,16,Barbershop[40] + 0.0)
-	SetPedFaceFeature(Ped,17,Barbershop[39] + 0.0)
-	SetPedFaceFeature(Ped,18,Barbershop[41] + 0.0)
-	SetPedFaceFeature(Ped,19,Barbershop[43] + 0.0)
+	vRPS.Barbershop(Barbershop)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- OPENBARBERSHOP
 -----------------------------------------------------------------------------------------------------------------------------------------
 function OpenBarbershop(Mode)
-	for Number = 1,46 do
+	for Number = 1,49 do
 		if not Barbershop[Number] then
-			if Number >= 6 and Number <= 9 then
-				Barbershop[Number] = -1
-			else
-				Barbershop[Number] = 0
-			end
+			Barbershop[Number] = (Number >= 6 and Number <= 9) and -1 or 0
 		end
 	end
 

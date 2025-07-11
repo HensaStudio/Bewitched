@@ -59,7 +59,7 @@ AddEventHandler("warehouse:Password",function(Name)
 				local Password = sanitizeString(Keyboard[1],"0123456789")
 				if string.len(Password) >= 4 and string.len(Password) <= 20 then
 					vRP.Query("warehouse/Password",{ Name = Name, Password = Password })
-					TriggerClientEvent("Notify",source,"Sucesso","Senha atualizada.","amarelo",5000)
+					TriggerClientEvent("Notify",source,"Sucesso","Senha atualizada.","verde",5000)
 				else
 					TriggerClientEvent("Notify",source,"Atenção","Necessário possuir entre <b>4</b> e <b>20</b> números.","amarelo",5000)
 				end

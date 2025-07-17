@@ -2,7 +2,14 @@
 -- DISCORD
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Discord = {
-	["Connect"] = "https://ptb.discord.com/api/webhooks/1358862600632275045/Mc5ssFFb6XuHRqaICt4Af5GKOdsfdcofVYPHnZfamPguP6e1SfOYjDPnZfEp_QiT08AQ",
+	["Policia"] = "",
+	["Mecanico"] = "",
+	["Paramedico"] = "",
+	["Arriba"] = "",
+	["Ballas"] = "",
+	["Vagos"] = "",
+	["Families"] = "",
+	["Connect"] = "",
 	["Disconnect"] = "",
 	["Airport"] = "",
 	["Deaths"] = "",

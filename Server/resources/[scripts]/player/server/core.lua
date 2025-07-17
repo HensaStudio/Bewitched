@@ -17,6 +17,7 @@ vKEYBOARD = Tunnel.getInterface("keyboard")
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Recycled = {}
+local DogTag = false
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- PLAYER:RECYCLE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -375,13 +376,22 @@ end)
 -- PLAYER:DEATH
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterServerEvent("player:Death")
-AddEventHandler("player:Death",function(OtherSource)
+AddEventHandler("player:Death", function(AttackerServerId, HashWeapons, IsHeadshot)
 	local source = source
 	local Passport = vRP.Passport(source)
-	local OtherPassport = vRP.Passport(OtherSource)
-	if Passport and OtherPassport and Passport ~= OtherPassport and vRP.DoesEntityExist(source) and vRP.DoesEntityExist(OtherSource) then
-		exports["discord"]:Embed("Deaths","**[PASSAPORTE ASSASSINO]:** "..OtherPassport.."\n**[LOCALIAÇÃO ASSASSINO]:** "..vRP.GetEntityCoords(OtherSource).."\n\n**[PASSAPORTE VÍTIMA]:** "..Passport.."\n**[LOCALIZAÇÃO VÍTIMA]:** "..vRP.GetEntityCoords(source).."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
-		exports["inventory"]:Drops(Passport,source,"dogtag-"..Passport,1)
+	local OtherPassport = vRP.Passport(AttackerServerId)
+	if Passport and OtherPassport and Passport ~= OtherPassport and vRP.DoesEntityExist(source) and vRP.DoesEntityExist(AttackerServerId) then
+		local HeadShot = "Não"
+
+		if IsHeadshot then
+			HeadShot = "Sim"
+		end
+
+		exports["discord"]:Embed("Deaths","**[PASSAPORTE ASSASSINO]:** "..OtherPassport.."\n**[LOCALIAÇÃO ASSASSINO]:** "..vRP.GetEntityCoords(AttackerServerId).."\n\n**[PASSAPORTE VÍTIMA]:** "..Passport.."\n**[LOCALIZAÇÃO VÍTIMA]:** "..vRP.GetEntityCoords(source).."\n**[ARMA USADA]:** "..HashWeapons.."\n**[HEADSHOT]:** "..HeadShot.."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
+
+		if DogTag then
+			exports["inventory"]:Drops(Passport,source,"dogtag-"..Passport,1)
+		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

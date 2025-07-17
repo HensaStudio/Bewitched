@@ -291,93 +291,107 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Store(Item,Slot,Amount,Target,Inactived)
 	local source = source
-	local Amount = parseInt(Amount, true)
+	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
-	if not Passport or not Open[Passport] or Inactived then
-		return TriggerClientEvent("inventory:Update", source)
+
+	if not (Passport and Open[Passport] and not Inactived) then
+		TriggerClientEvent("inventory:Update",source)
+
+		return false
 	end
 
-	if Open[Passport]["Recycle"] then
+	if Open[Passport].Recycle then
 		local Recycled = ItemRecycle(Item)
-		if Recycled then
-			if vRP.TakeItem(Passport, Item, Amount) then
-				for Index, Number in pairs(Recycled) do
-					vRP.GenerateItem(Passport, Index, Number * Amount)
-				end
-				return TriggerClientEvent("inventory:Update", source)
+		if Recycled and vRP.TakeItem(Passport,Item,Amount) then
+			for Index,Number in pairs(Recycled) do
+				vRP.GenerateItem(Passport,Index,Number * Amount)
 			end
+
+			TriggerClientEvent("inventory:Update",source)
 		else
-			TriggerClientEvent("inventory:Notify", source, "Atenção", ItemName(Item).." não pode ser reciclado.", "amarelo")
-			return TriggerClientEvent("inventory:Update", source)
+			TriggerClientEvent("inventory:Notify",source,"Atenção",ItemName(Item).." não pode ser reciclado.","amarelo")
+			TriggerClientEvent("inventory:Update",source)
 		end
+
+		return false
 	end
 
-	if Item == "diagram" and Open[Passport]["NameLogs"] then
-		if vRP.TakeItem(Passport, Item, Amount) then
+	if Item == "diagram" and Open[Passport].Chest and vRP.TakeItem(Passport,Item,Amount) then
 			vRP.Query("chests/UpdateWeight", { Name = Open[Passport]["NameLogs"], Multiplier = Amount })
 			Open[Passport]["Weight"] = Open[Passport]["Weight"] + (10 * Amount)
 			TriggerClientEvent("inventory:Notify", source, "Sucesso", "Armazenamento melhorado.", "verde")
-			return TriggerClientEvent("inventory:Update", source)
-		end
+			TriggerClientEvent("inventory:Update",source)
+
+		return false
 	end
 
-	local Item = SplitOne(Item)
-	local Unique = Open[Passport]["Unique"]
-	if (ChestItens[Item] and ChestItens[Item]["Block"]) or 
-	   (Unique and ChestItens[Unique] and not ChestItens[Unique]["Itens"][Item]) then
-		
-		if Unique and Item == Unique then
-			TriggerClientEvent("inventory:Open", source, { Action = "Open", Type = "Inventory", Resource = "inventory" }, true)
+	local CleanedItem = SplitOne(Item)
+	local Unique = Open[Passport].Unique
+	if (ChestItens[CleanedItem] and ChestItens[CleanedItem].Block) or (Unique and ChestItens[Unique] and ChestItens[Unique].Itens and not ChestItens[Unique].Itens[CleanedItem]) then
+		if Unique and CleanedItem == Unique then
+			TriggerClientEvent("inventory:Open",source,{ Type = "Inventory", Resource = "inventory" },true)
 		else
 			TriggerClientEvent("inventory:Notify", source, "Aviso", "Você não pode guardar este item aqui.", "vermelho")
+			TriggerClientEvent("inventory:Update",source)
 		end
-		return TriggerClientEvent("inventory:Update", source)
+
+		return false
 	end
 
-	if vRP.StoreChest(Passport, Open[Passport]["Name"], Amount, Open[Passport]["Weight"], Slot, Target) then
+	if vRP.StoreChest(Passport,Open[Passport].Name,Amount,Open[Passport].Weight,Slot,Target,Open[Passport].Save,ChestItens[Unique]) then
+		TriggerClientEvent("inventory:Update",source)
+
 		if Open[Passport]["Logs"] then
-			exports["discord"]:Embed(Open[Passport]["NameLogs"],"**[PASSAPORTE]:** "..Passport.."\n**[GUARDOU]:** "..Amount.."x "..ItemName(Item).."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
+			exports["discord"]:Embed(Open[Passport]["NameLogs"],"**[BAÚ]**: "..Open[Passport]["NameLogs"]..".\n**[PASSAPORTE]:** "..Passport.."\n**[GUARDOU]:** "..Amount.."x "..ItemName(Item).."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
 		end
-		return TriggerClientEvent("inventory:Update", source)
-	else
-		TriggerClientEvent("inventory:Notify", source, "Aviso", "Espaço insuficiente ou item não permitido.", "vermelho")
-		return TriggerClientEvent("inventory:Update", source)
+
+		return false
 	end
+
+	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TAKE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Hensa.Take(Item,Slot,Amount,Target)
 	local source = source
-	local Amount = parseInt(Amount, true)
+	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
-	if Passport and Open[Passport] then
-		if vRP.TakeChest(Passport, Open[Passport]["Name"], Amount, Slot, Target) then
-			TriggerClientEvent("inventory:Update", source)
-		else
-			local Result = vRP.GetServerData(Open[Passport]["Name"])
-			if (Open[Passport]["Mode"] or Open[Passport]["Item"]) and json.encode(Result) == "[]" then
-				if Open[Passport]["Item"] and vRP.TakeItem(Passport, Open[Passport]["Item"], Amount) then
-					TriggerClientEvent("inventory:Open", source, { Action = "Open", Type = "Inventory", Resource = "inventory" }, true)
-				end
 
-				if SplitBoolean(Name,"Helicrash",":") then
-					GlobalState["Helibox"] = GlobalState["Helibox"] - 1
-				end
+	if not Passport or not Open[Passport] then
+		TriggerClientEvent("inventory:Update",source)
 
-				if Open[Passport]["Logs"] then
-					exports["discord"]:Embed(Open[Passport]["NameLogs"],"**[PASSAPORTE]:** "..Passport.."\n**[RETIROU]:** "..Amount.."x "..ItemName(Item).."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
-				end
+		return false
+	end
 
-				TriggerClientEvent("inventory:Update", source)
-			else
-				TriggerClientEvent("inventory:Notify", source, "Aviso", "Espaço insuficiente ou item não permitido.", "vermelho")
-				TriggerClientEvent("inventory:Update", source)
+	local Name = Open[Passport].Name
+	local Saved = Open[Passport].Save
+	if vRP.TakeChest(Passport,Name,Amount,Slot,Target,Saved) then
+		TriggerClientEvent("inventory:Update",source)
+
+		if Open[Passport]["Logs"] then
+			exports["discord"]:Embed(Open[Passport]["NameLogs"],"**[BAÚ]**: "..Open[Passport]["NameLogs"]..".\n**[PASSAPORTE]:** "..Passport.."\n**[RETIROU]:** "..Amount.."x "..ItemName(Item).."\n**[DATA & HORA]:** "..os.date("%d/%m/%Y").." às "..os.date("%H:%M"))
+		end
+
+		return false
+	end
+
+	local Data = vRP.GetServerData(Name)    
+	if (Open[Passport].Mode or Open[Passport].Item) and json.encode(Data) == "[]" then
+		if Open[Passport].Item and vRP.TakeItem(Passport,Open[Passport].Item) then
+			TriggerClientEvent("inventory:Open",source,{ Type = "Inventory", Resource = "inventory" },true)
+		end
+
+		if SplitBoolean(Name,"Helicrash",":") then
+			GlobalState.Helibox = GlobalState.Helibox - 1
+
+			if GlobalState.Helibox <= 0 then
+				GlobalState.Helicrash = false
 			end
 		end
-	else
-		TriggerClientEvent("inventory:Update", source)
 	end
+
+	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATE

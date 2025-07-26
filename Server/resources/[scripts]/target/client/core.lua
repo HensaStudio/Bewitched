@@ -8,6 +8,7 @@ vRP = Proxy.getInterface("vRP")
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
 vSERVER = Tunnel.getInterface("target")
+vPLAYER = Tunnel.getInterface("player")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -955,6 +956,12 @@ function TargetEnable()
 					end
 				else
 					Menu[#Menu + 1] = { event = "player:Demand", label = "Cobrança", tunnel = "paramedic" }
+
+					local Reputation = vPLAYER.GetReputation(source)
+					if Reputation then
+						Menu[#Menu + 1] = { event = "player:Like", label = "👍 Curtir ["..Dotted(Reputation[1]).."]", tunnel = "paramedic" }
+						Menu[#Menu + 1] = { event = "player:UnLike", label = "👎 Descurtir ["..Dotted(Reputation[2]).."]", tunnel = "paramedic" }
+					end
 
 					if IsEntityPlayingAnim(Entitys,"random@mugging3","handsup_standing_base",3) then
 						Menu[#Menu + 1] = { event = "player:checkShoes", label = "Roubar Sapatos", tunnel = "paramedic" }

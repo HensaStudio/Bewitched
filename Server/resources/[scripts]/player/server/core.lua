@@ -435,6 +435,58 @@ AddEventHandler("player:SearchWanted",function()
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- PLAYER:LIKE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("player:Like")
+AddEventHandler("player:Like",function(Entity)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local OtherPassport = vRP.Passport(Entity)
+		local Identity = vRP.Identity(OtherPassport)
+		if Identity then
+			if vRP.TakeItem(Passport,"vote",1,true) then
+				vRP.GiveLikes(OtherPassport,1)
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você precisa de <b>1x "..ItemName("vote").."</b>.","amarelo",5000)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PLAYER:UNLIKE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("player:UnLike")
+AddEventHandler("player:UnLike",function(Entity)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local OtherPassport = vRP.Passport(Entity)
+		local Identity = vRP.Identity(OtherPassport)
+		if Identity then
+			if vRP.TakeItem(Passport,"vote",1,true) then
+				vRP.GiveUnLikes(OtherPassport,1)
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você precisa de <b>1x "..ItemName("vote").."</b>.","amarelo",5000)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- GETREPUTATION
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Hensa.GetReputation(source)
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local Reputation = {
+			[1] = vRP.GetLikes(Passport),
+			[2] = vRP.GetUnLikes(Passport)
+		}
+
+		return Reputation
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECT
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("Connect",function(Passport,source)

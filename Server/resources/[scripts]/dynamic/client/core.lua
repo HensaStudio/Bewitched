@@ -106,6 +106,7 @@ RegisterCommand("PlayerFunctions",function()
 		end
 
 		exports["dynamic"]:AddMenu("Roupas", "Colocar/Retirar roupas.", "clothes")
+		exports["dynamic"]:AddButton("Ver os IDs", "Veja todos os IDs das roupas.", "skinshop:SeeClothes", "", "clothes", true)
 		exports["dynamic"]:AddButton("Chapéu", "Colocar/Retirar o chapéu.", "player:Outfit", "Hat", "clothes", true)
 		exports["dynamic"]:AddButton("Máscara", "Colocar/Retirar a máscara.", "player:Outfit", "Mask", "clothes", true)
 		exports["dynamic"]:AddButton("Óculos", "Colocar/Retirar o óculos.", "player:Outfit", "Glasses", "clothes", true)

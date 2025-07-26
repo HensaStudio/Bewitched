@@ -10,6 +10,7 @@ vRP = Proxy.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 Hensa = {}
 Tunnel.bindInterface("skinshop", Hensa)
+vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -45,6 +46,25 @@ AddEventHandler("skinshop:Remove", function(Mode)
 			if vRP.HasService(Passport, "Policia") then
 				TriggerClientEvent("skinshop:set" .. Mode, ClosestPed)
 			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SKINSHOP:SEECLOTHES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("skinshop:SeeClothes")
+AddEventHandler("skinshop:SeeClothes", function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		local Clothes = vRP.UserData(Passport, "Clothings")
+		if Clothes then
+			local AllClothes = ""
+			for k, v in pairs(Clothes) do
+				AllClothes = AllClothes .. k .. ": Item: = " .. v.item .. ", Textura: = " .. v.texture .. "\n"
+			end
+
+			vKEYBOARD.Copy(source, "Roupas:", AllClothes)
 		end
 	end
 end)

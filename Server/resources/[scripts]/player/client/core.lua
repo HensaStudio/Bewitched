@@ -411,10 +411,9 @@ local HashWeapons = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GAMEEVENTTRIGGERED
 -----------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("gameEventTriggered", function(Event,Message)
+AddEventHandler("gameEventTriggered", function(Event, Message)
 	local Victim = Message[1]
 	local Attacker = Message[2]
-	local Index = NetworkGetPlayerIndexFromPed(Attacker)
 	local Weapon = Message[7]
 
 	if Event == "CEventNetworkEntityDamage"
@@ -423,19 +422,22 @@ AddEventHandler("gameEventTriggered", function(Event,Message)
 		and Victim == PlayerPedId()
 		and IsEntityAPed(Victim)
 		and GetEntityHealth(Victim) <= 100
-		and NetworkIsPlayerConnected(Index)
+		and IsPedAPlayer(Attacker)
 	then
-		local IsHeadshot = Message[6] == true
-		local Coords = GetEntityCoords(PlayerPedId())
-		local AttackerServerId = GetPlayerServerId(Index)
+		local Index = NetworkGetPlayerIndexFromPed(Attacker)
+		if NetworkIsPlayerConnected(Index) then
+			local IsHeadshot = Message[6] == true
+			local Coords = GetEntityCoords(PlayerPedId())
+			local AttackerServerId = GetPlayerServerId(Index)
 
-		TriggerServerEvent("player:Death",
-			AttackerServerId,
-			HashWeapons[Weapon] or "Desconhecido",
-			IsHeadshot
-		)
+			TriggerServerEvent("player:Death",
+				AttackerServerId,
+				HashWeapons[Weapon] or "Desconhecido",
+				IsHeadshot
+			)
 
-		DeathUpdate = false
+			DeathUpdate = false
+		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------

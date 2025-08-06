@@ -53,5 +53,8 @@ Works = {
 	},
 	["GoPostal"] = {
 		"boxville2"
+	},
+	["BurgerShot"] = {
+		"stalion2"
 	}
 }

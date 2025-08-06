@@ -103,6 +103,30 @@ Products = {
 		["Itens"] = {
 			{ ["Item"] = "milkbottle", ["Chance"] = 100, ["Min"] = 1, ["Max"] = 1 }
 		}
+	},
+	["BurgerShotJuice"] = {
+		["Timer"] = 20,
+		["Police"] = false,
+		["PolyZone"] = true,
+		["Animation"] = {
+			["Dict"] = "amb@prop_human_parking_meter@female@idle_a",
+			["Anim"] = "idle_a_female"
+		},
+		["Itens"] = {
+			{ ["Item"] = "bsjuice", ["Chance"] = 100, ["Min"] = 1, ["Max"] = 1 }
+		}
+	},
+	["BurgerShotBurger"] = {
+		["Timer"] = 40,
+		["Police"] = false,
+		["PolyZone"] = true,
+		["Animation"] = {
+			["Dict"] = "amb@prop_human_parking_meter@female@idle_a",
+			["Anim"] = "idle_a_female"
+		},
+		["Itens"] = {
+			{ ["Item"] = "bsburger", ["Chance"] = 100, ["Min"] = 1, ["Max"] = 1 }
+		}
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------

@@ -139,6 +139,18 @@ local List = {
 		["Model"] = "mp_m_waremech_01",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true
+	},{ -- BurgerShot Service One
+		["Distance"] = 20,
+		["Coords"] = vec4(-1198.04,-893.2,13.8,34.02),
+		["Model"] = "csb_burgerdrug",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- BurgerShot Service Two
+		["Distance"] = 20,
+		["Coords"] = vec4(-1196.22,-903.17,13.8,348.67),
+		["Model"] = "csb_burgerdrug",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
 	},{ -- Garagem 1
 		["Distance"] = 100,
 		["Coords"] = vec4(76.99,-194.58,54.49,249.45),
@@ -184,6 +196,12 @@ local List = {
 	},{ -- Garagem 8
 		["Distance"] = 100,
 		["Coords"] = vec4(1109.02,2660.88,37.98,0.0),
+		["Model"] = "s_m_y_airworker",
+		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		["Collision"] = true
+	},{ -- Garagem 9 BurgerShot
+		["Distance"] = 100,
+		["Coords"] = vec4(-1164.05,-895.16,14.05,121.89),
 		["Model"] = "s_m_y_airworker",
 		["Anim"] = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		["Collision"] = true

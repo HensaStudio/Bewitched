@@ -45,5 +45,6 @@ Garages = {
 	["146"] = { name = "TowDriver", payment = false, license = false },
 	["150"] = { name = "Taxi", payment = false, license = false },
 	["151"] = { name = "Trucker", payment = false, license = false },
-	["153"] = { name = "GoPostal", payment = false, license = false }
+	["153"] = { name = "GoPostal", payment = false, license = false },
+	["154"] = { name = "BurgerShot", payment = true, license = false, perm = "BurgerShot" }
 }

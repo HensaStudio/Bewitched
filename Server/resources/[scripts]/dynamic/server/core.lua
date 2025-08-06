@@ -70,6 +70,7 @@ function Hensa.Experience()
 	local Passport = vRP.Passport(source)
 	if Passport then
 		local Experiences = {
+			["Drogas"] = vRP.GetExperience(Passport, "Traffic"),
 			["Caçador"] = vRP.GetExperience(Passport, "Hunter"),
 			["Taxista"] = vRP.GetExperience(Passport, "Taxi"),
 			["Jardineiro"] = vRP.GetExperience(Passport, "Cleaner"),
@@ -83,7 +84,8 @@ function Hensa.Experience()
 			["Reboque"] = vRP.GetExperience(Passport, "Tows"),
 			["Desmanche"] = vRP.GetExperience(Passport, "Dismantle"),
 			["Entregador"] = vRP.GetExperience(Passport, "Delivery"),
-			["Corredor"] = vRP.GetExperience(Passport, "Runner")
+			["Corredor"] = vRP.GetExperience(Passport, "Runner"),
+			["BurgerShot"] = vRP.GetExperience(Passport, "BurgerShot")
 		}
 
 		return Experiences
